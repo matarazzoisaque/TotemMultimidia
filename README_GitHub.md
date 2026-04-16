@@ -37,9 +37,9 @@ cd seu-repositorio
 Utilizamos branches para evitar conflitos e manter o projeto organizado.
 
 ### 🌳 Estrutura de branches:
- .main → versão estável (NÃO modificar diretamente)
-  .dev → versão de desenvolvimento
-feature/nome-da-feature → novas funcionalidades
+ 1. main → versão estável (NÃO modificar diretamente)
+ 2. dev → versão de desenvolvimento
+ 3. feature/nome-da-feature → novas funcionalidades
 
 ## 🛠️ 3. Criando sua Branch
 
@@ -54,9 +54,9 @@ git checkout -b feature/nome-da-sua-feature
 
 Agora você pode editar o código normalmente na sua IDE:
 
-IntelliJ IDEA
-VS Code
-ou outra de sua preferência
+1. IntelliJ IDEA
+2. VS Code
+3. ou outra de sua preferência
 
 ## 💾 5. Salvando Alterações (Commit)
 
@@ -67,9 +67,9 @@ git commit -m "feat: descrição curta do que foi feito"
 ```
 
 ### 💡 Exemplos de commit:
-feat: adicionar tela inicial
-fix: corrigir erro no botão
-docs: atualizar README
+1. feat: adicionar tela inicial
+2. fix: corrigir erro no botão
+3. docs: atualizar README
 
 ## ⬆️ 6. Enviando para o GitHub
 ```bash
