@@ -37,8 +37,8 @@ cd seu-repositorio
 Utilizamos branches para evitar conflitos e manter o projeto organizado.
 
 ### 🌳 Estrutura de branches:
-main → versão estável (NÃO modificar diretamente)
-dev → versão de desenvolvimento
+ .main → versão estável (NÃO modificar diretamente)
+  .dev → versão de desenvolvimento
 feature/nome-da-feature → novas funcionalidades
 
 ## 🛠️ 3. Criando sua Branch
