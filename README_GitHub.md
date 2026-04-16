@@ -37,9 +37,9 @@ cd seu-repositorio
 Utilizamos branches para evitar conflitos e manter o projeto organizado.
 
 ### 🌳 Estrutura de branches:
- 1. main → versão estável (NÃO modificar diretamente)
- 2. dev → versão de desenvolvimento
- 3. feature/nome-da-feature → novas funcionalidades
+- main → versão estável (NÃO modificar diretamente)
+- dev → versão de desenvolvimento
+- feature/nome-da-feature → novas funcionalidades
 
 ## 🛠️ 3. Criando sua Branch
 
@@ -54,9 +54,9 @@ git checkout -b feature/nome-da-sua-feature
 
 Agora você pode editar o código normalmente na sua IDE:
 
-1. IntelliJ IDEA
-2. VS Code
-3. ou outra de sua preferência
+- IntelliJ IDEA
+- VS Code
+- ou outra de sua preferência
 
 ## 💾 5. Salvando Alterações (Commit)
 
@@ -67,9 +67,9 @@ git commit -m "feat: descrição curta do que foi feito"
 ```
 
 ### 💡 Exemplos de commit:
-1. feat: adicionar tela inicial
-2. fix: corrigir erro no botão
-3. docs: atualizar README
+- feat: adicionar tela inicial
+- fix: corrigir erro no botão
+- docs: atualizar README
 
 ## ⬆️ 6. Enviando para o GitHub
 ```bash
@@ -77,10 +77,10 @@ git push origin feature/nome-da-sua-feature
 ```
 
 ## 🔀 7. Criando um Pull Request
-Acesse o repositório no GitHub
-Clique em Compare & Pull Request
-Adicione uma descrição do que foi feito
-Envie o Pull Request
+- Acesse o repositório no GitHub
+- Clique em Compare & Pull Request
+- Adicione uma descrição do que foi feito
+- Envie o Pull Request
 
 OBS: Outro integrante deve revisar antes de aprovar
 
@@ -93,32 +93,26 @@ git pull origin dev
 ```
 
 ## ⚠️ Regras Importantes
-❌ NÃO fazer push direto na main
-❌ NÃO trabalhar direto na dev sem branch
-✅ Sempre criar uma branch para cada tarefa
-✅ Sempre usar Pull Request
-✅ Manter commits organizados e claros
+- ❌ NÃO fazer push direto na main
+- ❌ NÃO trabalhar direto na dev sem branch
+- ✅ Sempre criar uma branch para cada tarefa
+- ✅ Sempre usar Pull Request
+- ✅ Manter commits organizados e claros
 
 ## 🧠 Fluxo de Trabalho Recomendado
-Atualizar a branch dev
-Criar uma nova branch
-Desenvolver a funcionalidade
-Fazer commit das alterações
-Enviar para o GitHub
-Abrir Pull Request
-Aguardar revisão
-Fazer merge na dev
-
-## 🧩 Ferramentas Recomendadas
-IntelliJ IDEA
-VS Code
-Git Bash / Terminal
-GitHub Desktop (opcional para iniciantes)
+- Atualizar a branch dev
+- Criar uma nova branch
+- Desenvolver a funcionalidade
+- Fazer commit das alterações
+- Enviar para o GitHub
+- Abrir Pull Request
+- Aguardar revisão
+- Fazer merge na dev
 
 ## 🏁 Objetivo Final
 
 Manter o projeto:
 
-Organizado 📂
-Estável ⚙️
-Colaborativo 🤝
+- Organizado 📂
+- Estável ⚙️
+- Colaborativo 🤝
