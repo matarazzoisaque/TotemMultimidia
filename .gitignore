@@ -26,5 +26,13 @@ bin/
 ### VS Code ###
 .vscode/
 
+### Maven ###
+target/
+build/
+
+### Environment variables ###
+.env
+.env.local
+
 ### Mac OS ###
 .DS_Store
