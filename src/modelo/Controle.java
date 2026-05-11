@@ -2,6 +2,7 @@ package modelo;
 
 import apresentacao.*;
 import javax.swing.*;
+import java.util.Arrays;
 
 /**
  * Controlador central — interliga frontend e backend,
@@ -34,6 +35,7 @@ public class Controle extends absPropriedades {
     public void exibirCadastro()      { new fmrCadastroVisitante(framePai, this).setVisible(true); }
     public void exibirQuestionario()  { new fmrQuestionario(framePai, this).setVisible(true); }
     public void exibirSatisfacao()    { new fmrSatisfacao(framePai, this).setVisible(true); }
+    public void exibirAdministracao() { new fmrAdministracao(framePai, this).setVisible(true); }
 
     public void exibirObra(int indice) {
         obraAtual = indice;
@@ -85,6 +87,47 @@ public class Controle extends absPropriedades {
         this.nomeVisitante  = validacao.sanitizarNome(nome);
         this.idadeVisitante = validacao.converterIdade(idadeTexto);
         return true;
+    }
+
+    public boolean autenticarAdministracao(char[] senha) {
+        char[] senhaCorreta = {'m', 'u', 'l', 't', 'i', 'm', 'i', 'd', 'i', 'a'};
+        boolean autenticado = senha != null && Arrays.equals(senha, senhaCorreta);
+        Arrays.fill(senhaCorreta, '\0');
+        return autenticado;
+    }
+
+    public int getTotalAvaliacoes() {
+        return historicoSatisfacoes.size();
+    }
+
+    public int getQuantidadeAvaliacoesPorNota(int nota) {
+        int total = 0;
+        for (int avaliacao : historicoSatisfacoes) {
+            if (avaliacao == nota) total++;
+        }
+        return total;
+    }
+
+    public double getMediaAvaliacoes() {
+        if (historicoSatisfacoes.isEmpty()) return 0;
+        int soma = 0;
+        for (int avaliacao : historicoSatisfacoes) soma += avaliacao;
+        return soma / (double) historicoSatisfacoes.size();
+    }
+
+    public int getTotalAvaliacoesPositivas() {
+        int total = 0;
+        for (int avaliacao : historicoSatisfacoes) {
+            if (avaliacao >= 4) total++;
+        }
+        return total;
+    }
+
+    public double getMediaPontuacaoHistorica() {
+        if (historicoPontuacoes.isEmpty()) return 0;
+        int soma = 0;
+        for (int pontuacao : historicoPontuacoes) soma += pontuacao;
+        return soma / (double) historicoPontuacoes.size();
     }
 
     // ── Getters auxiliares para as telas ──────────────────────────────────

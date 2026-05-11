@@ -5,6 +5,7 @@ import modelo.Controle;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.util.Arrays;
 
 /**
  * Tela inicial do totem com visual de abertura da exposicao.
@@ -60,6 +61,13 @@ public class fmrInicio extends JDialog {
             controle.exibirCadastro();
         });
         painel.add(btnIniciar);
+
+        JButton btnAdmin = EstiloBase.criarBotaoSecundario("Administração");
+        btnAdmin.setFont(EstiloBase.fonteResponsiva(17f, tela));
+        btnAdmin.setBounds(margem + EstiloBase.escalar(314, tela), EstiloBase.escalar(444, tela),
+                EstiloBase.escalar(220, tela), EstiloBase.escalar(56, tela));
+        btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
+        painel.add(btnAdmin);
 
         JLabel lblLinha = EstiloBase.criarLabel(
                 "10 obras  •  linha do tempo completa  •  1 questionario final",
@@ -118,7 +126,7 @@ public class fmrInicio extends JDialog {
         };
         poster.setOpaque(false);
         int posterX = EstiloBase.escalar(24, tela);
-        int posterH = Math.max(EstiloBase.escalar(250, tela), Math.min((int) (cardResumoH * 0.58), cardResumoH - EstiloBase.escalar(220, tela)));
+        int posterH = Math.max(EstiloBase.escalar(250, tela), cardResumoH - (posterX * 2));
         poster.setBounds(posterX, posterX, cardDireitaW - (posterX * 2), posterH);
         cardResumo.add(poster);
 
@@ -142,55 +150,107 @@ public class fmrInicio extends JDialog {
                 poster.getWidth() - EstiloBase.escalar(70, tela), EstiloBase.escalar(72, tela));
         poster.add(lblResumoTexto);
 
-        int infoH = Math.max(EstiloBase.escalar(70, tela),
-                (cardResumoH - poster.getY() - poster.getHeight() - EstiloBase.escalar(58, tela)) / 2);
-        int infoGap = EstiloBase.escalar(14, tela);
-        int infoY1 = poster.getY() + poster.getHeight() + EstiloBase.escalar(18, tela);
-        adicionarCartaoInfo(cardResumo, posterX, infoY1, cardDireitaW - (posterX * 2), infoH,
-                "Fluxo pensado para toque",
-                "Grandes areas clicaveis, leitura forte e navegacao simples para totens.");
-        adicionarCartaoInfo(cardResumo, posterX, infoY1 + infoH + infoGap, cardDireitaW - (posterX * 2), infoH,
-                "Narrativa continua",
-                "Arte, descricao, interacoes e quiz final com o mesmo acabamento visual.");
-
-        JLabel lblRodape = EstiloBase.criarLabel(
-                "Use a tela inteira para navegar. Este modo foi redesenhado para parecer uma instalacao de museu, nao um formulario corporativo.",
-                EstiloBase.fonteResponsiva(14f, tela),
-                EstiloBase.COR_TEXTO_FRACO
-        );
-        lblRodape.setHorizontalAlignment(SwingConstants.LEFT);
-        lblRodape.setBounds(margem, tela.height - EstiloBase.escalar(56, tela), tela.width - (margem * 2), EstiloBase.escalar(20, tela));
-        painel.add(lblRodape);
-
         setContentPane(painel);
     }
 
-    private void adicionarCartaoInfo(JPanel pai, int x, int y, int w, int h, String titulo, String texto) {
-        JPanel bloco = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setColor(new Color(255, 255, 255, 9));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 24, 24);
-                g2.setColor(new Color(255, 255, 255, 18));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 24, 24);
-                g2.dispose();
-            }
-        };
-        bloco.setOpaque(false);
-        bloco.setBounds(x, y, w, h);
-        pai.add(bloco);
+    private void abrirAcessoAdministracao() {
+        Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
+        int dialogW = Math.min(EstiloBase.escalar(560, tela), tela.width - EstiloBase.escalar(56, tela));
+        int dialogH = Math.min(EstiloBase.escalar(360, tela), tela.height - EstiloBase.escalar(56, tela));
 
-        JLabel lblTitulo = EstiloBase.criarLabel(titulo, EstiloBase.FONTE_LABEL.deriveFont(16f), EstiloBase.COR_TEXTO_PRIMARIO);
+        JDialog dialogo = new JDialog(this, "Administração", true);
+        dialogo.setUndecorated(true);
+        dialogo.setBackground(new Color(0, 0, 0, 0));
+        dialogo.setSize(dialogW, dialogH);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel fundo = new JPanel(null);
+        fundo.setOpaque(false);
+
+        int margem = EstiloBase.escalar(22, tela);
+        JPanel card = EstiloBase.criarCardDestaque();
+        card.setLayout(null);
+        card.setBounds(margem, margem, dialogW - margem * 2, dialogH - margem * 2);
+        fundo.add(card);
+
+        JLabel lblTag = EstiloBase.criarTag("Acesso restrito");
+        lblTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
+        lblTag.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(26, tela),
+                EstiloBase.escalar(154, tela), EstiloBase.escalar(32, tela));
+        card.add(lblTag);
+
+        JLabel lblTitulo = EstiloBase.criarLabel("Administração", EstiloBase.fonteResponsiva(30f, tela),
+                EstiloBase.COR_TEXTO_PRIMARIO);
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
-        lblTitulo.setBounds(20, 16, w - 40, 20);
-        bloco.add(lblTitulo);
+        lblTitulo.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(78, tela),
+                card.getWidth() - EstiloBase.escalar(56, tela), EstiloBase.escalar(42, tela));
+        card.add(lblTitulo);
 
-        JLabel lblTexto = new JLabel("<html><div style='width:" + (w - 40) + "px'>" + texto + "</div></html>");
-        lblTexto.setFont(EstiloBase.FONTE_PEQUENA.deriveFont(15f));
-        lblTexto.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblTexto.setBounds(20, 42, w - 40, 34);
-        bloco.add(lblTexto);
+        JLabel lblSenha = EstiloBase.criarLabel("Senha", EstiloBase.fonteResponsiva(16f, tela),
+                EstiloBase.COR_TEXTO_SECUNDARIO);
+        lblSenha.setHorizontalAlignment(SwingConstants.LEFT);
+        lblSenha.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(134, tela),
+                card.getWidth() - EstiloBase.escalar(56, tela), EstiloBase.escalar(24, tela));
+        card.add(lblSenha);
+
+        JPasswordField campoSenha = criarCampoSenha(tela);
+        campoSenha.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(164, tela),
+                card.getWidth() - EstiloBase.escalar(56, tela), EstiloBase.escalar(56, tela));
+        card.add(campoSenha);
+
+        JLabel lblErro = EstiloBase.criarLabel(" ", EstiloBase.fonteResponsiva(14f, tela), EstiloBase.COR_ERRO);
+        lblErro.setHorizontalAlignment(SwingConstants.LEFT);
+        lblErro.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(224, tela),
+                card.getWidth() - EstiloBase.escalar(56, tela), EstiloBase.escalar(24, tela));
+        card.add(lblErro);
+
+        JButton btnCancelar = EstiloBase.criarBotaoSecundario("Voltar");
+        btnCancelar.setFont(EstiloBase.fonteResponsiva(16f, tela));
+        btnCancelar.setBounds(EstiloBase.escalar(28, tela), card.getHeight() - EstiloBase.escalar(72, tela),
+                EstiloBase.escalar(154, tela), EstiloBase.escalar(48, tela));
+        btnCancelar.addActionListener(e -> dialogo.dispose());
+        card.add(btnCancelar);
+
+        JButton btnEntrar = EstiloBase.criarBotaoPrimario("Entrar");
+        btnEntrar.setFont(EstiloBase.fonteResponsiva(18f, tela));
+        btnEntrar.setBounds(card.getWidth() - EstiloBase.escalar(214, tela), card.getHeight() - EstiloBase.escalar(76, tela),
+                EstiloBase.escalar(176, tela), EstiloBase.escalar(54, tela));
+        card.add(btnEntrar);
+
+        btnEntrar.addActionListener(e -> {
+            char[] senha = campoSenha.getPassword();
+            if (controle.autenticarAdministracao(senha)) {
+                Arrays.fill(senha, '\0');
+                campoSenha.setText("");
+                dialogo.dispose();
+                new fmrAdministracao(this, controle).setVisible(true);
+            } else {
+                Arrays.fill(senha, '\0');
+                campoSenha.setText("");
+                lblErro.setText("Senha incorreta.");
+                campoSenha.requestFocusInWindow();
+            }
+        });
+        campoSenha.addActionListener(e -> btnEntrar.doClick());
+
+        dialogo.setContentPane(fundo);
+        dialogo.getRootPane().setOpaque(false);
+        SwingUtilities.invokeLater(campoSenha::requestFocusInWindow);
+        dialogo.setVisible(true);
+    }
+
+    private JPasswordField criarCampoSenha(Dimension tela) {
+        JPasswordField campo = new JPasswordField();
+        campo.setFont(EstiloBase.fonteResponsiva(20f, tela));
+        campo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
+        campo.setBackground(new Color(10, 10, 16));
+        campo.setCaretColor(EstiloBase.COR_DESTAQUE);
+        campo.setEchoChar('*');
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloBase.COR_CARD_BORDA, 1, true),
+                BorderFactory.createEmptyBorder(10, 14, 10, 14)
+        ));
+        return campo;
     }
 
     private void iniciarAnimacaoEntrada() {
