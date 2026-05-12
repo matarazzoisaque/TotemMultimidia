@@ -11,8 +11,8 @@ public interface intMetodos {
 
     /**
      * Valida os dados básicos do visitante.
-     * @param nome  Nome digitado
-     * @param idade Idade digitada (String — vem do teclado virtual)
+     * @param nome       Nome digitado
+     * @param idade      Faixa etária digitada no fluxo novo (String)
      */
     boolean validarVisitante(String nome, String idade);
 

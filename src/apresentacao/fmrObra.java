@@ -4,24 +4,15 @@ import modelo.Controle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.net.URL;
 
 /**
- * Tela de obra com composicao editorial:
- * arte em destaque na esquerda e descricao na direita.
+ * Tela de obra com composição editorial:
+ * imagem real da obra/missão na esquerda e descrição na direita.
  */
 public class fmrObra extends JDialog {
-
-    private static final String[] ANOS = {
-            "1965", "1976", "1997", "2004", "2004",
-            "2008", "2011", "2018", "2021", "2021"
-    };
-
-    private static final String[] CODIGOS = {
-            "MR-04", "VK-01", "SJ-01", "SP-01", "OP-02",
-            "PX-08", "CU-11", "IN-18", "PV-21", "IG-21"
-    };
 
     private final Controle controle;
     private final int indice;
@@ -46,18 +37,8 @@ public class fmrObra extends JDialog {
         int arteW = Math.min(560, (int) (tela.width * 0.34));
         int painelW = tela.width - (margem * 2) - arteW - gap;
         int arteH = conteudoH;
-        int padInfo = EstiloBase.escalar(30, tela);
-        int tagY = EstiloBase.escalar(26, tela);
-        int tituloY = EstiloBase.escalar(72, tela);
-        int tituloH = EstiloBase.escalar(110, tela);
-        int subY = EstiloBase.escalar(182, tela);
-        int subH = EstiloBase.escalar(68, tela);
-        int chipsY = EstiloBase.escalar(258, tela);
-        int descY = EstiloBase.escalar(314, tela);
-        int faixaH = EstiloBase.escalar(102, tela);
-        int faixaY = conteudoH - faixaH - EstiloBase.escalar(46, tela);
 
-        JLabel lblColecao = EstiloBase.criarTag("Colecao Marte");
+        JLabel lblColecao = EstiloBase.criarTag("Coleção Marte");
         lblColecao.setBounds(margem, topo, 150, 34);
         fundo.add(lblColecao);
 
@@ -74,30 +55,34 @@ public class fmrObra extends JDialog {
         barraProgress.setBounds(margem, topo + 46, tela.width - (margem * 2), 18);
         fundo.add(barraProgress);
 
+        // ── Card da imagem ────────────────────────────────────────────────
+
         JPanel cardArte = EstiloBase.criarCard();
         cardArte.setLayout(null);
         cardArte.setBounds(margem, conteudoY, arteW, arteH);
         fundo.add(cardArte);
 
-        JPanel painelArte = criarPainelArte();
-        painelArte.setBounds(20, 20, arteW - 40, arteH - 132);
-        cardArte.add(painelArte);
+        String imageObra = controle.getImagemObra(indice);
 
-        JLabel lblCodigo = EstiloBase.criarTag(CODIGOS[indice]);
+        JPanel painelImagem = criarPainelImagemObra(imageObra);
+        painelImagem.setBounds(20, 20, arteW - 40, arteH - 132);
+        cardArte.add(painelImagem);
+
+        JLabel lblCodigo = EstiloBase.criarTag(controle.getCodigoObra(indice));
         lblCodigo.setBounds(24, arteH - 98, 92, 32);
         cardArte.add(lblCodigo);
 
         JLabel lblAno = EstiloBase.criarLabel(
-                ANOS[indice],
+                controle.getAnoObra(indice),
                 EstiloBase.fontePoppins(34f),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
         lblAno.setHorizontalAlignment(SwingConstants.LEFT);
-        lblAno.setBounds(24, arteH - 66, 130, 30);
+        lblAno.setBounds(24, arteH - 66, 180, 30);
         cardArte.add(lblAno);
 
         JLabel lblLegenda = EstiloBase.criarLabel(
-                "Painel visual conceitual da missao",
+                "Imagem da obra / missão",
                 EstiloBase.FONTE_PEQUENA,
                 EstiloBase.COR_TEXTO_FRACO
         );
@@ -105,43 +90,44 @@ public class fmrObra extends JDialog {
         lblLegenda.setBounds(24, arteH - 38, arteW - 48, 18);
         cardArte.add(lblLegenda);
 
+        // ── Card de informações ───────────────────────────────────────────
+
         JPanel cardInfo = EstiloBase.criarCard();
         cardInfo.setLayout(null);
         cardInfo.setBounds(margem + arteW + gap, conteudoY, painelW, conteudoH);
         fundo.add(cardInfo);
 
-        JLabel lblTema = EstiloBase.criarTag("Narrativa da obra");
-        lblTema.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblTema.setBounds(padInfo, tagY, EstiloBase.escalar(160, tela), EstiloBase.escalar(34, tela));
+        JLabel lblTema = EstiloBase.criarTag("Detalhes da obra");
+        lblTema.setBounds(30, 26, 160, 34);
         cardInfo.add(lblTema);
 
         JLabel lblTitulo = new JLabel("<html><div style='width:" + (painelW - 70) + "px'>"
                 + controle.getTituloObra(indice) + "</div></html>");
-        lblTitulo.setFont(EstiloBase.fonteResponsiva(38f, tela));
+        lblTitulo.setFont(EstiloBase.fontePoppins(34f));
         lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
-        lblTitulo.setBounds(padInfo, tituloY, painelW - (padInfo * 2), tituloH);
+        lblTitulo.setBounds(30, 72, painelW - 60, 120);
         cardInfo.add(lblTitulo);
 
         JLabel lblSub = new JLabel("<html><div style='width:" + (painelW - 70) + "px'>"
-                + "A exposicao apresenta marcos da exploracao marciana em uma leitura mais imersiva, com "
-                + "tipografia forte, contraste alto e foco no conteudo.</div></html>");
-        lblSub.setFont(EstiloBase.fonteResponsiva(18f, tela));
+                + "Conheça a história, os objetivos, os desafios e os impactos desta missão "
+                + "na exploração robótica de Marte.</div></html>");
+        lblSub.setFont(EstiloBase.FONTE_CORPO.deriveFont(18f));
         lblSub.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblSub.setBounds(padInfo, subY, painelW - (padInfo * 2), subH);
+        lblSub.setBounds(30, 196, painelW - 60, 62);
         cardInfo.add(lblSub);
 
-        JLabel lblChipAno = EstiloBase.criarTag("ANO " + ANOS[indice]);
-        lblChipAno.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblChipAno.setBounds(padInfo, chipsY, EstiloBase.escalar(110, tela), EstiloBase.escalar(32, tela));
+        JLabel lblChipAno = EstiloBase.criarTag("ANO " + controle.getAnoObra(indice));
+        lblChipAno.setBounds(30, 270, 150, 32);
         cardInfo.add(lblChipAno);
 
-        JLabel lblChipTipo = EstiloBase.criarTag(controle.deveExibirModelo3D(indice) ? "COM EXPERIENCIA 3D" : "TEXTO CURATORIAL");
-        lblChipTipo.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblChipTipo.setBounds(padInfo + EstiloBase.escalar(120, tela), chipsY, EstiloBase.escalar(176, tela), EstiloBase.escalar(32, tela));
+        JLabel lblChipTipo = EstiloBase.criarTag(
+                controle.deveExibirModelo3D(indice) ? "COM EXPERIÊNCIA 3D" : "TEXTO CURATORIAL"
+        );
+        lblChipTipo.setBounds(190, 270, 176, 32);
         cardInfo.add(lblChipTipo);
 
         JTextArea txtDesc = new JTextArea(controle.getDescricaoObra(indice));
-        txtDesc.setFont(EstiloBase.fonteResponsiva(19f, tela));
+        txtDesc.setFont(EstiloBase.fonteInter(18f));
         txtDesc.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
         txtDesc.setBackground(new Color(0, 0, 0, 0));
         txtDesc.setLineWrap(true);
@@ -151,11 +137,170 @@ public class fmrObra extends JDialog {
         txtDesc.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         JScrollPane scroll = EstiloBase.criarScrollPane(txtDesc);
-        int scrollH = Math.max(EstiloBase.escalar(64, tela), faixaY - descY - EstiloBase.escalar(18, tela));
-        scroll.setBounds(padInfo, descY, painelW - (padInfo * 2), scrollH);
+        int scrollY = 326;
+        int barraAcaoY = conteudoH - 148;
+        int scrollH = Math.max(180, barraAcaoY - scrollY - 18);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBounds(30, scrollY, painelW - 60, scrollH);
         cardInfo.add(scroll);
 
-        JPanel faixaAcao = new JPanel(null) {
+        JPanel faixaAcao = criarFaixaAcao();
+        faixaAcao.setBounds(30, barraAcaoY, painelW - 60, 102);
+        cardInfo.add(faixaAcao);
+
+        JLabel lblNota = EstiloBase.criarLabel(
+                "Continue navegando pela linha do tempo para descobrir novas camadas da exploração de Marte.",
+                EstiloBase.FONTE_PEQUENA.deriveFont(15f),
+                EstiloBase.COR_TEXTO_SECUNDARIO
+        );
+        lblNota.setHorizontalAlignment(SwingConstants.LEFT);
+        lblNota.setBounds(22, 16, faixaAcao.getWidth() - 44, 22);
+        faixaAcao.add(lblNota);
+
+        if (controle.deveExibirModelo3D(indice)) {
+            JButton btn3D = EstiloBase.criarBotaoSecundario("Explorar modelo 3D");
+            btn3D.setBounds(22, 44, 230, 44);
+            btn3D.addActionListener(e -> abrirModelo3D());
+            faixaAcao.add(btn3D);
+        }
+
+        JButton btnProximo = EstiloBase.criarBotaoPrimario(
+                indice == controle.getTotalObras() - 1
+                        ? "Ir para o questionário"
+                        : "Próxima obra"
+        );
+        btnProximo.setBounds(faixaAcao.getWidth() - 250, 40, 228, 48);
+        btnProximo.addActionListener(e -> {
+            dispose();
+            controle.proximaEtapaAposObra(indice);
+        });
+        faixaAcao.add(btnProximo);
+
+        setContentPane(fundo);
+    }
+
+    private JPanel criarPainelImagemObra(String caminhoImagem) {
+        return new JPanel(null) {
+            private Image imagem;
+
+            {
+                imagem = carregarImagem(caminhoImagem);
+                setOpaque(false);
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+                Shape forma = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 28, 28);
+                g2.setClip(forma);
+
+                if (imagem != null) {
+                    desenharImagemCover(g2, imagem, getWidth(), getHeight());
+                } else {
+                    desenharFallbackImagem(g2);
+                }
+
+                g2.setClip(null);
+                g2.setColor(new Color(255, 255, 255, 26));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 28, 28);
+
+                g2.dispose();
+            }
+        };
+    }
+
+    private Image carregarImagem(String caminhoImagem) {
+        if (caminhoImagem == null || caminhoImagem.isBlank()) {
+            return null;
+        }
+
+        try {
+            URL url = getClass().getResource(caminhoImagem);
+            if (url != null) {
+                return new ImageIcon(url).getImage();
+            }
+
+            File arquivo = new File("src" + caminhoImagem);
+            if (arquivo.exists()) {
+                return new ImageIcon(arquivo.getAbsolutePath()).getImage();
+            }
+
+            File arquivoDireto = new File(caminhoImagem);
+            if (arquivoDireto.exists()) {
+                return new ImageIcon(arquivoDireto.getAbsolutePath()).getImage();
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+        return null;
+    }
+
+    private void desenharImagemCover(Graphics2D g2, Image imagem, int larguraPainel, int alturaPainel) {
+        int larguraImagem = imagem.getWidth(null);
+        int alturaImagem = imagem.getHeight(null);
+
+        if (larguraImagem <= 0 || alturaImagem <= 0) {
+            desenharFallbackImagem(g2);
+            return;
+        }
+
+        double escala = Math.max(
+                (double) larguraPainel / larguraImagem,
+                (double) alturaPainel / alturaImagem
+        );
+
+        int novaLargura = (int) Math.ceil(larguraImagem * escala);
+        int novaAltura = (int) Math.ceil(alturaImagem * escala);
+
+        int x = (larguraPainel - novaLargura) / 2;
+        int y = (alturaPainel - novaAltura) / 2;
+
+        g2.drawImage(imagem, x, y, novaLargura, novaAltura, null);
+
+        GradientPaint sombra = new GradientPaint(
+                0, 0, new Color(0, 0, 0, 20),
+                0, alturaPainel, new Color(0, 0, 0, 150)
+        );
+        g2.setPaint(sombra);
+        g2.fillRect(0, 0, larguraPainel, alturaPainel);
+    }
+
+    private void desenharFallbackImagem(Graphics2D g2) {
+        GradientPaint fundo = new GradientPaint(
+                0, 0, new Color(255, 98, 36, 54),
+                getWidth(), getHeight(), new Color(233, 32, 97, 42)
+        );
+        g2.setPaint(fundo);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
+
+        g2.setColor(new Color(255, 255, 255, 26));
+        for (int x = 24; x < getWidth(); x += 26) {
+            g2.drawLine(x, 0, x, getHeight());
+        }
+
+        for (int y = 24; y < getHeight(); y += 26) {
+            g2.drawLine(0, y, getWidth(), y);
+        }
+
+        JLabelHelper.drawCenteredText(
+                g2,
+                "Imagem não encontrada",
+                getWidth(),
+                getHeight(),
+                EstiloBase.fontePoppins(24f),
+                new Color(255, 255, 255, 190)
+        );
+    }
+
+    private JPanel criarFaixaAcao() {
+        return new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -166,140 +311,15 @@ public class fmrObra extends JDialog {
                 g2.dispose();
             }
         };
-        faixaAcao.setOpaque(false);
-        faixaAcao.setBounds(padInfo, faixaY, painelW - (padInfo * 2), faixaH);
-        cardInfo.add(faixaAcao);
-
-        JLabel lblNota = EstiloBase.criarLabel(
-                "Continue navegando pela linha do tempo das missoes para descobrir novas camadas da exploracao de Marte.",
-                EstiloBase.fonteResponsiva(15f, tela),
-                EstiloBase.COR_TEXTO_SECUNDARIO
-        );
-        lblNota.setHorizontalAlignment(SwingConstants.LEFT);
-        lblNota.setBounds(EstiloBase.escalar(22, tela), EstiloBase.escalar(14, tela),
-                faixaAcao.getWidth() - EstiloBase.escalar(44, tela), EstiloBase.escalar(22, tela));
-        faixaAcao.add(lblNota);
-
-        if (controle.deveExibirModelo3D(indice)) {
-            JButton btn3D = EstiloBase.criarBotaoSecundario("Explorar modelo 3D");
-            btn3D.setFont(EstiloBase.fonteResponsiva(16f, tela));
-            btn3D.setBounds(EstiloBase.escalar(22, tela), EstiloBase.escalar(44, tela),
-                    EstiloBase.escalar(230, tela), EstiloBase.escalar(44, tela));
-            btn3D.addActionListener(e -> abrirModelo3D());
-            faixaAcao.add(btn3D);
-        }
-
-        if (indice > 0) {
-            boolean temBotao3D = controle.deveExibirModelo3D(indice);
-            JButton btnAnterior = EstiloBase.criarBotaoSecundario(temBotao3D ? "Anterior" : "Obra anterior");
-            btnAnterior.setFont(EstiloBase.fonteResponsiva(16f, tela));
-            int anteriorX = temBotao3D ? EstiloBase.escalar(268, tela) : EstiloBase.escalar(22, tela);
-            int anteriorW = temBotao3D ? EstiloBase.escalar(180, tela) : EstiloBase.escalar(210, tela);
-            btnAnterior.setBounds(anteriorX, EstiloBase.escalar(44, tela), anteriorW, EstiloBase.escalar(44, tela));
-            btnAnterior.addActionListener(e -> {
-                dispose();
-                controle.exibirObra(indice - 1);
-            });
-            faixaAcao.add(btnAnterior);
-        }
-
-        JButton btnProximo = EstiloBase.criarBotaoPrimario(indice == controle.getTotalObras() - 1
-                ? "Ir para o questionario"
-                : "Proxima obra");
-        btnProximo.setFont(EstiloBase.fonteResponsiva(18f, tela));
-        btnProximo.setBounds(faixaAcao.getWidth() - EstiloBase.escalar(250, tela), EstiloBase.escalar(40, tela),
-                EstiloBase.escalar(228, tela), EstiloBase.escalar(48, tela));
-        btnProximo.addActionListener(e -> {
-            dispose();
-            controle.proximaEtapaAposObra(indice);
-        });
-        faixaAcao.add(btnProximo);
-
-        setContentPane(fundo);
-    }
-
-    private JPanel criarPainelArte() {
-        String[] palavras = controle.getTituloObra(indice).split(" ");
-        String destaque = palavras.length > 0 ? palavras[0].toUpperCase() : "MARTE";
-
-        JPanel painel = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                g2.setColor(EstiloBase.COR_PRETO_60);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
-
-                GradientPaint fundo = new GradientPaint(
-                        0, 0, new Color(255, 98, 36, 54),
-                        getWidth(), getHeight(), new Color(233, 32, 97, 42)
-                );
-                g2.setPaint(fundo);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
-
-                float raioPlaneta = Math.min(getWidth(), getHeight()) * 0.29f;
-                float orbita = Math.min(getWidth(), getHeight()) * 0.37f;
-                float centroX = (float) (getWidth() * 0.55);
-                float centroY = (float) (getHeight() * 0.42);
-
-                desenharOrb(g2, centroX, centroY, raioPlaneta, EstiloBase.COR_DESTAQUE, EstiloBase.COR_DESTAQUE_2);
-                desenharOrb(g2, getWidth() * 0.18f, getHeight() * 0.74f, raioPlaneta * 0.35f, EstiloBase.COR_ACENTO, EstiloBase.COR_DESTAQUE);
-
-                g2.setStroke(new BasicStroke(1.25f));
-                g2.setColor(new Color(255, 255, 255, 28));
-                g2.draw(new Ellipse2D.Float(centroX - orbita, centroY - (orbita * 0.55f), orbita * 2, orbita * 1.10f));
-                g2.draw(new Ellipse2D.Float(centroX - (orbita * 0.78f), centroY - (orbita * 0.36f), orbita * 1.56f, orbita * 0.72f));
-
-                g2.setColor(new Color(255, 255, 255, 12));
-                for (int x = 24; x < getWidth(); x += 26) {
-                    g2.drawLine(x, 0, x, getHeight());
-                }
-                for (int y = 24; y < getHeight(); y += 26) {
-                    g2.drawLine(0, y, getWidth(), y);
-                }
-
-                g2.setColor(new Color(255, 255, 255, 22));
-                g2.draw(new RoundRectangle2D.Float(16, 16, getWidth() - 32, getHeight() - 32, 20, 20));
-                g2.dispose();
-            }
-        };
-        painel.setOpaque(false);
-
-        JLabel lblPalavra = new JLabel(destaque);
-        lblPalavra.setFont(EstiloBase.fontePoppins(42f));
-        lblPalavra.setForeground(new Color(255, 255, 255, 196));
-        lblPalavra.setBounds(26, 26, 260, 48);
-        painel.add(lblPalavra);
-
-        JLabel lblCodigo = new JLabel("MUSEU INTERATIVO");
-        lblCodigo.setFont(EstiloBase.FONTE_LABEL.deriveFont(12f));
-        lblCodigo.setForeground(EstiloBase.COR_TEXTO_FRACO);
-        lblCodigo.setBounds(28, 74, 200, 20);
-        painel.add(lblCodigo);
-
-        JLabel lblRodape = new JLabel("Mars archive " + CODIGOS[indice]);
-        lblRodape.setFont(EstiloBase.FONTE_PEQUENA);
-        lblRodape.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblRodape.setBounds(26, painel.getHeight() - 40, 200, 18);
-        painel.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
-                lblRodape.setBounds(26, painel.getHeight() - 40, 240, 18);
-            }
-        });
-        painel.add(lblRodape);
-
-        return painel;
     }
 
     private void abrirModelo3D() {
         EstiloBase.mostrarDialogoInformativo(
                 this,
                 "3D",
-                "Visualizacao do rover",
-                "A integracao real com um visualizador 3D ainda e um placeholder, mas a interface ja foi reposicionada "
-                        + "para receber essa experiencia sem quebrar o fluxo principal do totem.",
+                "Visualização do rover",
+                "A integração real com um visualizador 3D ainda é um placeholder, mas a interface já está preparada "
+                        + "para receber essa experiência sem quebrar o fluxo principal do totem.",
                 "Fechar"
         );
     }
@@ -310,13 +330,17 @@ public class fmrObra extends JDialog {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
                 int total = controle.getTotalObras();
                 int gap = 8;
                 int segW = (largura - ((total - 1) * gap)) / total;
+
                 for (int i = 0; i < total; i++) {
                     int x = i * (segW + gap);
+
                     g2.setColor(new Color(255, 255, 255, 18));
                     g2.fillRoundRect(x, 4, segW, 10, 10, 10);
+
                     if (i <= indice) {
                         GradientPaint gp = new GradientPaint(
                                 x, 0, EstiloBase.COR_DESTAQUE,
@@ -326,23 +350,38 @@ public class fmrObra extends JDialog {
                         g2.fillRoundRect(x, 4, segW, 10, 10, 10);
                     }
                 }
+
                 g2.dispose();
             }
         };
     }
 
-    private void desenharOrb(Graphics2D g2, float x, float y, float raio, Color interna, Color externa) {
-        RadialGradientPaint paint = new RadialGradientPaint(
-                new Point((int) x, (int) y),
-                raio,
-                new float[]{0f, 0.55f, 1f},
-                new Color[]{
-                        new Color(interna.getRed(), interna.getGreen(), interna.getBlue(), 240),
-                        new Color(externa.getRed(), externa.getGreen(), externa.getBlue(), 180),
-                        new Color(externa.getRed(), externa.getGreen(), externa.getBlue(), 12)
-                }
-        );
-        g2.setPaint(paint);
-        g2.fill(new Ellipse2D.Float(x - raio, y - raio, raio * 2, raio * 2));
+    /**
+     * Helper interno para desenhar texto centralizado no fallback.
+     */
+    private static class JLabelHelper {
+        static void drawCenteredText(
+                Graphics2D g2,
+                String texto,
+                int largura,
+                int altura,
+                Font fonte,
+                Color cor
+        ) {
+            Font fonteAnterior = g2.getFont();
+            Color corAnterior = g2.getColor();
+
+            g2.setFont(fonte);
+            g2.setColor(cor);
+
+            FontMetrics fm = g2.getFontMetrics();
+            int x = (largura - fm.stringWidth(texto)) / 2;
+            int y = (altura - fm.getHeight()) / 2 + fm.getAscent();
+
+            g2.drawString(texto, x, y);
+
+            g2.setFont(fonteAnterior);
+            g2.setColor(corAnterior);
+        }
     }
 }

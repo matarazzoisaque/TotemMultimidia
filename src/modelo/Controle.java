@@ -57,35 +57,58 @@ public class Controle extends absPropriedades {
 
     public void finalizarVisita(int notaFinal) {
         registrarSatisfacao(notaFinal);
-        historicoNomes.add(nomeVisitante);
-        historicoIdades.add(idadeVisitante);
+        historicoNomes.add(getNomeCompletoVisitanteAtual());
+        historicoSobrenomes.add(sobrenomeVisitante);
+        historicoFaixasEtarias.add(faixaEtariaVisitante);
         historicoSatisfacoes.add(notaFinal);
         reiniciarSessao();
         exibirTelaInicial();
     }
 
     private void reiniciarSessao() {
-        nomeVisitante     = "";
-        idadeVisitante    = 0;
-        obraAtual         = 0;
-        etapaAtual        = 0;
-        notaSatisfacao    = -1;
+        nomeVisitante        = "";
+        sobrenomeVisitante   = "";
+        faixaEtariaVisitante = "";
+        dadosVisitante[0]    = "";
+        dadosVisitante[1]    = "";
+        dadosVisitante[2]    = "";
+        idadeVisitante       = 0;
+        obraAtual            = 0;
+        etapaAtual           = 0;
+        notaSatisfacao       = -1;
         for (int i = 0; i < respostasVisitante.length; i++) respostasVisitante[i] = -1;
     }
 
     // ── Validação ──────────────────────────────────────────────────────────
     @Override
     public boolean validarVisitante(String nome, String idade) {
-        return validacao.validarNome(nome) && validacao.validarIdadeTexto(idade);
+        return validacao.validarNome(nome)
+                && (validacao.validarFaixaEtaria(idade) || validacao.validarIdadeTexto(idade));
     }
 
-    public String erroNome(String nome)       { return validacao.mensagemErroNome(nome); }
-    public String erroIdade(String idade)     { return validacao.mensagemErroIdade(idade); }
+    public boolean validarVisitante(String nome, String sobrenome, String faixaEtaria) {
+        return validacao.validarNome(nome)
+                && validacao.validarSobrenome(sobrenome)
+                && validacao.validarFaixaEtaria(faixaEtaria);
+    }
 
-    public boolean salvarDadosVisitante(String nome, String idadeTexto) {
-        if (!validarVisitante(nome, idadeTexto)) return false;
-        this.nomeVisitante  = validacao.sanitizarNome(nome);
-        this.idadeVisitante = validacao.converterIdade(idadeTexto);
+    public String erroNome(String nome)            { return validacao.mensagemErroNome(nome); }
+    public String erroSobrenome(String sobrenome)  { return validacao.mensagemErroSobrenome(sobrenome); }
+    public String erroIdade(String idade)          { return validacao.mensagemErroIdade(idade); }
+    public String erroFaixaEtaria(String faixaEtaria) { return validacao.mensagemErroFaixaEtaria(faixaEtaria); }
+
+    public boolean salvarDadosVisitante(String nome, String sobrenome, String faixaEtaria) {
+        if (!validarVisitante(nome, sobrenome, faixaEtaria)) {
+            return false;
+        }
+
+        this.nomeVisitante = validacao.sanitizarNome(nome);
+        this.sobrenomeVisitante = validacao.sanitizarNome(sobrenome);
+        this.faixaEtariaVisitante = faixaEtaria;
+        this.dadosVisitante[0] = this.nomeVisitante;
+        this.dadosVisitante[1] = this.sobrenomeVisitante;
+        this.dadosVisitante[2] = this.faixaEtariaVisitante;
+
         return true;
     }
 
@@ -130,10 +153,33 @@ public class Controle extends absPropriedades {
         return soma / (double) historicoPontuacoes.size();
     }
 
+    public String getNomeVisitanteAtual() {
+        return nomeVisitante;
+    }
+
+    public String getSobrenomeVisitanteAtual() {
+        return sobrenomeVisitante;
+    }
+
+    public String getNomeCompletoVisitanteAtual() {
+        return (nomeVisitante + " " + sobrenomeVisitante).trim();
+    }
+
+    public String getFaixaEtariaVisitanteAtual() {
+        return faixaEtariaVisitante;
+    }
+
+    public String[] getDadosVisitanteAtual() {
+        return dadosVisitante;
+    }
+
     // ── Getters auxiliares para as telas ──────────────────────────────────
     public JFrame    getFramePai()              { return framePai; }
     public String    getTituloObra(int i)       { return titulosObras[i]; }
     public String    getDescricaoObra(int i)    { return descricoesObras[i]; }
+    public String    getImagemObra(int i)       { return imagensObras[i]; }
+    public String    getCodigoObra(int i)       { return codigosObras[i]; }
+    public String    getAnoObra(int i)          { return anosObras[i]; }
     public boolean   deveExibirModelo3D(int i)  { return exibirModelo3D[i]; }
     public String    getPergunta(int i)         { return perguntas[i]; }
     public String[]  getOpcoesPergunta(int i)   { return opcoes[i]; }

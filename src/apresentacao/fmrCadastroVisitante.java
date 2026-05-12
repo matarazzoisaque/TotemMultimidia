@@ -13,7 +13,8 @@ public class fmrCadastroVisitante extends JDialog {
     private final Controle controle;
     private JTextField campoNome;
     private JTextField campoSobrenome;
-    private JTextField campoIdade;
+    private ButtonGroup grupoFaixaEtaria;
+    private JRadioButton[] radiosFaixaEtaria;
     private JLabel lblErroNome;
     private JLabel lblErroSobrenome;
     private JLabel lblErroIdade;
@@ -117,44 +118,44 @@ public class fmrCadastroVisitante extends JDialog {
         card.add(lblErroSobrenome);
 
         int yIdade = yPrimeiraLinha + EstiloBase.escalar(138, tela);
-        JLabel lblIdade = criarLabelCampo("Idade");
-        lblIdade.setFont(EstiloBase.fonteResponsiva(16f, tela));
-        lblIdade.setBounds(p, yIdade, campoW, labelH);
-        card.add(lblIdade);
+        JLabel lblFaixaEtaria = criarLabelCampo("Faixa etária");
+        lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(16f, tela));
+        lblFaixaEtaria.setBounds(p, yIdade, campoW, labelH);
+        card.add(lblFaixaEtaria);
 
-        campoIdade = EstiloBase.criarCampoTexto("Ex: 25", 4);
-        campoIdade.setFont(EstiloBase.fonteResponsiva(19f, tela));
-        campoIdade.setBounds(p, yIdade + EstiloBase.escalar(30, tela), campoW, campoH);
-        campoIdade.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                abrirTeclado(campoIdade);
-            }
-        });
-        card.add(campoIdade);
+        JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, gap));
+        painelFaixaEtaria.setOpaque(false);
+        painelFaixaEtaria.setBounds(p, yIdade + EstiloBase.escalar(30, tela), cardW - (p * 2), EstiloBase.escalar(140, tela));
+        card.add(painelFaixaEtaria);
+
+        grupoFaixaEtaria = new ButtonGroup();
+        radiosFaixaEtaria = new JRadioButton[modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length];
+        for (int i = 0; i < modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length; i++) {
+            JRadioButton radio = criarRadioFaixaEtaria(modelo.Validacao.FAIXAS_ETARIAS_VALIDAS[i], tela);
+            radiosFaixaEtaria[i] = radio;
+            grupoFaixaEtaria.add(radio);
+            painelFaixaEtaria.add(radio);
+        }
 
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
         lblErroIdade.setBounds(p, yIdade + EstiloBase.escalar(92, tela), cardW - (p * 2), erroH);
         card.add(lblErroIdade);
 
-        JPanel aviso = criarBlocoInformacao(
-                "Uso em totem",
-                "Os campos sao grandes, clicaveis e preparados para o teclado virtual interno."
-        );
-        aviso.setBounds(p, yIdade + EstiloBase.escalar(136, tela), cardW - (p * 2), EstiloBase.escalar(88, tela));
-        card.add(aviso);
+   
 
         int botoesY = cardH - EstiloBase.escalar(98, tela);
+        int btnVoltarW = EstiloBase.escalar(180, tela);
+        int btnContinuarW = EstiloBase.escalar(230, tela);
         JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
         btnContinuar.setFont(EstiloBase.fonteResponsiva(19f, tela));
-        btnContinuar.setBounds(p, botoesY, EstiloBase.escalar(230, tela), EstiloBase.escalar(58, tela));
+        btnContinuar.setBounds(cardW - p - btnContinuarW, botoesY, btnContinuarW, EstiloBase.escalar(58, tela));
         btnContinuar.addActionListener(e -> validarEAvancar());
         card.add(btnContinuar);
 
         JButton btnVoltar = EstiloBase.criarBotaoSecundario("Voltar");
         btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
-        btnVoltar.setBounds(p + EstiloBase.escalar(248, tela), botoesY, EstiloBase.escalar(180, tela), EstiloBase.escalar(58, tela));
+        btnVoltar.setBounds(p, botoesY, btnVoltarW, EstiloBase.escalar(58, tela));
         btnVoltar.addActionListener(e -> {
             dispose();
             controle.exibirTelaInicial();
@@ -175,6 +176,21 @@ public class fmrCadastroVisitante extends JDialog {
         label.setFont(EstiloBase.FONTE_PEQUENA.deriveFont(13f));
         label.setForeground(EstiloBase.COR_ERRO);
         return label;
+    }
+
+    private JRadioButton criarRadioFaixaEtaria(String texto, Dimension tela) {
+        JRadioButton radio = new JRadioButton(texto);
+        radio.setOpaque(false);
+        radio.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
+        radio.setFont(EstiloBase.fonteResponsiva(17f, tela));
+        radio.setFocusPainted(false);
+        radio.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        radio.setIconTextGap(10);
+        radio.addActionListener(e -> {
+            lblErroIdade.setText("");
+            lblErroIdade.repaint();
+        });
+        return radio;
     }
 
     private JPanel criarBlocoInformacao(String titulo, String texto) {
@@ -220,7 +236,7 @@ public class fmrCadastroVisitante extends JDialog {
     private void validarEAvancar() {
         String nome = campoNome.getText().trim();
         String sobrenome = campoSobrenome.getText().trim();
-        String idade = campoIdade.getText().trim();
+        String faixaEtaria = obterFaixaEtariaSelecionada();
         boolean ok = true;
 
         String erroN = controle.erroNome(nome);
@@ -233,7 +249,7 @@ public class fmrCadastroVisitante extends JDialog {
             EstiloBase.restaurarCampo(campoNome);
         }
 
-        String erroS = controle.erroNome(sobrenome);
+        String erroS = controle.erroSobrenome(sobrenome);
         if (!erroS.isEmpty()) {
             lblErroSobrenome.setText("- " + erroS);
             EstiloBase.marcarCampoComErro(campoSobrenome);
@@ -243,21 +259,31 @@ public class fmrCadastroVisitante extends JDialog {
             EstiloBase.restaurarCampo(campoSobrenome);
         }
 
-        String erroI = controle.erroIdade(idade);
+        String erroI = controle.erroFaixaEtaria(faixaEtaria);
         if (!erroI.isEmpty()) {
             lblErroIdade.setText("- " + erroI);
-            EstiloBase.marcarCampoComErro(campoIdade);
             ok = false;
         } else {
             lblErroIdade.setText("");
-            EstiloBase.restaurarCampo(campoIdade);
         }
 
-        String nomeCompleto = nome + " " + sobrenome;
-        if (ok && controle.salvarDadosVisitante(nomeCompleto, idade)) {
+        if (ok && controle.salvarDadosVisitante(nome, sobrenome, faixaEtaria)) {
             dispose();
             controle.exibirObra(0);
         }
+    }
+
+    private String obterFaixaEtariaSelecionada() {
+        if (grupoFaixaEtaria == null) {
+            return null;
+        }
+
+        for (JRadioButton radio : radiosFaixaEtaria) {
+            if (radio != null && radio.isSelected()) {
+                return radio.getText();
+            }
+        }
+        return null;
     }
 
     private void abrirTeclado(JTextField campo) {

@@ -10,6 +10,14 @@ public class Validacao {
     private static final int NOME_MAX  = 60;
     private static final int IDADE_MIN = 1;
     private static final int IDADE_MAX = 120;
+    public static final String[] FAIXAS_ETARIAS_VALIDAS = {
+            "Até 12 anos",
+            "13 a 17 anos",
+            "18 a 24 anos",
+            "25 a 34 anos",
+            "35 a 49 anos",
+            "50 anos ou mais"
+    };
 
     // ── Nome ───────────────────────────────────────────────────────────────
 
@@ -27,6 +35,14 @@ public class Validacao {
         if (t.length() > NOME_MAX)               return "O nome n\u00e3o pode ultrapassar " + NOME_MAX + " caracteres.";
         if (!t.matches("[\\p{L} ]+"))            return "Use apenas letras e espa\u00e7os.";
         return "";
+    }
+
+    public boolean validarSobrenome(String sobrenome) {
+        return validarNome(sobrenome);
+    }
+
+    public String mensagemErroSobrenome(String sobrenome) {
+        return mensagemErroNome(sobrenome);
     }
 
     // ── Idade ──────────────────────────────────────────────────────────────
@@ -58,6 +74,22 @@ public class Validacao {
         } catch (NumberFormatException e) {
             return "Digite apenas n\u00fameros para a idade.";
         }
+    }
+
+    // ── Faixa etária ───────────────────────────────────────────────────────
+
+    public boolean validarFaixaEtaria(String faixaEtaria) {
+        if (faixaEtaria == null || faixaEtaria.isBlank()) return false;
+        String valor = faixaEtaria.trim();
+        for (String faixa : FAIXAS_ETARIAS_VALIDAS) {
+            if (faixa.equals(valor)) return true;
+        }
+        return false;
+    }
+
+    public String mensagemErroFaixaEtaria(String faixaEtaria) {
+        if (faixaEtaria == null || faixaEtaria.isBlank()) return "Selecione uma faixa etária.";
+        return validarFaixaEtaria(faixaEtaria) ? "" : "Selecione uma faixa etária válida.";
     }
 
     // ── Questionário ───────────────────────────────────────────────────────
