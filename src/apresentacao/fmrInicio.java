@@ -4,7 +4,9 @@ import modelo.Controle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import java.util.Arrays;
 
 /**
@@ -33,6 +35,8 @@ public class fmrInicio extends JDialog {
         int colunaEsquerda = (int) (tela.width * 0.52);
         int cardDireitaX = colunaEsquerda + 18;
         int cardDireitaW = tela.width - cardDireitaX - margem;
+        int textoW = colunaEsquerda - margem - EstiloBase.escalar(72, tela);
+        int botoesY = tela.height - EstiloBase.escalar(220, tela);
 
         JLabel lblTag = EstiloBase.criarTag("Museu multimidia");
         lblTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
@@ -40,22 +44,22 @@ public class fmrInicio extends JDialog {
         painel.add(lblTag);
 
         JLabel lblTitulo = new JLabel("Robos Exploradores");
-        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 78f : 66f) * escala));
+        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 84f : 72f) * escala));
         lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
-        lblTitulo.setBounds(margem, EstiloBase.escalar(126, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(104, tela));
+        lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
         painel.add(lblTitulo);
 
-        JLabel lblSub = new JLabel("<html><div style='width:" + (colunaEsquerda - margem - 20) + "px'>"
+        JLabel lblSub = new JLabel("<html><div style='width:" + textoW + "px'>"
                 + "Uma experiencia imersiva sobre as missoes que transformaram nossa visao de Marte. "
                 + "Toque para iniciar a jornada, conhecer as obras e interagir com o acervo digital.</div></html>");
-        lblSub.setFont(EstiloBase.fonteResponsiva(24f, tela));
+        lblSub.setFont(EstiloBase.fonteResponsiva(25f, tela));
         lblSub.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblSub.setBounds(margem, EstiloBase.escalar(270, tela), colunaEsquerda - margem - 20, EstiloBase.escalar(156, tela));
+        lblSub.setBounds(margem, EstiloBase.escalar(246, tela), textoW, EstiloBase.escalar(188, tela));
         painel.add(lblSub);
 
         JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
-        btnIniciar.setFont(EstiloBase.fonteResponsiva(19f, tela));
-        btnIniciar.setBounds(margem, EstiloBase.escalar(500, tela), EstiloBase.escalar(290, tela), EstiloBase.escalar(64, tela));
+        btnIniciar.setFont(EstiloBase.fonteResponsiva(20f, tela));
+        btnIniciar.setBounds(margem, botoesY, EstiloBase.escalar(330, tela), EstiloBase.escalar(72, tela));
         btnIniciar.addActionListener(e -> {
             dispose();
             controle.exibirCadastro();
@@ -64,8 +68,8 @@ public class fmrInicio extends JDialog {
 
         JButton btnAdmin = criarBotaoEngrenagem(tela);
         btnAdmin.setToolTipText("Administração");
-        btnAdmin.setBounds(margem + EstiloBase.escalar(314, tela), EstiloBase.escalar(504, tela),
-                EstiloBase.escalar(64, tela), EstiloBase.escalar(56, tela));
+        btnAdmin.setBounds(margem + EstiloBase.escalar(354, tela), botoesY,
+                EstiloBase.escalar(82, tela), EstiloBase.escalar(72, tela));
         btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
         painel.add(btnAdmin);
 
@@ -75,7 +79,7 @@ public class fmrInicio extends JDialog {
                 EstiloBase.COR_TEXTO_FRACO
         );
         lblLinha.setHorizontalAlignment(SwingConstants.LEFT);
-        lblLinha.setBounds(margem, EstiloBase.escalar(590, tela), colunaEsquerda - margem, EstiloBase.escalar(24, tela));
+        lblLinha.setBounds(margem, botoesY + EstiloBase.escalar(88, tela), colunaEsquerda - margem, EstiloBase.escalar(24, tela));
         painel.add(lblLinha);
 
         JPanel cardResumo = EstiloBase.criarCard();
@@ -135,19 +139,22 @@ public class fmrInicio extends JDialog {
         lblResumoTag.setBounds(EstiloBase.escalar(34, tela), EstiloBase.escalar(34, tela), EstiloBase.escalar(170, tela), EstiloBase.escalar(32, tela));
         poster.add(lblResumoTag);
 
+        int resumoTextoY = poster.getHeight() - EstiloBase.escalar(98, tela);
+        int resumoTituloY = resumoTextoY - EstiloBase.escalar(62, tela);
+
         JLabel lblResumoTitulo = new JLabel("<html><div style='width:" + (poster.getWidth() - 82) + "px'>Marte como palco da curiosidade humana</div></html>");
-        lblResumoTitulo.setFont(EstiloBase.fonteResponsiva(24f, tela));
+        lblResumoTitulo.setFont(EstiloBase.fonteResponsiva(31f, tela));
         lblResumoTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
-        lblResumoTitulo.setBounds(EstiloBase.escalar(34, tela), poster.getHeight() - EstiloBase.escalar(184, tela),
-                poster.getWidth() - EstiloBase.escalar(68, tela), EstiloBase.escalar(70, tela));
+        lblResumoTitulo.setBounds(EstiloBase.escalar(34, tela), resumoTituloY,
+                poster.getWidth() - EstiloBase.escalar(68, tela), EstiloBase.escalar(58, tela));
         poster.add(lblResumoTitulo);
 
         JLabel lblResumoTexto = new JLabel("<html><div style='width:" + (poster.getWidth() - 70) + "px'>"
                 + "Descubra as sondas, rovers e experimentos que redefiniram a exploracao planetaria.</div></html>");
-        lblResumoTexto.setFont(EstiloBase.fonteResponsiva(16f, tela));
+        lblResumoTexto.setFont(EstiloBase.fonteResponsiva(18f, tela));
         lblResumoTexto.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), poster.getHeight() - EstiloBase.escalar(104, tela),
-                poster.getWidth() - EstiloBase.escalar(70, tela), EstiloBase.escalar(72, tela));
+        lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), resumoTextoY,
+                poster.getWidth() - EstiloBase.escalar(70, tela), EstiloBase.escalar(64, tela));
         poster.add(lblResumoTexto);
 
         setContentPane(painel);
@@ -273,7 +280,7 @@ public class fmrInicio extends JDialog {
                 g2.setStroke(new BasicStroke(1.8f));
                 g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 28, 28);
 
-                desenharEngrenagem(g2, getWidth() / 2, getHeight() / 2, EstiloBase.escalar(12, tela), hover);
+                desenharEngrenagem(g2, getWidth() / 2, getHeight() / 2, EstiloBase.escalar(17, tela), hover);
                 g2.dispose();
             }
         };
@@ -286,22 +293,35 @@ public class fmrInicio extends JDialog {
     }
 
     private void desenharEngrenagem(Graphics2D g2, int cx, int cy, int raio, boolean destaque) {
-        g2.setColor(destaque ? EstiloBase.COR_TEXTO_PRIMARIO : EstiloBase.COR_TEXTO_SECUNDARIO);
-        g2.setStroke(new BasicStroke(Math.max(2f, raio * 0.16f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        int dentes = 8;
+        double raioExterno = raio;
+        double raioInterno = raio * 0.72;
+        double furo = raio * 0.34;
 
-        for (int i = 0; i < 8; i++) {
-            double angulo = Math.PI * 2 * i / 8.0;
-            int x1 = cx + (int) Math.round(Math.cos(angulo) * (raio + 1));
-            int y1 = cy + (int) Math.round(Math.sin(angulo) * (raio + 1));
-            int x2 = cx + (int) Math.round(Math.cos(angulo) * (raio + 6));
-            int y2 = cy + (int) Math.round(Math.sin(angulo) * (raio + 6));
-            g2.drawLine(x1, y1, x2, y2);
+        Path2D forma = new Path2D.Double();
+        int pontos = dentes * 4;
+        for (int i = 0; i < pontos; i++) {
+            double angulo = -Math.PI / 2 + (Math.PI * 2 * i / pontos);
+            double r = (i % 4 == 0 || i % 4 == 1) ? raioExterno : raioInterno;
+            double x = cx + Math.cos(angulo) * r;
+            double y = cy + Math.sin(angulo) * r;
+
+            if (i == 0) {
+                forma.moveTo(x, y);
+            } else {
+                forma.lineTo(x, y);
+            }
         }
+        forma.closePath();
 
-        g2.setStroke(new BasicStroke(Math.max(3f, raio * 0.22f)));
-        g2.drawOval(cx - raio, cy - raio, raio * 2, raio * 2);
-        g2.fillOval(cx - Math.max(3, raio / 3), cy - Math.max(3, raio / 3),
-                Math.max(6, raio * 2 / 3), Math.max(6, raio * 2 / 3));
+        Area engrenagem = new Area(forma);
+        engrenagem.subtract(new Area(new Ellipse2D.Double(cx - furo, cy - furo, furo * 2, furo * 2)));
+
+        g2.setColor(destaque ? EstiloBase.COR_TEXTO_PRIMARIO : EstiloBase.COR_TEXTO_SECUNDARIO);
+        g2.fill(engrenagem);
+        g2.setColor(new Color(255, 255, 255, destaque ? 62 : 36));
+        g2.setStroke(new BasicStroke(1.3f));
+        g2.draw(engrenagem);
     }
 
     private void iniciarAnimacaoEntrada() {
