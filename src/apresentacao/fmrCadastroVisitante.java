@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Tela de cadastro do visitante em card central, inspirada em um layout flex.
+ * Tela de cadastro do visitante em card central.
  */
 public class fmrCadastroVisitante extends JDialog {
 
@@ -32,23 +32,19 @@ public class fmrCadastroVisitante extends JDialog {
 
         int p = EstiloBase.escalar(38, tela);
         int gap = EstiloBase.escalar(18, tela);
-        // 3.3 — painel levemente maior
         int cardW = Math.min(EstiloBase.escalar(880, tela), tela.width - EstiloBase.escalar(80, tela));
         int cardH = Math.min(EstiloBase.escalar(760, tela), tela.height - EstiloBase.escalar(84, tela));
         int cardX = (tela.width - cardW) / 2;
         int cardY = (tela.height - cardH) / 2;
-
-        // 3.1 — badge "Primeiro Passo" removido
 
         JPanel card = EstiloBase.criarCard();
         card.setLayout(null);
         card.setBounds(cardX, cardY, cardW, cardH);
         fundo.add(card);
 
-        // 3.2 — badge "Cadastro do visitante" removido
-
+        // Título com acento correto
         JLabel lblTitulo = EstiloBase.criarLabel(
-                "Identificacao da visita",
+                "Identifica\u00e7\u00e3o da visita",
                 EstiloBase.fonteResponsiva(36f, tela),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
@@ -57,7 +53,7 @@ public class fmrCadastroVisitante extends JDialog {
         card.add(lblTitulo);
 
         JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "Informe os dados basicos para iniciar a experiencia. Nenhuma chave, email ou dado sensivel e solicitado.",
+                "Informe os dados b\u00e1sicos para iniciar a experi\u00eancia. Nenhuma chave, email ou dado sens\u00edvel \u00e9 solicitado.",
                 EstiloBase.fonteResponsiva(15f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
@@ -115,13 +111,17 @@ public class fmrCadastroVisitante extends JDialog {
         int yIdade = yPrimeiraLinha + EstiloBase.escalar(138, tela);
         JLabel lblFaixaEtaria = criarLabelCampo("Faixa et\u00e1ria");
         lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(16f, tela));
-        lblFaixaEtaria.setBounds(p, yIdade, campoW, labelH);
+        lblFaixaEtaria.setBounds(p, yIdade, cardW - (p * 2), labelH);
         card.add(lblFaixaEtaria);
 
+        // Faixas etárias: painel centralizado com margem lateral maior
         int painelFaixaH = EstiloBase.escalar(140, tela);
+        int margemFaixa = EstiloBase.escalar(48, tela);
+        int painelFaixaW = cardW - (margemFaixa * 2);
+        int painelFaixaX = (cardW - painelFaixaW) / 2;
         JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, gap));
         painelFaixaEtaria.setOpaque(false);
-        painelFaixaEtaria.setBounds(p, yIdade + EstiloBase.escalar(30, tela), cardW - (p * 2), painelFaixaH);
+        painelFaixaEtaria.setBounds(painelFaixaX, yIdade + EstiloBase.escalar(30, tela), painelFaixaW, painelFaixaH);
         card.add(painelFaixaEtaria);
 
         grupoFaixaEtaria = new ButtonGroup();
@@ -133,24 +133,24 @@ public class fmrCadastroVisitante extends JDialog {
             painelFaixaEtaria.add(radio);
         }
 
-        // 3.4 — erro de faixa etaria posicionado ABAIXO do painel de opcoes
+        // Erro faixa etária abaixo das opções
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblErroIdade.setBounds(p, yIdade + EstiloBase.escalar(30, tela) + painelFaixaH + EstiloBase.escalar(6, tela),
-                cardW - (p * 2), erroH);
+        lblErroIdade.setBounds(painelFaixaX, yIdade + EstiloBase.escalar(30, tela) + painelFaixaH + EstiloBase.escalar(6, tela),
+                painelFaixaW, erroH);
         card.add(lblErroIdade);
 
-        // 3.5 — botoes centralizados e proximos entre si na parte inferior
-        int botoesY = cardH - EstiloBase.escalar(98, tela);
-        int btnVoltarW  = EstiloBase.escalar(180, tela);
-        int btnContinuarW = EstiloBase.escalar(230, tela);
-        int btnH = EstiloBase.escalar(58, tela);
-        int gapBotoes = EstiloBase.escalar(16, tela);
-        int totalBotoes = btnVoltarW + gapBotoes + btnContinuarW;
-        int botoesX = (cardW - totalBotoes) / 2;
+        // Botões: maiores, fonte maior, mais acima, distância levemente aumentada
+        int botoesY = cardH - EstiloBase.escalar(112, tela);
+        int btnVoltarW   = EstiloBase.escalar(210, tela);
+        int btnContinuarW = EstiloBase.escalar(265, tela);
+        int btnH         = EstiloBase.escalar(66, tela);
+        int gapBotoes    = EstiloBase.escalar(24, tela);
+        int totalBotoes  = btnVoltarW + gapBotoes + btnContinuarW;
+        int botoesX      = (cardW - totalBotoes) / 2;
 
         JButton btnVoltar = EstiloBase.criarBotaoSecundario("Voltar");
-        btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
+        btnVoltar.setFont(EstiloBase.fonteResponsiva(20f, tela));
         btnVoltar.setBounds(botoesX, botoesY, btnVoltarW, btnH);
         btnVoltar.addActionListener(e -> {
             dispose();
@@ -159,7 +159,7 @@ public class fmrCadastroVisitante extends JDialog {
         card.add(btnVoltar);
 
         JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
-        btnContinuar.setFont(EstiloBase.fonteResponsiva(19f, tela));
+        btnContinuar.setFont(EstiloBase.fonteResponsiva(22f, tela));
         btnContinuar.setBounds(botoesX + btnVoltarW + gapBotoes, botoesY, btnContinuarW, btnH);
         btnContinuar.addActionListener(e -> validarEAvancar());
         card.add(btnContinuar);
@@ -276,14 +276,9 @@ public class fmrCadastroVisitante extends JDialog {
     }
 
     private String obterFaixaEtariaSelecionada() {
-        if (grupoFaixaEtaria == null) {
-            return null;
-        }
-
+        if (grupoFaixaEtaria == null) return null;
         for (JRadioButton radio : radiosFaixaEtaria) {
-            if (radio != null && radio.isSelected()) {
-                return radio.getText();
-            }
+            if (radio != null && radio.isSelected()) return radio.getText();
         }
         return null;
     }
