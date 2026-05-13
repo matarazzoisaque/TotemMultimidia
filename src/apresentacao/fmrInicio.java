@@ -43,11 +43,11 @@ public class fmrInicio extends JDialog {
         int btnIniciarW = EstiloBase.escalar(420, tela);
         int btnIniciarH = EstiloBase.escalar(88, tela);
 
-        // btnAdmin: canto inferior direito da tela toda
+        // btnAdmin: +3px para direita e +3px para baixo
         int btnAdminW = EstiloBase.escalar(82, tela);
         int btnAdminH = EstiloBase.escalar(72, tela);
-        int btnAdminX = tela.width - margem - btnAdminW;
-        int btnAdminY = tela.height - EstiloBase.escalar(90, tela);
+        int btnAdminX = tela.width - margem - btnAdminW + 3;
+        int btnAdminY = tela.height - EstiloBase.escalar(90, tela) + 3;
 
         // ── Textos lado esquerdo ─────────────────────────────────────────────
         JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
@@ -78,7 +78,6 @@ public class fmrInicio extends JDialog {
         int cardResumoY = EstiloBase.escalar(86, tela);
         int cardResumoH = tela.height - (cardResumoY * 2);
         cardResumo.setBounds(cardDireitaX, cardResumoY, cardDireitaW, cardResumoH);
-        // Impedir que o card consuma eventos de mouse da area esquerda
         cardResumo.setEnabled(false);
         painel.add(cardResumo);
 
@@ -157,7 +156,6 @@ public class fmrInicio extends JDialog {
             controle.exibirCadastro();
         });
         painel.add(btnIniciar);
-        // Garante que btnIniciar esta no topo absoluto do z-order
         painel.setComponentZOrder(btnIniciar, 0);
 
         JLabel lblLinha = EstiloBase.criarLabel(
@@ -176,7 +174,6 @@ public class fmrInicio extends JDialog {
         btnAdmin.setBounds(btnAdminX, btnAdminY, btnAdminW, btnAdminH);
         btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
         painel.add(btnAdmin);
-        // Garante que btnAdmin tambem fica no topo
         painel.setComponentZOrder(btnAdmin, 0);
 
         setContentPane(painel);
