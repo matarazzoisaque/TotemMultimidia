@@ -49,12 +49,37 @@ public class fmrInicio extends JDialog {
         int btnAdminX = tela.width - margem - btnAdminW;
         int btnAdminY = tela.height - EstiloBase.escalar(90, tela);
 
-        // ── Card lateral direito adicionado PRIMEIRO (z-order baixo) ─────────
+        // ── Textos lado esquerdo ─────────────────────────────────────────────
+        JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
+        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
+        lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
+        lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
+        painel.add(lblTitulo);
+
+        JTextArea lblSub = EstiloBase.criarTextoQuebravel(
+                "A hist\u00f3ria das miss\u00f5es que plantaram nossa curiosidade em Marte.  ",
+                EstiloBase.fontePoppins(22f),
+                EstiloBase.COR_TEXTO_PRIMARIO
+        );
+        lblSub.setBounds(margem, EstiloBase.escalar(246, tela), textoW, EstiloBase.escalar(226, tela));
+        painel.add(lblSub);
+
+        JTextArea lblText = EstiloBase.criarTextoQuebravel(
+                "Toque para iniciar a jornada, conhecer as obras e interagir com o acervo digital.",
+                EstiloBase.fonteResponsiva(19f, tela),
+                EstiloBase.COR_TEXTO_SECUNDARIO
+        );
+        lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
+        painel.add(lblText);
+
+        // ── Card lateral direito ─────────────────────────────────────────────
         JPanel cardResumo = EstiloBase.criarCard();
         cardResumo.setLayout(null);
         int cardResumoY = EstiloBase.escalar(86, tela);
         int cardResumoH = tela.height - (cardResumoY * 2);
         cardResumo.setBounds(cardDireitaX, cardResumoY, cardDireitaW, cardResumoH);
+        // Impedir que o card consuma eventos de mouse da area esquerda
+        cardResumo.setEnabled(false);
         painel.add(cardResumo);
 
         JPanel poster = new JPanel(null) {
@@ -97,6 +122,7 @@ public class fmrInicio extends JDialog {
             }
         };
         poster.setOpaque(false);
+        poster.setEnabled(false);
         int posterX = EstiloBase.escalar(24, tela);
         int posterH = Math.max(EstiloBase.escalar(250, tela), cardResumoH - (posterX * 2));
         poster.setBounds(posterX, posterX, cardDireitaW - (posterX * 2), posterH);
@@ -111,8 +137,7 @@ public class fmrInicio extends JDialog {
                 EstiloBase.fonteResponsiva(31f, tela),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
-        lblResumoTitulo.setBounds(EstiloBase.escalar(34, tela), resumoTituloY,
-                resumoW, EstiloBase.escalar(58, tela));
+        lblResumoTitulo.setBounds(EstiloBase.escalar(34, tela), resumoTituloY, resumoW, EstiloBase.escalar(58, tela));
         poster.add(lblResumoTitulo);
 
         JTextArea lblResumoTexto = EstiloBase.criarTextoQuebravel(
@@ -120,35 +145,10 @@ public class fmrInicio extends JDialog {
                 EstiloBase.fonteResponsiva(18f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
-        lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), resumoTextoY,
-                resumoW, EstiloBase.escalar(78, tela));
+        lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), resumoTextoY, resumoW, EstiloBase.escalar(78, tela));
         poster.add(lblResumoTexto);
-        // ─────────────────────────────────────────────────────────────────────
 
-        // ── Elementos do lado esquerdo adicionados DEPOIS (z-order alto) ─────
-        JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
-        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
-        lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
-        lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
-        painel.add(lblTitulo);
-
-        JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "A hist\u00f3ria das miss\u00f5es que plantaram nossa curiosidade em Marte.  ",
-                EstiloBase.fontePoppins(22f),
-                EstiloBase.COR_TEXTO_PRIMARIO
-        );
-        lblSub.setBounds(margem, EstiloBase.escalar(246, tela), textoW, EstiloBase.escalar(226, tela));
-        painel.add(lblSub);
-
-        JTextArea lblText = EstiloBase.criarTextoQuebravel(
-                "Toque para iniciar a jornada, conhecer as obras e interagir com o acervo digital.",
-                EstiloBase.fonteResponsiva(19f, tela),
-                EstiloBase.COR_TEXTO_SECUNDARIO
-        );
-        lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
-        painel.add(lblText);
-
-        // Botao Iniciar: fonte maior (26f), deslocado para a direita
+        // ── Botao Iniciar ────────────────────────────────────────────────────
         JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
         btnIniciar.setFont(EstiloBase.fonteResponsiva(26f, tela));
         btnIniciar.setBounds(btnIniciarX, btnIniciarY, btnIniciarW, btnIniciarH);
@@ -157,6 +157,8 @@ public class fmrInicio extends JDialog {
             controle.exibirCadastro();
         });
         painel.add(btnIniciar);
+        // Garante que btnIniciar esta no topo absoluto do z-order
+        painel.setComponentZOrder(btnIniciar, 0);
 
         JLabel lblLinha = EstiloBase.criarLabel(
                 "10 obras  \u2022  linha do tempo completa  \u2022  1 questionario final",
@@ -168,13 +170,14 @@ public class fmrInicio extends JDialog {
                 colunaEsquerda - margem, EstiloBase.escalar(24, tela));
         painel.add(lblLinha);
 
-        // Botao Admin: adicionado por ultimo para garantir clique acima de tudo
+        // ── Botao Admin ──────────────────────────────────────────────────────
         JButton btnAdmin = criarBotaoEngrenagemTranslucido(tela);
         btnAdmin.setToolTipText("Administra\u00e7\u00e3o");
         btnAdmin.setBounds(btnAdminX, btnAdminY, btnAdminW, btnAdminH);
         btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
         painel.add(btnAdmin);
-        // ─────────────────────────────────────────────────────────────────────
+        // Garante que btnAdmin tambem fica no topo
+        painel.setComponentZOrder(btnAdmin, 0);
 
         setContentPane(painel);
     }
@@ -315,38 +318,6 @@ public class fmrInicio extends JDialog {
         return btn;
     }
 
-    private JButton criarBotaoEngrenagem(Dimension tela) {
-        JButton btn = new JButton() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                boolean hover = getModel().isRollover() || getModel().isPressed();
-                Color fundo = hover ? new Color(255, 255, 255, 20) : new Color(255, 255, 255, 10);
-                g2.setColor(fundo);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
-
-                GradientPaint borda = new GradientPaint(
-                        0, 0, hover ? EstiloBase.COR_DESTAQUE : EstiloBase.COR_CARD_BORDA,
-                        getWidth(), getHeight(), hover ? EstiloBase.COR_ACENTO : EstiloBase.COR_CARD_GLOW
-                );
-                g2.setPaint(borda);
-                g2.setStroke(new BasicStroke(1.8f));
-                g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 28, 28);
-
-                desenharEngrenagem(g2, getWidth() / 2, getHeight() / 2, EstiloBase.escalar(17, tela), hover);
-                g2.dispose();
-            }
-        };
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return btn;
-    }
-
     private void desenharEngrenagem(Graphics2D g2, int cx, int cy, int raio, boolean destaque) {
         int dentes = 8;
         double raioExterno = raio;
@@ -360,12 +331,8 @@ public class fmrInicio extends JDialog {
             double r = (i % 4 == 0 || i % 4 == 1) ? raioExterno : raioInterno;
             double x = cx + Math.cos(angulo) * r;
             double y = cy + Math.sin(angulo) * r;
-
-            if (i == 0) {
-                forma.moveTo(x, y);
-            } else {
-                forma.lineTo(x, y);
-            }
+            if (i == 0) forma.moveTo(x, y);
+            else forma.lineTo(x, y);
         }
         forma.closePath();
 
@@ -385,18 +352,14 @@ public class fmrInicio extends JDialog {
         timerEntrada.addActionListener(e -> {
             alphaAnima = Math.min(1f, alphaAnima + 0.04f);
             setOpacity(alphaAnima);
-            if (alphaAnima >= 1f) {
-                timerEntrada.stop();
-            }
+            if (alphaAnima >= 1f) timerEntrada.stop();
         });
         timerEntrada.start();
     }
 
     @Override
     public void dispose() {
-        if (timerEntrada != null) {
-            timerEntrada.stop();
-        }
+        if (timerEntrada != null) timerEntrada.stop();
         super.dispose();
     }
 }
