@@ -36,16 +36,26 @@ public class fmrInicio extends JDialog {
         int cardDireitaX = colunaEsquerda + 18;
         int cardDireitaW = tela.width - cardDireitaX - margem;
         int textoW = colunaEsquerda - margem - EstiloBase.escalar(140, tela);
-        int botoesY = tela.height - EstiloBase.escalar(202, tela);
 
-        JLabel lblTitulo = new JLabel("Operação Solo Vermelho");
+        // btnIniciar: centralizado verticalmente na area abaixo do subtitulo, tamanho maior
+        int btnIniciarY = (int) (tela.height * 0.62);
+        int btnIniciarW = EstiloBase.escalar(420, tela);
+        int btnIniciarH = EstiloBase.escalar(88, tela);
+
+        // btnAdmin: canto inferior direito da tela toda (sobreposto ao card, translucido)
+        int btnAdminW = EstiloBase.escalar(82, tela);
+        int btnAdminH = EstiloBase.escalar(72, tela);
+        int btnAdminX = tela.width - margem - btnAdminW;
+        int btnAdminY = tela.height - EstiloBase.escalar(90, tela);
+
+        JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
         lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
         lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
         lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
         painel.add(lblTitulo);
 
         JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "A história das missões que plantaram nossa curiosidade em Marte.  ",
+                "A hist\u00f3ria das miss\u00f5es que plantaram nossa curiosidade em Marte.  ",
                 EstiloBase.fontePoppins(22f),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
@@ -60,31 +70,27 @@ public class fmrInicio extends JDialog {
         lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
         painel.add(lblText);
 
+        // Botao Iniciar: maior e posicionado de forma centralizada abaixo do titulo
         JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
-        btnIniciar.setFont(EstiloBase.fonteResponsiva(20f, tela));
-        btnIniciar.setBounds(margem, botoesY, EstiloBase.escalar(330, tela), EstiloBase.escalar(72, tela));
+        btnIniciar.setFont(EstiloBase.fonteResponsiva(22f, tela));
+        btnIniciar.setBounds(margem, btnIniciarY, btnIniciarW, btnIniciarH);
         btnIniciar.addActionListener(e -> {
             dispose();
             controle.exibirCadastro();
         });
         painel.add(btnIniciar);
 
-        JButton btnAdmin = criarBotaoEngrenagem(tela);
-        btnAdmin.setToolTipText("Administração");
-        btnAdmin.setBounds(margem + EstiloBase.escalar(354, tela), botoesY,
-                EstiloBase.escalar(82, tela), EstiloBase.escalar(72, tela));
-        btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
-        painel.add(btnAdmin);
-
         JLabel lblLinha = EstiloBase.criarLabel(
-                "10 obras  •  linha do tempo completa  •  1 questionario final",
+                "10 obras  \u2022  linha do tempo completa  \u2022  1 questionario final",
                 EstiloBase.fonteResponsiva(15f, tela),
                 EstiloBase.COR_TEXTO_FRACO
         );
         lblLinha.setHorizontalAlignment(SwingConstants.LEFT);
-        lblLinha.setBounds(margem, botoesY + EstiloBase.escalar(88, tela), colunaEsquerda - margem, EstiloBase.escalar(24, tela));
+        lblLinha.setBounds(margem, btnIniciarY + btnIniciarH + EstiloBase.escalar(18, tela),
+                colunaEsquerda - margem, EstiloBase.escalar(24, tela));
         painel.add(lblLinha);
 
+        // Card lateral direito — mantido exatamente como estava
         JPanel cardResumo = EstiloBase.criarCard();
         cardResumo.setLayout(null);
         int cardResumoY = EstiloBase.escalar(86, tela);
@@ -159,6 +165,15 @@ public class fmrInicio extends JDialog {
                 resumoW, EstiloBase.escalar(78, tela));
         poster.add(lblResumoTexto);
 
+        // Botao Admin (engrenagem): canto inferior direito da TELA TODA, sobreposto ao card
+        // Adicionado por ultimo para ficar na camada de cima (Z-order)
+        // Translucido para nao interferir na imagem do card
+        JButton btnAdmin = criarBotaoEngrenagemTranslucido(tela);
+        btnAdmin.setToolTipText("Administra\u00e7\u00e3o");
+        btnAdmin.setBounds(btnAdminX, btnAdminY, btnAdminW, btnAdminH);
+        btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
+        painel.add(btnAdmin);
+
         setContentPane(painel);
     }
 
@@ -167,7 +182,7 @@ public class fmrInicio extends JDialog {
         int dialogW = Math.min(EstiloBase.escalar(560, tela), tela.width - EstiloBase.escalar(56, tela));
         int dialogH = Math.min(EstiloBase.escalar(360, tela), tela.height - EstiloBase.escalar(56, tela));
 
-        JDialog dialogo = new JDialog(this, "Administração", true);
+        JDialog dialogo = new JDialog(this, "Administra\u00e7\u00e3o", true);
         dialogo.setUndecorated(true);
         dialogo.setBackground(new Color(0, 0, 0, 0));
         dialogo.setSize(dialogW, dialogH);
@@ -188,7 +203,7 @@ public class fmrInicio extends JDialog {
                 EstiloBase.escalar(154, tela), EstiloBase.escalar(32, tela));
         card.add(lblTag);
 
-        JLabel lblTitulo = EstiloBase.criarLabel("Administração", EstiloBase.fonteResponsiva(30f, tela),
+        JLabel lblTitulo = EstiloBase.criarLabel("Administra\u00e7\u00e3o", EstiloBase.fonteResponsiva(30f, tela),
                 EstiloBase.COR_TEXTO_PRIMARIO);
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
         lblTitulo.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(78, tela),
@@ -260,6 +275,45 @@ public class fmrInicio extends JDialog {
                 BorderFactory.createEmptyBorder(10, 14, 10, 14)
         ));
         return campo;
+    }
+
+    // Botao engrenagem translucido para sobreposicao sobre o card da direita
+    private JButton criarBotaoEngrenagemTranslucido(Dimension tela) {
+        JButton btn = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                boolean hover = getModel().isRollover() || getModel().isPressed();
+                // Translucido: alpha reduzido para nao ocultar a imagem do card
+                Color fundo = hover ? new Color(255, 255, 255, 38) : new Color(255, 255, 255, 14);
+                g2.setColor(fundo);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
+
+                GradientPaint borda = new GradientPaint(
+                        0, 0, hover ? new Color(EstiloBase.COR_DESTAQUE.getRed(), EstiloBase.COR_DESTAQUE.getGreen(), EstiloBase.COR_DESTAQUE.getBlue(), 160)
+                                     : new Color(EstiloBase.COR_CARD_BORDA.getRed(), EstiloBase.COR_CARD_BORDA.getGreen(), EstiloBase.COR_CARD_BORDA.getBlue(), 80),
+                        getWidth(), getHeight(),
+                        hover ? new Color(EstiloBase.COR_ACENTO.getRed(), EstiloBase.COR_ACENTO.getGreen(), EstiloBase.COR_ACENTO.getBlue(), 160)
+                               : new Color(EstiloBase.COR_CARD_GLOW.getRed(), EstiloBase.COR_CARD_GLOW.getGreen(), EstiloBase.COR_CARD_GLOW.getBlue(), 80)
+                );
+                g2.setPaint(borda);
+                g2.setStroke(new BasicStroke(1.4f));
+                g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 28, 28);
+
+                // Engrenagem com alpha reduzido
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, hover ? 0.85f : 0.45f));
+                desenharEngrenagem(g2, getWidth() / 2, getHeight() / 2, EstiloBase.escalar(17, tela), hover);
+                g2.dispose();
+            }
+        };
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setFocusPainted(false);
+        btn.setOpaque(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     private JButton criarBotaoEngrenagem(Dimension tela) {
