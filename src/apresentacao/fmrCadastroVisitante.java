@@ -42,9 +42,9 @@ public class fmrCadastroVisitante extends JDialog {
         card.setBounds(cardX, cardY, cardW, cardH);
         fundo.add(card);
 
-        // Título com acento correto
+        // Título
         JLabel lblTitulo = EstiloBase.criarLabel(
-                "Identifica\u00e7\u00e3o da visita",
+                "Identificação da visita",
                 EstiloBase.fonteResponsiva(36f, tela),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
@@ -53,7 +53,7 @@ public class fmrCadastroVisitante extends JDialog {
         card.add(lblTitulo);
 
         JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "Informe os dados b\u00e1sicos para iniciar a experi\u00eancia. Nenhuma chave, email ou dado sens\u00edvel \u00e9 solicitado.",
+                "Informe os dados básicos para iniciar a experiência. Nenhuma chave, email ou dado sensível é solicitado.",
                 EstiloBase.fonteResponsiva(15f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
@@ -64,8 +64,9 @@ public class fmrCadastroVisitante extends JDialog {
         int yPrimeiraLinha = EstiloBase.escalar(184, tela);
         int labelH = EstiloBase.escalar(24, tela);
         int campoH = EstiloBase.escalar(58, tela);
-        int erroH = EstiloBase.escalar(22, tela);
+        int erroH  = EstiloBase.escalar(22, tela);
 
+        // Campo Nome
         JLabel lblNome = criarLabelCampo("Nome");
         lblNome.setFont(EstiloBase.fonteResponsiva(16f, tela));
         lblNome.setBounds(p, yPrimeiraLinha, campoW, labelH);
@@ -75,10 +76,7 @@ public class fmrCadastroVisitante extends JDialog {
         campoNome.setFont(EstiloBase.fonteResponsiva(19f, tela));
         campoNome.setBounds(p, yPrimeiraLinha + EstiloBase.escalar(30, tela), campoW, campoH);
         campoNome.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                abrirTeclado(campoNome);
-            }
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) { abrirTeclado(campoNome); }
         });
         card.add(campoNome);
 
@@ -87,6 +85,7 @@ public class fmrCadastroVisitante extends JDialog {
         lblErroNome.setBounds(p, yPrimeiraLinha + EstiloBase.escalar(92, tela), campoW, erroH);
         card.add(lblErroNome);
 
+        // Campo Sobrenome
         JLabel lblSobrenome = criarLabelCampo("Sobrenome");
         lblSobrenome.setFont(EstiloBase.fonteResponsiva(16f, tela));
         lblSobrenome.setBounds(p + campoW + gap, yPrimeiraLinha, campoW, labelH);
@@ -96,10 +95,7 @@ public class fmrCadastroVisitante extends JDialog {
         campoSobrenome.setFont(EstiloBase.fonteResponsiva(19f, tela));
         campoSobrenome.setBounds(p + campoW + gap, yPrimeiraLinha + EstiloBase.escalar(30, tela), campoW, campoH);
         campoSobrenome.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                abrirTeclado(campoSobrenome);
-            }
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) { abrirTeclado(campoSobrenome); }
         });
         card.add(campoSobrenome);
 
@@ -108,43 +104,47 @@ public class fmrCadastroVisitante extends JDialog {
         lblErroSobrenome.setBounds(p + campoW + gap, yPrimeiraLinha + EstiloBase.escalar(92, tela), campoW, erroH);
         card.add(lblErroSobrenome);
 
+        // --- Faixa etária ---
         int yIdade = yPrimeiraLinha + EstiloBase.escalar(138, tela);
-        JLabel lblFaixaEtaria = criarLabelCampo("Faixa et\u00e1ria");
-        lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(16f, tela));
-        lblFaixaEtaria.setBounds(p, yIdade, cardW - (p * 2), labelH);
+
+        // Fonte aumentada no label "Faixa etária"
+        JLabel lblFaixaEtaria = criarLabelCampo("Faixa etária");
+        lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(20f, tela));
+        lblFaixaEtaria.setBounds(p, yIdade, cardW - (p * 2), EstiloBase.escalar(28, tela));
         card.add(lblFaixaEtaria);
 
-        // Faixas etárias: painel centralizado com margem lateral maior
-        int painelFaixaH = EstiloBase.escalar(140, tela);
-        int margemFaixa = EstiloBase.escalar(48, tela);
-        int painelFaixaW = cardW - (margemFaixa * 2);
-        int painelFaixaX = (cardW - painelFaixaW) / 2;
-        JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, gap));
+        // Painel ocupa toda a largura util do card (igual aos campos de texto)
+        int painelFaixaW = cardW - (p * 2);
+        int painelFaixaH = EstiloBase.escalar(160, tela);
+        int painelFaixaX = p;
+        int painelFaixaY = yIdade + EstiloBase.escalar(34, tela);
+        JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, EstiloBase.escalar(8, tela)));
         painelFaixaEtaria.setOpaque(false);
-        painelFaixaEtaria.setBounds(painelFaixaX, yIdade + EstiloBase.escalar(30, tela), painelFaixaW, painelFaixaH);
+        painelFaixaEtaria.setBounds(painelFaixaX, painelFaixaY, painelFaixaW, painelFaixaH);
         card.add(painelFaixaEtaria);
 
         grupoFaixaEtaria = new ButtonGroup();
         radiosFaixaEtaria = new JRadioButton[modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length];
         for (int i = 0; i < modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length; i++) {
+            // Fonte dos radio buttons aumentada
             JRadioButton radio = criarRadioFaixaEtaria(modelo.Validacao.FAIXAS_ETARIAS_VALIDAS[i], tela);
             radiosFaixaEtaria[i] = radio;
             grupoFaixaEtaria.add(radio);
             painelFaixaEtaria.add(radio);
         }
 
-        // Erro faixa etária abaixo das opções
+        // Erro faixa etária logo abaixo do painel
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblErroIdade.setBounds(painelFaixaX, yIdade + EstiloBase.escalar(30, tela) + painelFaixaH + EstiloBase.escalar(6, tela),
+        lblErroIdade.setBounds(painelFaixaX, painelFaixaY + painelFaixaH + EstiloBase.escalar(4, tela),
                 painelFaixaW, erroH);
         card.add(lblErroIdade);
 
-        // Botões: maiores, fonte maior, mais acima, distância levemente aumentada
-        int botoesY = cardH - EstiloBase.escalar(112, tela);
-        int btnVoltarW   = EstiloBase.escalar(210, tela);
-        int btnContinuarW = EstiloBase.escalar(265, tela);
-        int btnH         = EstiloBase.escalar(66, tela);
+        // --- Botões: centralizados, fonte mantida, tamanho aumentado ---
+        int botoesY      = cardH - EstiloBase.escalar(108, tela);
+        int btnVoltarW   = EstiloBase.escalar(230, tela);
+        int btnContinuarW= EstiloBase.escalar(280, tela);
+        int btnH         = EstiloBase.escalar(72, tela);
         int gapBotoes    = EstiloBase.escalar(24, tela);
         int totalBotoes  = btnVoltarW + gapBotoes + btnContinuarW;
         int botoesX      = (cardW - totalBotoes) / 2;
@@ -152,10 +152,7 @@ public class fmrCadastroVisitante extends JDialog {
         JButton btnVoltar = EstiloBase.criarBotaoSecundario("Voltar");
         btnVoltar.setFont(EstiloBase.fonteResponsiva(20f, tela));
         btnVoltar.setBounds(botoesX, botoesY, btnVoltarW, btnH);
-        btnVoltar.addActionListener(e -> {
-            dispose();
-            controle.exibirTelaInicial();
-        });
+        btnVoltar.addActionListener(e -> { dispose(); controle.exibirTelaInicial(); });
         card.add(btnVoltar);
 
         JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
@@ -184,14 +181,12 @@ public class fmrCadastroVisitante extends JDialog {
         JRadioButton radio = new JRadioButton(texto);
         radio.setOpaque(false);
         radio.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        radio.setFont(EstiloBase.fonteResponsiva(17f, tela));
+        // Fonte aumentada nos radio buttons
+        radio.setFont(EstiloBase.fonteResponsiva(20f, tela));
         radio.setFocusPainted(false);
         radio.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        radio.setIconTextGap(10);
-        radio.addActionListener(e -> {
-            lblErroIdade.setText("");
-            lblErroIdade.repaint();
-        });
+        radio.setIconTextGap(12);
+        radio.addActionListener(e -> { lblErroIdade.setText(""); lblErroIdade.repaint(); });
         return radio;
     }
 
@@ -209,12 +204,10 @@ public class fmrCadastroVisitante extends JDialog {
             }
         };
         bloco.setOpaque(false);
-
         JLabel lblTitulo = EstiloBase.criarLabel(titulo, EstiloBase.FONTE_LABEL.deriveFont(15f), EstiloBase.COR_TEXTO_PRIMARIO);
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
         lblTitulo.setBounds(20, 15, 260, 20);
         bloco.add(lblTitulo);
-
         JTextArea lblTexto = new JTextArea(texto);
         lblTexto.setEditable(false);
         lblTexto.setFocusable(false);
@@ -225,13 +218,11 @@ public class fmrCadastroVisitante extends JDialog {
         lblTexto.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
         lblTexto.setBounds(20, 40, 660, 34);
         bloco.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
+            @Override public void componentResized(java.awt.event.ComponentEvent e) {
                 lblTexto.setBounds(20, 40, Math.max(1, bloco.getWidth() - 40), Math.max(28, bloco.getHeight() - 48));
             }
         });
         bloco.add(lblTexto);
-
         return bloco;
     }
 
@@ -284,7 +275,6 @@ public class fmrCadastroVisitante extends JDialog {
     }
 
     private void abrirTeclado(JTextField campo) {
-        TecladoVirtual teclado = new TecladoVirtual(this, campo);
-        teclado.setVisible(true);
+        new TecladoVirtual(this, campo).setVisible(true);
     }
 }
