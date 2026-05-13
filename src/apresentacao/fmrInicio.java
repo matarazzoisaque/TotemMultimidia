@@ -37,60 +37,19 @@ public class fmrInicio extends JDialog {
         int cardDireitaW = tela.width - cardDireitaX - margem;
         int textoW = colunaEsquerda - margem - EstiloBase.escalar(140, tela);
 
-        // btnIniciar: centralizado verticalmente na area abaixo do subtitulo, tamanho maior
+        // btnIniciar: deslocado para a direita em relacao ao titulo
+        int btnIniciarX = margem + EstiloBase.escalar(48, tela);
         int btnIniciarY = (int) (tela.height * 0.62);
         int btnIniciarW = EstiloBase.escalar(420, tela);
         int btnIniciarH = EstiloBase.escalar(88, tela);
 
-        // btnAdmin: canto inferior direito da tela toda (sobreposto ao card, translucido)
+        // btnAdmin: canto inferior direito da tela toda
         int btnAdminW = EstiloBase.escalar(82, tela);
         int btnAdminH = EstiloBase.escalar(72, tela);
         int btnAdminX = tela.width - margem - btnAdminW;
         int btnAdminY = tela.height - EstiloBase.escalar(90, tela);
 
-        JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
-        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
-        lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
-        lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
-        painel.add(lblTitulo);
-
-        JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "A hist\u00f3ria das miss\u00f5es que plantaram nossa curiosidade em Marte.  ",
-                EstiloBase.fontePoppins(22f),
-                EstiloBase.COR_TEXTO_PRIMARIO
-        );
-        lblSub.setBounds(margem, EstiloBase.escalar(246, tela), textoW, EstiloBase.escalar(226, tela));
-        painel.add(lblSub);
-
-        JTextArea lblText = EstiloBase.criarTextoQuebravel(
-                "Toque para iniciar a jornada, conhecer as obras e interagir com o acervo digital.",
-                EstiloBase.fonteResponsiva(19f, tela),
-                EstiloBase.COR_TEXTO_SECUNDARIO
-        );
-        lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
-        painel.add(lblText);
-
-        // Botao Iniciar: maior e posicionado de forma centralizada abaixo do titulo
-        JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
-        btnIniciar.setFont(EstiloBase.fonteResponsiva(22f, tela));
-        btnIniciar.setBounds(margem, btnIniciarY, btnIniciarW, btnIniciarH);
-        btnIniciar.addActionListener(e -> {
-            dispose();
-            controle.exibirCadastro();
-        });
-        painel.add(btnIniciar);
-
-        JLabel lblLinha = EstiloBase.criarLabel(
-                "10 obras  \u2022  linha do tempo completa  \u2022  1 questionario final",
-                EstiloBase.fonteResponsiva(15f, tela),
-                EstiloBase.COR_TEXTO_FRACO
-        );
-        lblLinha.setHorizontalAlignment(SwingConstants.LEFT);
-        lblLinha.setBounds(margem, btnIniciarY + btnIniciarH + EstiloBase.escalar(18, tela),
-                colunaEsquerda - margem, EstiloBase.escalar(24, tela));
-        painel.add(lblLinha);
-
-        // Card lateral direito — mantido exatamente como estava
+        // ── Card lateral direito adicionado PRIMEIRO (z-order baixo) ─────────
         JPanel cardResumo = EstiloBase.criarCard();
         cardResumo.setLayout(null);
         int cardResumoY = EstiloBase.escalar(86, tela);
@@ -164,15 +123,58 @@ public class fmrInicio extends JDialog {
         lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), resumoTextoY,
                 resumoW, EstiloBase.escalar(78, tela));
         poster.add(lblResumoTexto);
+        // ─────────────────────────────────────────────────────────────────────
 
-        // Botao Admin (engrenagem): canto inferior direito da TELA TODA, sobreposto ao card
-        // Adicionado por ultimo para ficar na camada de cima (Z-order)
-        // Translucido para nao interferir na imagem do card
+        // ── Elementos do lado esquerdo adicionados DEPOIS (z-order alto) ─────
+        JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
+        lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
+        lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
+        lblTitulo.setBounds(margem, EstiloBase.escalar(118, tela), colunaEsquerda - margem - 12, EstiloBase.escalar(112, tela));
+        painel.add(lblTitulo);
+
+        JTextArea lblSub = EstiloBase.criarTextoQuebravel(
+                "A hist\u00f3ria das miss\u00f5es que plantaram nossa curiosidade em Marte.  ",
+                EstiloBase.fontePoppins(22f),
+                EstiloBase.COR_TEXTO_PRIMARIO
+        );
+        lblSub.setBounds(margem, EstiloBase.escalar(246, tela), textoW, EstiloBase.escalar(226, tela));
+        painel.add(lblSub);
+
+        JTextArea lblText = EstiloBase.criarTextoQuebravel(
+                "Toque para iniciar a jornada, conhecer as obras e interagir com o acervo digital.",
+                EstiloBase.fonteResponsiva(19f, tela),
+                EstiloBase.COR_TEXTO_SECUNDARIO
+        );
+        lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
+        painel.add(lblText);
+
+        // Botao Iniciar: fonte maior (26f), deslocado para a direita
+        JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
+        btnIniciar.setFont(EstiloBase.fonteResponsiva(26f, tela));
+        btnIniciar.setBounds(btnIniciarX, btnIniciarY, btnIniciarW, btnIniciarH);
+        btnIniciar.addActionListener(e -> {
+            dispose();
+            controle.exibirCadastro();
+        });
+        painel.add(btnIniciar);
+
+        JLabel lblLinha = EstiloBase.criarLabel(
+                "10 obras  \u2022  linha do tempo completa  \u2022  1 questionario final",
+                EstiloBase.fonteResponsiva(15f, tela),
+                EstiloBase.COR_TEXTO_FRACO
+        );
+        lblLinha.setHorizontalAlignment(SwingConstants.LEFT);
+        lblLinha.setBounds(btnIniciarX, btnIniciarY + btnIniciarH + EstiloBase.escalar(18, tela),
+                colunaEsquerda - margem, EstiloBase.escalar(24, tela));
+        painel.add(lblLinha);
+
+        // Botao Admin: adicionado por ultimo para garantir clique acima de tudo
         JButton btnAdmin = criarBotaoEngrenagemTranslucido(tela);
         btnAdmin.setToolTipText("Administra\u00e7\u00e3o");
         btnAdmin.setBounds(btnAdminX, btnAdminY, btnAdminW, btnAdminH);
         btnAdmin.addActionListener(e -> abrirAcessoAdministracao());
         painel.add(btnAdmin);
+        // ─────────────────────────────────────────────────────────────────────
 
         setContentPane(painel);
     }
@@ -277,7 +279,6 @@ public class fmrInicio extends JDialog {
         return campo;
     }
 
-    // Botao engrenagem translucido para sobreposicao sobre o card da direita
     private JButton criarBotaoEngrenagemTranslucido(Dimension tela) {
         JButton btn = new JButton() {
             @Override
@@ -286,7 +287,6 @@ public class fmrInicio extends JDialog {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 boolean hover = getModel().isRollover() || getModel().isPressed();
-                // Translucido: alpha reduzido para nao ocultar a imagem do card
                 Color fundo = hover ? new Color(255, 255, 255, 38) : new Color(255, 255, 255, 14);
                 g2.setColor(fundo);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 28, 28);
@@ -302,7 +302,6 @@ public class fmrInicio extends JDialog {
                 g2.setStroke(new BasicStroke(1.4f));
                 g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 28, 28);
 
-                // Engrenagem com alpha reduzido
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, hover ? 0.85f : 0.45f));
                 desenharEngrenagem(g2, getWidth() / 2, getHeight() / 2, EstiloBase.escalar(17, tela), hover);
                 g2.dispose();
