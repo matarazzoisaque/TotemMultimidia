@@ -32,26 +32,20 @@ public class fmrCadastroVisitante extends JDialog {
 
         int p = EstiloBase.escalar(38, tela);
         int gap = EstiloBase.escalar(18, tela);
-        int cardW = Math.min(EstiloBase.escalar(820, tela), tela.width - EstiloBase.escalar(80, tela));
-        int cardH = Math.min(EstiloBase.escalar(700, tela), tela.height - EstiloBase.escalar(84, tela));
+        // 3.3 — painel levemente maior
+        int cardW = Math.min(EstiloBase.escalar(880, tela), tela.width - EstiloBase.escalar(80, tela));
+        int cardH = Math.min(EstiloBase.escalar(760, tela), tela.height - EstiloBase.escalar(84, tela));
         int cardX = (tela.width - cardW) / 2;
         int cardY = (tela.height - cardH) / 2;
 
-        JLabel lblTagPagina = EstiloBase.criarTag("Primeiro passo");
-        lblTagPagina.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblTagPagina.setBounds(cardX, Math.max(EstiloBase.escalar(20, tela), cardY - EstiloBase.escalar(48, tela)),
-                EstiloBase.escalar(154, tela), EstiloBase.escalar(34, tela));
-        fundo.add(lblTagPagina);
+        // 3.1 — badge "Primeiro Passo" removido
 
         JPanel card = EstiloBase.criarCard();
         card.setLayout(null);
         card.setBounds(cardX, cardY, cardW, cardH);
         fundo.add(card);
 
-        JLabel lblCardTag = EstiloBase.criarTag("Cadastro do visitante");
-        lblCardTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblCardTag.setBounds(p, EstiloBase.escalar(32, tela), EstiloBase.escalar(206, tela), EstiloBase.escalar(34, tela));
-        card.add(lblCardTag);
+        // 3.2 — badge "Cadastro do visitante" removido
 
         JLabel lblTitulo = EstiloBase.criarLabel(
                 "Identificacao da visita",
@@ -59,7 +53,7 @@ public class fmrCadastroVisitante extends JDialog {
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
-        lblTitulo.setBounds(p, EstiloBase.escalar(84, tela), cardW - (p * 2), EstiloBase.escalar(44, tela));
+        lblTitulo.setBounds(p, EstiloBase.escalar(48, tela), cardW - (p * 2), EstiloBase.escalar(44, tela));
         card.add(lblTitulo);
 
         JTextArea lblSub = EstiloBase.criarTextoQuebravel(
@@ -67,11 +61,11 @@ public class fmrCadastroVisitante extends JDialog {
                 EstiloBase.fonteResponsiva(15f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
-        lblSub.setBounds(p, EstiloBase.escalar(136, tela), cardW - (p * 2), EstiloBase.escalar(54, tela));
+        lblSub.setBounds(p, EstiloBase.escalar(102, tela), cardW - (p * 2), EstiloBase.escalar(54, tela));
         card.add(lblSub);
 
         int campoW = (cardW - (p * 2) - gap) / 2;
-        int yPrimeiraLinha = EstiloBase.escalar(218, tela);
+        int yPrimeiraLinha = EstiloBase.escalar(184, tela);
         int labelH = EstiloBase.escalar(24, tela);
         int campoH = EstiloBase.escalar(58, tela);
         int erroH = EstiloBase.escalar(22, tela);
@@ -119,14 +113,15 @@ public class fmrCadastroVisitante extends JDialog {
         card.add(lblErroSobrenome);
 
         int yIdade = yPrimeiraLinha + EstiloBase.escalar(138, tela);
-        JLabel lblFaixaEtaria = criarLabelCampo("Faixa etária");
+        JLabel lblFaixaEtaria = criarLabelCampo("Faixa et\u00e1ria");
         lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(16f, tela));
         lblFaixaEtaria.setBounds(p, yIdade, campoW, labelH);
         card.add(lblFaixaEtaria);
 
+        int painelFaixaH = EstiloBase.escalar(140, tela);
         JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, gap));
         painelFaixaEtaria.setOpaque(false);
-        painelFaixaEtaria.setBounds(p, yIdade + EstiloBase.escalar(30, tela), cardW - (p * 2), EstiloBase.escalar(140, tela));
+        painelFaixaEtaria.setBounds(p, yIdade + EstiloBase.escalar(30, tela), cardW - (p * 2), painelFaixaH);
         card.add(painelFaixaEtaria);
 
         grupoFaixaEtaria = new ButtonGroup();
@@ -138,30 +133,36 @@ public class fmrCadastroVisitante extends JDialog {
             painelFaixaEtaria.add(radio);
         }
 
+        // 3.4 — erro de faixa etaria posicionado ABAIXO do painel de opcoes
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblErroIdade.setBounds(p, yIdade + EstiloBase.escalar(92, tela), cardW - (p * 2), erroH);
+        lblErroIdade.setBounds(p, yIdade + EstiloBase.escalar(30, tela) + painelFaixaH + EstiloBase.escalar(6, tela),
+                cardW - (p * 2), erroH);
         card.add(lblErroIdade);
 
-   
-
+        // 3.5 — botoes centralizados e proximos entre si na parte inferior
         int botoesY = cardH - EstiloBase.escalar(98, tela);
-        int btnVoltarW = EstiloBase.escalar(180, tela);
+        int btnVoltarW  = EstiloBase.escalar(180, tela);
         int btnContinuarW = EstiloBase.escalar(230, tela);
-        JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
-        btnContinuar.setFont(EstiloBase.fonteResponsiva(19f, tela));
-        btnContinuar.setBounds(cardW - p - btnContinuarW, botoesY, btnContinuarW, EstiloBase.escalar(58, tela));
-        btnContinuar.addActionListener(e -> validarEAvancar());
-        card.add(btnContinuar);
+        int btnH = EstiloBase.escalar(58, tela);
+        int gapBotoes = EstiloBase.escalar(16, tela);
+        int totalBotoes = btnVoltarW + gapBotoes + btnContinuarW;
+        int botoesX = (cardW - totalBotoes) / 2;
 
         JButton btnVoltar = EstiloBase.criarBotaoSecundario("Voltar");
         btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
-        btnVoltar.setBounds(p, botoesY, btnVoltarW, EstiloBase.escalar(58, tela));
+        btnVoltar.setBounds(botoesX, botoesY, btnVoltarW, btnH);
         btnVoltar.addActionListener(e -> {
             dispose();
             controle.exibirTelaInicial();
         });
         card.add(btnVoltar);
+
+        JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
+        btnContinuar.setFont(EstiloBase.fonteResponsiva(19f, tela));
+        btnContinuar.setBounds(botoesX + btnVoltarW + gapBotoes, botoesY, btnContinuarW, btnH);
+        btnContinuar.addActionListener(e -> validarEAvancar());
+        card.add(btnContinuar);
 
         setContentPane(fundo);
     }
