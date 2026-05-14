@@ -4,6 +4,8 @@ import modelo.Controle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import java.net.URL;
@@ -11,6 +13,11 @@ import java.net.URL;
 /**
  * Tela de obra com composicao editorial:
  * imagem real da obra/missao na esquerda e descricao na direita.
+ *
+ * Alteracoes Etapa 4:
+ * - Titulo movido para dentro do JScrollPane (desce junto com o texto)
+ * - Visualizador fullscreen ao clicar na imagem (4.3)
+ * - Botao Voltar adicionado na faixa de acao (4.4)
  */
 public class fmrObra extends JDialog {
 
@@ -73,6 +80,7 @@ public class fmrObra extends JDialog {
         int seloW = Math.max(92, EstiloBase.escalar(92, tela));
         int seloH = Math.max(32, EstiloBase.escalar(32, tela));
 
+        // Painel da imagem com clique para abrir visualizador fullscreen (4.3)
         JPanel painelImagem = criarPainelImagemObra(imageObra);
         painelImagem.setBounds(
                 artePadding,
@@ -80,6 +88,13 @@ public class fmrObra extends JDialog {
                 arteW - (artePadding * 2),
                 Math.max(120, seloY - artePadding - Math.max(14, EstiloBase.escalar(14, tela)))
         );
+        painelImagem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        painelImagem.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirVisualizadorFullscreen(imageObra);
+            }
+        });
         cardArte.add(painelImagem);
 
         JLabel lblCodigo = EstiloBase.criarTag(controle.getCodigoObra(indice));
@@ -106,7 +121,8 @@ public class fmrObra extends JDialog {
         lblLegenda.setBounds(seloX, anoY + anoH, arteW - (seloX * 2), Math.max(18, EstiloBase.escalar(20, tela)));
         cardArte.add(lblLegenda);
 
-        // ── Card de informações ────────────────────────────────────────────────
+        // ── Card de informacoes ───────────────────────────────────────────────
+        // Titulo agora esta DENTRO do scroll para descer junto com o texto (4)
 
         JPanel cardInfo = EstiloBase.criarCard();
         cardInfo.setLayout(null);
@@ -121,40 +137,52 @@ public class fmrObra extends JDialog {
         lblTema.setBounds(infoPad, infoTagY, Math.max(150, EstiloBase.escalar(160, tela)), infoTagH);
         cardInfo.add(lblTema);
 
+        // Chips de ano e tipo ficam fora do scroll (referencia visual fixa)
+        int chipY = infoTagY + infoTagH + Math.max(14, EstiloBase.escalar(14, tela));
+        int chipH = Math.max(32, EstiloBase.escalar(32, tela));
+        int chipAnoW = Math.max(138, EstiloBase.escalar(150, tela));
+        int chipTipoW = Math.max(176, EstiloBase.escalar(176, tela));
+
+        JLabel lblChipAno = EstiloBase.criarTag("ANO " + controle.getAnoObra(indice));
+        lblChipAno.setBounds(infoPad, chipY, chipAnoW, chipH);
+        cardInfo.add(lblChipAno);
+
+        JLabel lblChipTipo = EstiloBase.criarTag("TEXTO CURATORIAL");
+        lblChipTipo.setBounds(infoPad + chipAnoW + Math.max(10, EstiloBase.escalar(10, tela)), chipY, chipTipoW, chipH);
+        cardInfo.add(lblChipTipo);
+
+        // ── Conteudo scrollavel: TITULO + subtitulo + texto descritivo ────────
+        // Titulo e subtitulo agora ficam dentro de um painel que entra no scroll
+
+        JPanel painelConteudo = new JPanel();
+        painelConteudo.setLayout(new BoxLayout(painelConteudo, BoxLayout.Y_AXIS));
+        painelConteudo.setOpaque(false);
+        painelConteudo.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
+
+        // Titulo dentro do scroll
         JTextArea lblTitulo = EstiloBase.criarTextoQuebravel(
                 controle.getTituloObra(indice),
                 EstiloBase.fonteResponsiva(34f, tela),
                 EstiloBase.COR_TEXTO_PRIMARIO
         );
-        int tituloY = infoTagY + infoTagH + Math.max(14, EstiloBase.escalar(12, tela));
-        int tituloH = Math.max(78, EstiloBase.escalar(120, tela));
-        lblTitulo.setBounds(infoPad, tituloY, painelW - (infoPad * 2), tituloH);
-        cardInfo.add(lblTitulo);
+        lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblTitulo.setMaximumSize(new Dimension(painelW - (infoPad * 2), Integer.MAX_VALUE));
+        painelConteudo.add(lblTitulo);
+        painelConteudo.add(Box.createVerticalStrut(Math.max(10, EstiloBase.escalar(10, tela))));
 
+        // Subtitulo dentro do scroll
         JTextArea lblSub = EstiloBase.criarTextoQuebravel(
                 "Conhe\u00e7a a hist\u00f3ria, os objetivos, os desafios e os impactos desta miss\u00e3o "
                         + "na explora\u00e7\u00e3o rob\u00f3tica de Marte.",
                 EstiloBase.fonteResponsiva(18f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
-        int subY = tituloY + tituloH + Math.max(10, EstiloBase.escalar(10, tela));
-        int subH = Math.max(46, EstiloBase.escalar(62, tela));
-        lblSub.setBounds(infoPad, subY, painelW - (infoPad * 2), subH);
-        cardInfo.add(lblSub);
+        lblSub.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblSub.setMaximumSize(new Dimension(painelW - (infoPad * 2), Integer.MAX_VALUE));
+        painelConteudo.add(lblSub);
+        painelConteudo.add(Box.createVerticalStrut(Math.max(14, EstiloBase.escalar(16, tela))));
 
-        JLabel lblChipAno = EstiloBase.criarTag("ANO " + controle.getAnoObra(indice));
-        int chipY = subY + subH + Math.max(12, EstiloBase.escalar(12, tela));
-        int chipH = Math.max(32, EstiloBase.escalar(32, tela));
-        int chipAnoW = Math.max(138, EstiloBase.escalar(150, tela));
-        int chipTipoW = Math.max(176, EstiloBase.escalar(176, tela));
-        lblChipAno.setBounds(infoPad, chipY, chipAnoW, chipH);
-        cardInfo.add(lblChipAno);
-
-        // Modelo 3D removido — chip fixo como TEXTO CURATORIAL
-        JLabel lblChipTipo = EstiloBase.criarTag("TEXTO CURATORIAL");
-        lblChipTipo.setBounds(infoPad + chipAnoW + Math.max(10, EstiloBase.escalar(10, tela)), chipY, chipTipoW, chipH);
-        cardInfo.add(lblChipTipo);
-
+        // Texto descritivo dentro do scroll
         JTextArea txtDesc = new JTextArea(controle.getDescricaoObra(indice));
         txtDesc.setFont(EstiloBase.fonteResponsiva(18f, tela));
         txtDesc.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
@@ -164,31 +192,55 @@ public class fmrObra extends JDialog {
         txtDesc.setEditable(false);
         txtDesc.setOpaque(false);
         txtDesc.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        txtDesc.setAlignmentX(Component.LEFT_ALIGNMENT);
+        txtDesc.setMaximumSize(new Dimension(painelW - (infoPad * 2), Integer.MAX_VALUE));
+        painelConteudo.add(txtDesc);
 
-        JScrollPane scroll = EstiloBase.criarScrollPane(txtDesc);
+        JScrollPane scroll = EstiloBase.criarScrollPane(painelConteudo);
         int faixaH = Math.max(86, EstiloBase.escalar(102, tela));
-        int barraAcaoY = conteudoH - faixaH - Math.max(30, EstiloBase.escalar(46, tela));
         int scrollY = chipY + chipH + Math.max(20, EstiloBase.escalar(24, tela));
+        int barraAcaoY = conteudoH - faixaH - Math.max(30, EstiloBase.escalar(46, tela));
         int scrollH = Math.max(1, barraAcaoY - scrollY - Math.max(18, EstiloBase.escalar(24, tela)));
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBounds(infoPad, scrollY, painelW - (infoPad * 2), scrollH);
         cardInfo.add(scroll);
 
+        // ── Faixa de acao com botoes Voltar e Proximo ────────────────────────
+
         JPanel faixaAcao = criarFaixaAcao();
         faixaAcao.setBounds(infoPad, barraAcaoY, painelW - (infoPad * 2), faixaH);
         cardInfo.add(faixaAcao);
 
-        // Modelo 3D removido — botao Proximo ocupa toda a largura disponivel
         int acaoPadding = Math.max(18, EstiloBase.escalar(22, tela));
         int botaoH = Math.max(46, EstiloBase.escalar(50, tela));
         int botaoY = Math.max(24, (faixaAcao.getHeight() - botaoH) / 2);
+        int larguraBotaoVoltar = Math.max(140, EstiloBase.escalar(150, tela));
         int larguraProximoDesejada = indice == controle.getTotalObras() - 1 ? 252 : 228;
+        int espaco = Math.max(10, EstiloBase.escalar(12, tela));
         int larguraProximo = Math.min(
                 Math.max(190, EstiloBase.escalar(larguraProximoDesejada, tela)),
-                faixaAcao.getWidth() - (acaoPadding * 2)
+                faixaAcao.getWidth() - (acaoPadding * 2) - larguraBotaoVoltar - espaco
         );
 
+        // Botao Voltar (4.4) — na primeira obra volta ao inicio/menu
+        JButton btnVoltar = criarBotaoAcaoObra("\u2190 Voltar", false);
+        btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
+        btnVoltar.setBounds(acaoPadding, botaoY, larguraBotaoVoltar, botaoH);
+        btnVoltar.addActionListener(e -> {
+            btnVoltar.setEnabled(false);
+            dispose();
+            if (indice == 0) {
+                // Primeira obra: volta para a tela inicial/menu
+                controle.voltarParaInicio();
+            } else {
+                // Demais obras: abre a obra anterior
+                controle.abrirObra(indice - 1);
+            }
+        });
+        faixaAcao.add(btnVoltar);
+
+        // Botao Proximo
         JButton btnProximo = criarBotaoAcaoObra(
                 indice == controle.getTotalObras() - 1
                         ? "Ir para o question\u00e1rio"
@@ -206,6 +258,67 @@ public class fmrObra extends JDialog {
 
         setContentPane(fundo);
     }
+
+    // ── Visualizador fullscreen (4.3) ─────────────────────────────────────────
+
+    private void abrirVisualizadorFullscreen(String caminhoImagem) {
+        Image imagem = carregarImagem(caminhoImagem);
+
+        JDialog viewer = new JDialog(this, true);
+        viewer.setUndecorated(true);
+        Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
+        viewer.setSize(tela);
+        viewer.setLocationRelativeTo(null);
+
+        JPanel overlay = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setColor(new Color(0, 0, 0, 230));
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                if (imagem != null) {
+                    int imgW = imagem.getWidth(null);
+                    int imgH = imagem.getHeight(null);
+                    if (imgW > 0 && imgH > 0) {
+                        double escala = Math.min(
+                                (double)(getWidth() - 100) / imgW,
+                                (double)(getHeight() - 100) / imgH
+                        );
+                        int novaLargura = (int)(imgW * escala);
+                        int novaAltura  = (int)(imgH * escala);
+                        int x = (getWidth() - novaLargura) / 2;
+                        int y = (getHeight() - novaAltura) / 2;
+                        g2.drawImage(imagem, x, y, novaLargura, novaAltura, null);
+                    }
+                }
+                g2.dispose();
+            }
+        };
+        overlay.setBackground(Color.BLACK);
+
+        // Instrucao de fechamento
+        JLabel lblFechar = new JLabel("\u00d7  Clique em qualquer lugar para fechar");
+        lblFechar.setFont(EstiloBase.FONTE_LABEL.deriveFont(Font.BOLD, 16f));
+        lblFechar.setForeground(new Color(255, 255, 255, 180));
+        lblFechar.setBounds(0, 18, tela.width, 30);
+        lblFechar.setHorizontalAlignment(SwingConstants.CENTER);
+        overlay.add(lblFechar);
+
+        // Clique em qualquer lugar fecha o visualizador
+        overlay.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                viewer.dispose();
+            }
+        });
+
+        viewer.setContentPane(overlay);
+        viewer.setVisible(true);
+    }
+
+    // ── Painel de imagem ──────────────────────────────────────────────────────
 
     private JPanel criarPainelImagemObra(String caminhoImagem) {
         return new JPanel(null) {
