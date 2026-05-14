@@ -12,6 +12,7 @@ import java.awt.geom.Path2D;
  * Tela final de satisfacao em sintonia com o novo visual.
  * Etapa 6: badges com largura aumentada para exibir texto completo;
  * bottom do painel deslocado para baixo; agradecimento reposicionado.
+ * Fix: botao Encerrar visita subido para nao sobrepor margem interna do card.
  */
 public class fmrSatisfacao extends JDialog {
 
@@ -48,7 +49,7 @@ public class fmrSatisfacao extends JDialog {
         lblTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
         int tagY = EstiloBase.escalar(52, tela);
         int tagH = EstiloBase.escalar(34, tela);
-        int tagW = EstiloBase.escalar(270, tela); // era 216 — aumentado para caber o texto
+        int tagW = EstiloBase.escalar(270, tela);
         lblTag.setBounds(cx - tagW / 2, tagY, tagW, tagH);
         fundo.add(lblTag);
 
@@ -67,7 +68,6 @@ public class fmrSatisfacao extends JDialog {
         JPanel card = EstiloBase.criarCard();
         card.setLayout(null);
         int cardW = Math.min(EstiloBase.escalar(840, tela), tela.width - EstiloBase.escalar(80, tela));
-        // cardH aumentado no bottom (+40px) para dar mais espaço interno
         int cardH = Math.min(EstiloBase.escalar(360, tela), tela.height - EstiloBase.escalar(360, tela));
         cardH = Math.max(EstiloBase.escalar(290, tela), cardH);
         int cardY = tituloY + tituloH + EstiloBase.escalar(34, tela);
@@ -77,7 +77,7 @@ public class fmrSatisfacao extends JDialog {
         // Badge "Avalie de 1 a 5" — largura aumentada para texto completo
         JLabel lblCardTag = EstiloBase.criarTag("Avalie de 1 a 5");
         lblCardTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        int cardTagW = EstiloBase.escalar(170, tela); // era 132 — aumentado para caber o texto
+        int cardTagW = EstiloBase.escalar(170, tela);
         lblCardTag.setBounds(EstiloBase.escalar(30, tela), EstiloBase.escalar(28, tela),
                 cardTagW, EstiloBase.escalar(32, tela));
         card.add(lblCardTag);
@@ -141,19 +141,19 @@ public class fmrSatisfacao extends JDialog {
         btnEnviar = EstiloBase.criarBotaoPrimario("Encerrar visita");
         btnEnviar.setEnabled(false);
         btnEnviar.setFont(EstiloBase.fonteResponsiva(18f, tela));
-        btnEnviar.setBounds((cardW - EstiloBase.escalar(232, tela)) / 2, cardH - EstiloBase.escalar(58, tela),
+        // era cardH - 58 — subido para cardH - 76 para nao sobrepor a margem interna do card
+        btnEnviar.setBounds((cardW - EstiloBase.escalar(232, tela)) / 2, cardH - EstiloBase.escalar(76, tela),
                 EstiloBase.escalar(232, tela), EstiloBase.escalar(42, tela));
         btnEnviar.addActionListener(e -> enviarAvaliacao());
         card.add(btnEnviar);
 
-        // lblNome deslocado para baixo proporcional ao aumento do cardH
         JLabel lblNome = EstiloBase.criarLabel(
                 "Obrigado, " + controle.getNomeVisitante() + ". Sua opini\u00e3o fecha a jornada e ajuda a melhorar o acervo digital.",
                 EstiloBase.fonteResponsiva(20f, tela),
                 EstiloBase.COR_TEXTO_SECUNDARIO
         );
         int agradecimentoW = Math.min(EstiloBase.escalar(1120, tela), tela.width - (margem * 2));
-        int agradecimentoY = cardY + cardH + EstiloBase.escalar(32, tela); // era 22 — aumentado para nao sobrepor o card
+        int agradecimentoY = cardY + cardH + EstiloBase.escalar(32, tela);
         lblNome.setHorizontalAlignment(SwingConstants.CENTER);
         lblNome.setBounds(cx - agradecimentoW / 2, agradecimentoY,
                 agradecimentoW, EstiloBase.escalar(32, tela));
