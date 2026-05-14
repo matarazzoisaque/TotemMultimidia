@@ -13,13 +13,6 @@ import java.net.URL;
 /**
  * Tela de obra com composicao editorial:
  * imagem real da obra/missao na esquerda e descricao na direita.
- *
- * Alteracoes Etapa 4:
- * - Titulo movido para dentro do JScrollPane (desce junto com o texto)
- * - Tags ANO e TEXTO CURATORIAL removidas (4.1 visual)
- * - Subtitulo fixo "Conheca a historia..." removido
- * - Visualizador fullscreen ao clicar na imagem (4.3)
- * - Botao Voltar adicionado na faixa de acao (4.4)
  */
 public class fmrObra extends JDialog {
 
@@ -82,7 +75,6 @@ public class fmrObra extends JDialog {
         int seloW = Math.max(92, EstiloBase.escalar(92, tela));
         int seloH = Math.max(32, EstiloBase.escalar(32, tela));
 
-        // Painel da imagem com clique para abrir visualizador fullscreen (4.3)
         JPanel painelImagem = criarPainelImagemObra(imageObra);
         painelImagem.setBounds(
                 artePadding,
@@ -124,7 +116,6 @@ public class fmrObra extends JDialog {
         cardArte.add(lblLegenda);
 
         // ── Card de informacoes ───────────────────────────────────────────────
-        // Titulo agora esta DENTRO do scroll para descer junto com o texto (4)
 
         JPanel cardInfo = EstiloBase.criarCard();
         cardInfo.setLayout(null);
@@ -140,8 +131,6 @@ public class fmrObra extends JDialog {
         cardInfo.add(lblTema);
 
         // ── Conteudo scrollavel: TITULO + texto descritivo ────────────────────
-        // Tags ANO e TEXTO CURATORIAL foram removidas; subtitulo fixo removido.
-        // O scroll agora inicia logo abaixo da tag "Detalhes da obra".
 
         JPanel painelConteudo = new JPanel();
         painelConteudo.setLayout(new BoxLayout(painelConteudo, BoxLayout.Y_AXIS));
@@ -159,13 +148,25 @@ public class fmrObra extends JDialog {
         painelConteudo.add(lblTitulo);
         painelConteudo.add(Box.createVerticalStrut(Math.max(14, EstiloBase.escalar(16, tela))));
 
-        // Texto descritivo dentro do scroll (usa HTML para respeitar negrito do documento)
+        // Texto descritivo: usa HTML com cor branca explícita no body para garantir
+        // que o texto seja legível sobre o fundo escuro, independentemente do L&F.
+        String corHex = String.format("#%02x%02x%02x",
+                EstiloBase.COR_TEXTO_SECUNDARIO.getRed(),
+                EstiloBase.COR_TEXTO_SECUNDARIO.getGreen(),
+                EstiloBase.COR_TEXTO_SECUNDARIO.getBlue());
+        String fontePx = String.valueOf(Math.max(14, EstiloBase.escalar(18, tela)));
+        String htmlDesc = "<html><body style=\""
+                + "color:" + corHex + ";"
+                + "font-family:sans-serif;"
+                + "font-size:" + fontePx + "px;"
+                + "margin:0;padding:0;"
+                + "\">"
+                + controle.getDescricaoObra(indice)
+                + "</body></html>";
+
         JTextPane txtDesc = new JTextPane();
         txtDesc.setContentType("text/html");
-        txtDesc.setText(controle.getDescricaoObra(indice));
-        txtDesc.setFont(EstiloBase.fonteResponsiva(18f, tela));
-        txtDesc.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        txtDesc.setBackground(new Color(0, 0, 0, 0));
+        txtDesc.setText(htmlDesc);
         txtDesc.setEditable(false);
         txtDesc.setOpaque(false);
         txtDesc.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -175,7 +176,6 @@ public class fmrObra extends JDialog {
 
         JScrollPane scroll = EstiloBase.criarScrollPane(painelConteudo);
         int faixaH = Math.max(86, EstiloBase.escalar(102, tela));
-        // O scroll agora ocupa desde logo abaixo da tag "Detalhes da obra"
         int scrollY = infoTagY + infoTagH + Math.max(16, EstiloBase.escalar(18, tela));
         int barraAcaoY = conteudoH - faixaH - Math.max(30, EstiloBase.escalar(46, tela));
         int scrollH = Math.max(1, barraAcaoY - scrollY - Math.max(18, EstiloBase.escalar(24, tela)));
@@ -201,7 +201,6 @@ public class fmrObra extends JDialog {
                 faixaAcao.getWidth() - (acaoPadding * 2) - larguraBotaoVoltar - espaco
         );
 
-        // Botao Voltar (4.4) — na primeira obra volta ao inicio/menu
         JButton btnVoltar = criarBotaoAcaoObra("\u2190 Voltar", false);
         btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
         btnVoltar.setBounds(acaoPadding, botaoY, larguraBotaoVoltar, botaoH);
@@ -209,16 +208,13 @@ public class fmrObra extends JDialog {
             btnVoltar.setEnabled(false);
             dispose();
             if (indice == 0) {
-                // Primeira obra: volta para a tela inicial/menu
                 controle.voltarParaInicio();
             } else {
-                // Demais obras: abre a obra anterior
                 controle.abrirObra(indice - 1);
             }
         });
         faixaAcao.add(btnVoltar);
 
-        // Botao Proximo
         JButton btnProximo = criarBotaoAcaoObra(
                 indice == controle.getTotalObras() - 1
                         ? "Ir para o question\u00e1rio"
@@ -276,7 +272,6 @@ public class fmrObra extends JDialog {
         };
         overlay.setBackground(Color.BLACK);
 
-        // Instrucao de fechamento
         JLabel lblFechar = new JLabel("\u00d7  Clique em qualquer lugar para fechar");
         lblFechar.setFont(EstiloBase.FONTE_LABEL.deriveFont(Font.BOLD, 16f));
         lblFechar.setForeground(new Color(255, 255, 255, 180));
@@ -284,7 +279,6 @@ public class fmrObra extends JDialog {
         lblFechar.setHorizontalAlignment(SwingConstants.CENTER);
         overlay.add(lblFechar);
 
-        // Clique em qualquer lugar fecha o visualizador
         overlay.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -535,9 +529,6 @@ public class fmrObra extends JDialog {
         };
     }
 
-    /**
-     * Helper interno para desenhar texto centralizado no fallback.
-     */
     private static class JLabelHelper {
         static void drawCenteredText(
                 Graphics2D g2,
