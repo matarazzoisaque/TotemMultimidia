@@ -16,6 +16,8 @@ import java.net.URL;
  *
  * Alteracoes Etapa 4:
  * - Titulo movido para dentro do JScrollPane (desce junto com o texto)
+ * - Tags ANO e TEXTO CURATORIAL removidas (4.1 visual)
+ * - Subtitulo fixo "Conheca a historia..." removido
  * - Visualizador fullscreen ao clicar na imagem (4.3)
  * - Botao Voltar adicionado na faixa de acao (4.4)
  */
@@ -137,22 +139,9 @@ public class fmrObra extends JDialog {
         lblTema.setBounds(infoPad, infoTagY, Math.max(150, EstiloBase.escalar(160, tela)), infoTagH);
         cardInfo.add(lblTema);
 
-        // Chips de ano e tipo ficam fora do scroll (referencia visual fixa)
-        int chipY = infoTagY + infoTagH + Math.max(14, EstiloBase.escalar(14, tela));
-        int chipH = Math.max(32, EstiloBase.escalar(32, tela));
-        int chipAnoW = Math.max(138, EstiloBase.escalar(150, tela));
-        int chipTipoW = Math.max(176, EstiloBase.escalar(176, tela));
-
-        JLabel lblChipAno = EstiloBase.criarTag("ANO " + controle.getAnoObra(indice));
-        lblChipAno.setBounds(infoPad, chipY, chipAnoW, chipH);
-        cardInfo.add(lblChipAno);
-
-        JLabel lblChipTipo = EstiloBase.criarTag("TEXTO CURATORIAL");
-        lblChipTipo.setBounds(infoPad + chipAnoW + Math.max(10, EstiloBase.escalar(10, tela)), chipY, chipTipoW, chipH);
-        cardInfo.add(lblChipTipo);
-
-        // ── Conteudo scrollavel: TITULO + subtitulo + texto descritivo ────────
-        // Titulo e subtitulo agora ficam dentro de um painel que entra no scroll
+        // ── Conteudo scrollavel: TITULO + texto descritivo ────────────────────
+        // Tags ANO e TEXTO CURATORIAL foram removidas; subtitulo fixo removido.
+        // O scroll agora inicia logo abaixo da tag "Detalhes da obra".
 
         JPanel painelConteudo = new JPanel();
         painelConteudo.setLayout(new BoxLayout(painelConteudo, BoxLayout.Y_AXIS));
@@ -168,27 +157,15 @@ public class fmrObra extends JDialog {
         lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblTitulo.setMaximumSize(new Dimension(painelW - (infoPad * 2), Integer.MAX_VALUE));
         painelConteudo.add(lblTitulo);
-        painelConteudo.add(Box.createVerticalStrut(Math.max(10, EstiloBase.escalar(10, tela))));
-
-        // Subtitulo dentro do scroll
-        JTextArea lblSub = EstiloBase.criarTextoQuebravel(
-                "Conhe\u00e7a a hist\u00f3ria, os objetivos, os desafios e os impactos desta miss\u00e3o "
-                        + "na explora\u00e7\u00e3o rob\u00f3tica de Marte.",
-                EstiloBase.fonteResponsiva(18f, tela),
-                EstiloBase.COR_TEXTO_SECUNDARIO
-        );
-        lblSub.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblSub.setMaximumSize(new Dimension(painelW - (infoPad * 2), Integer.MAX_VALUE));
-        painelConteudo.add(lblSub);
         painelConteudo.add(Box.createVerticalStrut(Math.max(14, EstiloBase.escalar(16, tela))));
 
-        // Texto descritivo dentro do scroll
-        JTextArea txtDesc = new JTextArea(controle.getDescricaoObra(indice));
+        // Texto descritivo dentro do scroll (usa HTML para respeitar negrito do documento)
+        JTextPane txtDesc = new JTextPane();
+        txtDesc.setContentType("text/html");
+        txtDesc.setText(controle.getDescricaoObra(indice));
         txtDesc.setFont(EstiloBase.fonteResponsiva(18f, tela));
         txtDesc.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
         txtDesc.setBackground(new Color(0, 0, 0, 0));
-        txtDesc.setLineWrap(true);
-        txtDesc.setWrapStyleWord(true);
         txtDesc.setEditable(false);
         txtDesc.setOpaque(false);
         txtDesc.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -198,7 +175,8 @@ public class fmrObra extends JDialog {
 
         JScrollPane scroll = EstiloBase.criarScrollPane(painelConteudo);
         int faixaH = Math.max(86, EstiloBase.escalar(102, tela));
-        int scrollY = chipY + chipH + Math.max(20, EstiloBase.escalar(24, tela));
+        // O scroll agora ocupa desde logo abaixo da tag "Detalhes da obra"
+        int scrollY = infoTagY + infoTagH + Math.max(16, EstiloBase.escalar(18, tela));
         int barraAcaoY = conteudoH - faixaH - Math.max(30, EstiloBase.escalar(46, tela));
         int scrollH = Math.max(1, barraAcaoY - scrollY - Math.max(18, EstiloBase.escalar(24, tela)));
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
