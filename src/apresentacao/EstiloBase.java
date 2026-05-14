@@ -43,8 +43,64 @@ public final class EstiloBase {
     public static final Font FONTE_BOTAO = fontePoppins(19f);
     public static final Font FONTE_PEQUENA = fontePoppins(14f);
 
+    /** Duracao do fade em milissegundos. */
+    private static final int FADE_DURACAO_MS = 250;
+    /** Intervalo do Timer de fade (ms). */
+    private static final int FADE_TICK_MS = 16;
+
     private EstiloBase() {
     }
+
+    // ── Transicoes ────────────────────────────────────────────────────────────
+
+    /**
+     * Aplica fade-in no dialogo fornecido (opacity 0 → 1 em FADE_DURACAO_MS ms).
+     * Deve ser chamado logo apos setVisible(true).
+     */
+    public static void fadeIn(JDialog dialog) {
+        if (!dialog.isDisplayable()) return;
+        try { dialog.setOpacity(0f); } catch (UnsupportedOperationException ignored) { return; }
+        float[] alpha = {0f};
+        float passo = (float) FADE_TICK_MS / FADE_DURACAO_MS;
+        Timer t = new Timer(FADE_TICK_MS, null);
+        t.addActionListener(e -> {
+            alpha[0] = Math.min(1f, alpha[0] + passo);
+            try { dialog.setOpacity(alpha[0]); } catch (UnsupportedOperationException ignored) {}
+            if (alpha[0] >= 1f) t.stop();
+        });
+        t.start();
+    }
+
+    /**
+     * Aplica fade-out no dialogo (opacity 1 → 0 em FADE_DURACAO_MS ms) e,
+     * ao terminar, executa o Runnable fornecido na EDT.
+     * O dispose() do dialogo fica por conta do chamador dentro do Runnable.
+     */
+    public static void fadeOutThen(JDialog dialog, Runnable aoConcluir) {
+        float opacidadeAtual;
+        try {
+            opacidadeAtual = dialog.getOpacity();
+        } catch (UnsupportedOperationException e) {
+            // Plataforma nao suporta opacidade — executa acao diretamente
+            SwingUtilities.invokeLater(() -> { dialog.dispose(); aoConcluir.run(); });
+            return;
+        }
+        float[] alpha = {opacidadeAtual};
+        float passo = (float) FADE_TICK_MS / FADE_DURACAO_MS;
+        Timer t = new Timer(FADE_TICK_MS, null);
+        t.addActionListener(e -> {
+            alpha[0] = Math.max(0f, alpha[0] - passo);
+            try { dialog.setOpacity(alpha[0]); } catch (UnsupportedOperationException ignored) {}
+            if (alpha[0] <= 0f) {
+                t.stop();
+                dialog.dispose();
+                aoConcluir.run();
+            }
+        });
+        t.start();
+    }
+
+    // ── Configuracao ──────────────────────────────────────────────────────────
 
     public static void configurarDialogFullscreen(JDialog dialog) {
         dialog.setUndecorated(true);
