@@ -55,13 +55,16 @@ public final class EstiloBase {
     }
 
     public static void aplicarFonteGlobal() {
-        Font fontePadrao = fontePoppins(14f);
         for (Object chave : UIManager.getDefaults().keySet().toArray()) {
             Object valor = UIManager.get(chave);
-            if (valor instanceof Font) {
-                UIManager.put(chave, fontePadrao);
+            if (valor instanceof Font fonteExistente) {
+                UIManager.put(chave, BASE_POPPINS.deriveFont(fonteExistente.getStyle(), fonteExistente.getSize2D()));
             }
         }
+    }
+
+    public static String familiaFontePrincipal() {
+        return BASE_POPPINS.getFamily();
     }
 
     public static JLabel criarLabel(String texto, Font fonte, Color cor) {

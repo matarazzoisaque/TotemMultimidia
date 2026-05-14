@@ -43,10 +43,10 @@ public class fmrInicio extends JDialog {
         int btnIniciarW = EstiloBase.escalar(420, tela);
         int btnIniciarH = EstiloBase.escalar(88, tela);
 
-        // btnAdmin: +3px para direita e +3px para baixo
+        // btnAdmin: ancorado no canto inferior esquerdo
         int btnAdminW = EstiloBase.escalar(82, tela);
         int btnAdminH = EstiloBase.escalar(72, tela);
-        int btnAdminX = tela.width - margem - btnAdminW + 3;
+        int btnAdminX = btnIniciarX;
         int btnAdminY = tela.height - EstiloBase.escalar(90, tela) + 3;
 
         // ── Textos lado esquerdo ─────────────────────────────────────────────
@@ -222,6 +222,9 @@ public class fmrInicio extends JDialog {
         JPasswordField campoSenha = criarCampoSenha(tela);
         campoSenha.setBounds(EstiloBase.escalar(28, tela), EstiloBase.escalar(164, tela),
                 card.getWidth() - EstiloBase.escalar(56, tela), EstiloBase.escalar(56, tela));
+        campoSenha.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) { abrirTeclado(dialogo, campoSenha); }
+        });
         card.add(campoSenha);
 
         JLabel lblErro = EstiloBase.criarLabel(" ", EstiloBase.fonteResponsiva(14f, tela), EstiloBase.COR_ERRO);
@@ -277,6 +280,10 @@ public class fmrInicio extends JDialog {
                 BorderFactory.createEmptyBorder(10, 14, 10, 14)
         ));
         return campo;
+    }
+
+    private void abrirTeclado(JDialog pai, JTextField campo) {
+        new TecladoVirtual(pai, campo).setVisible(true);
     }
 
     private JButton criarBotaoEngrenagemTranslucido(Dimension tela) {

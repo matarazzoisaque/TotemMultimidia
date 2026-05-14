@@ -165,7 +165,7 @@ public class fmrObra extends JDialog {
         String fontePx = String.valueOf(Math.max(14, EstiloBase.escalar(18, tela)));
         String htmlDesc = "<html><body style=\""
                 + "color:" + corHex + ";"
-                + "font-family:sans-serif;"
+                + "font-family:'" + EstiloBase.familiaFontePrincipal() + "';"
                 + "font-size:" + fontePx + "px;"
                 + "margin:0;padding:0;"
                 + "\">"

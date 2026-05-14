@@ -115,28 +115,35 @@ public class fmrCadastroVisitante extends JDialog {
 
         // Painel ocupa toda a largura util do card (igual aos campos de texto)
         int painelFaixaW = cardW - (p * 2);
-        int painelFaixaH = EstiloBase.escalar(160, tela);
         int painelFaixaX = p;
         int painelFaixaY = yIdade + EstiloBase.escalar(34, tela);
-        JPanel painelFaixaEtaria = new JPanel(new GridLayout(3, 2, gap, EstiloBase.escalar(8, tela)));
+        int linhasFaixaEtaria = 3;
+        int gapVerticalFaixaEtaria = EstiloBase.escalar(14, tela);
+        JPanel painelFaixaEtaria = new JPanel(new GridLayout(linhasFaixaEtaria, 2, gap, gapVerticalFaixaEtaria));
         painelFaixaEtaria.setOpaque(false);
-        painelFaixaEtaria.setBounds(painelFaixaX, painelFaixaY, painelFaixaW, painelFaixaH);
         card.add(painelFaixaEtaria);
 
         grupoFaixaEtaria = new ButtonGroup();
         radiosFaixaEtaria = new JRadioButton[modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length];
+        int maiorAlturaRadio = 0;
         for (int i = 0; i < modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length; i++) {
             // Fonte dos radio buttons aumentada
             JRadioButton radio = criarRadioFaixaEtaria(modelo.Validacao.FAIXAS_ETARIAS_VALIDAS[i], tela);
             radiosFaixaEtaria[i] = radio;
             grupoFaixaEtaria.add(radio);
             painelFaixaEtaria.add(radio);
+            maiorAlturaRadio = Math.max(maiorAlturaRadio, radio.getPreferredSize().height);
         }
 
         // Erro faixa etária logo abaixo do painel
+        int painelFaixaH = (maiorAlturaRadio * linhasFaixaEtaria)
+                + (gapVerticalFaixaEtaria * (linhasFaixaEtaria - 1))
+                + EstiloBase.escalar(18, tela);
+        painelFaixaEtaria.setBounds(painelFaixaX, painelFaixaY, painelFaixaW, painelFaixaH);
+
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
-        lblErroIdade.setBounds(painelFaixaX, painelFaixaY + painelFaixaH + EstiloBase.escalar(4, tela),
+        lblErroIdade.setBounds(painelFaixaX, painelFaixaY + painelFaixaH + EstiloBase.escalar(12, tela),
                 painelFaixaW, erroH);
         card.add(lblErroIdade);
 
@@ -183,6 +190,7 @@ public class fmrCadastroVisitante extends JDialog {
         radio.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
         // Fonte aumentada nos radio buttons
         radio.setFont(EstiloBase.fonteResponsiva(20f, tela));
+        radio.setPreferredSize(new Dimension(0, EstiloBase.escalar(40, tela)));
         radio.setFocusPainted(false);
         radio.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         radio.setIconTextGap(12);
