@@ -14,13 +14,17 @@ import java.awt.event.MouseEvent;
  */
 public class fmrQuestionario extends JDialog {
 
-    // Explicacoes exibidas dentro da alternativa correta apos verificacao
+    /**
+     * Explicacoes alinhadas ao gabarito original de absPropriedades:
+     * P1 gabarito=0 (Mars 2), P2 gabarito=0 (Sojourner),
+     * P3 gabarito=1 (Mars Pathfinder), P4 gabarito=1 (Opportunity), P5 gabarito=0 (Ingenuity)
+     */
     private static final String[] EXPLICACOES = {
-        "A Mars 2 foi a primeira sonda sovietica a entrar na orbita de Marte, em 1971, embora seu modulo de pouso tenha falhado ao aterrissar.",
-        "A Mars 3 conseguiu o primeiro pouso suave em Marte em dezembro de 1971, mas transmitiu dados por apenas 20 segundos antes de perder contato.",
-        "O Sojourner foi o primeiro robo movel a operar em Marte, parte da missao Mars Pathfinder em 1997, percorrendo cerca de 100 metros ao longo de 83 dias.",
-        "O Spirit (MER-A) pousou em Janeiro de 2004 e operou por mais de 6 anos, superando em muito sua vida util prevista de 90 dias.",
-        "A missao Mars 2020 trouxe tanto o Perseverance quanto o helicóptero Ingenuity, que realizou o primeiro voo motorizado em outro planeta."
+        "Correto! A Mars 2 foi a primeira sonda a atingir a superficie de Marte, em novembro de 1971, mesmo que por um impacto nao controlado — seu modulo de pouso colidiu violentamente com o solo.",
+        "Correto! O Sojourner foi o primeiro rover a se deslocar com sucesso pela superficie de Marte, em 1997, durante a missao Mars Pathfinder.",
+        "Correto! A missao Mars Pathfinder (1997) foi pioneira no uso de airbags para amortecer o pouso em Marte, uma tecnica inovadora que reduziu custos e riscos.",
+        "Correto! A Opportunity encerrou sua missao em 2018 apos uma gigantesca tempestade global de poeira que bloqueou a luz solar de seus paineis, impedindo a recarga das baterias.",
+        "Correto! O Ingenuity realizou o primeiro voo motorizado e controlado em outro planeta em abril de 2021, pairando por cerca de 39 segundos sobre o solo marciano."
     };
 
     private final Controle controle;
@@ -34,6 +38,8 @@ public class fmrQuestionario extends JDialog {
     private JButton[] botoesOpcao;
     private int opcaoSelecionada = -1;
     private JButton btnAcao;
+    private JLabel lblCertos;
+    private JLabel lblErrados;
     private int larguraTextoOpcao;
 
     public fmrQuestionario(JFrame pai, Controle controle) {
@@ -113,11 +119,23 @@ public class fmrQuestionario extends JDialog {
         painelOpcoes.setBounds(cx - cw / 2, 290, cw, 306);
         fundo.add(painelOpcoes);
 
+        int footerX = cx - cw / 2;
+
+        // ── Labels certos/errados no rodape (restaurados) ─────────────────────
+        lblCertos = EstiloBase.criarLabel("Certos: 0", EstiloBase.FONTE_CORPO, EstiloBase.COR_SUCESSO);
+        lblCertos.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCertos.setBounds(footerX, 626, 120, 22);
+        fundo.add(lblCertos);
+
+        lblErrados = EstiloBase.criarLabel("Errados: 0", EstiloBase.FONTE_CORPO, EstiloBase.COR_ERRO);
+        lblErrados.setHorizontalAlignment(SwingConstants.LEFT);
+        lblErrados.setBounds(footerX + 128, 626, 120, 22);
+        fundo.add(lblErrados);
+
         // Botao de acao: inicia como "Verificar Resposta" desabilitado + translucido
         btnAcao = criarBotaoAcao();
-        int footerX = cx - cw / 2;
         // Era Y=706, agora Y=620
-        btnAcao.setBounds(footerX + cw - 290, 620, 290, 64);
+        btnAcao.setBounds(footerX + cw - 290, 612, 290, 64);
         btnAcao.setEnabled(false);
         btnAcao.putClientProperty("translucido", true);
         btnAcao.addActionListener(e -> acionarBotao());
@@ -164,7 +182,6 @@ public class fmrQuestionario extends JDialog {
                 String texto = getText();
                 Font fonte = getFont();
                 FontMetrics fm = g2.getFontMetrics(fonte);
-                // Ajusta fonte se texto nao couber
                 while (fm.stringWidth(texto) > getWidth() - 26 && fonte.getSize2D() > 12f) {
                     fonte = fonte.deriveFont(fonte.getSize2D() - 1f);
                     fm = g2.getFontMetrics(fonte);
@@ -215,6 +232,7 @@ public class fmrQuestionario extends JDialog {
         btnAcao.putClientProperty("translucido", true);
         btnAcao.repaint();
 
+        atualizarResumoAcertosErros();
         barraProgresso.repaint();
         lblNumero.setText("PERGUNTA " + (idx + 1) + " DE " + controle.getTotalPerguntas());
         txtPergunta.setText(controle.getPergunta(idx));
@@ -263,11 +281,11 @@ public class fmrQuestionario extends JDialog {
 
                 Color corFundo;
                 if (correto) {
-                    corFundo = new Color(34, 197, 94, 60);   // verde translucido
+                    corFundo = new Color(34, 197, 94, 60);
                 } else if (errado) {
-                    corFundo = new Color(239, 68, 68, 60);   // vermelho translucido
+                    corFundo = new Color(239, 68, 68, 60);
                 } else if (selecionado) {
-                    corFundo = new Color(255, 115, 54, 52);  // laranja selecionado
+                    corFundo = new Color(255, 115, 54, 52);
                 } else {
                     corFundo = getModel().isRollover()
                             ? new Color(255, 255, 255, 16)
@@ -341,23 +359,20 @@ public class fmrQuestionario extends JDialog {
     }
 
     private void selecionarOpcao(int idx) {
-        if (verificado) return; // impede selecao apos verificacao
+        if (verificado) return;
         opcaoSelecionada = idx;
         for (int i = 0; i < botoesOpcao.length; i++) {
             botoesOpcao[i].putClientProperty("selecionado", i == idx);
             botoesOpcao[i].repaint();
         }
-        // Habilita e deixa botao solido
         btnAcao.setEnabled(true);
         btnAcao.putClientProperty("translucido", false);
         btnAcao.repaint();
     }
 
     /**
-     * Verifica a resposta selecionada:
-     * - Pinta opcao correta em verde e erradas em vermelho
-     * - Exibe explicacao textual dentro do card da alternativa correta
-     * - Troca botao para "Proxima Pergunta"
+     * Verifica a resposta: pinta verde/vermelho, exibe explicacao inline na correta
+     * e troca o botao para "Proxima Pergunta".
      */
     private void verificarResposta() {
         if (opcaoSelecionada < 0) return;
@@ -371,7 +386,6 @@ public class fmrQuestionario extends JDialog {
             if (i == gabarito) {
                 botoesOpcao[i].putClientProperty("correto", true);
                 botoesOpcao[i].putClientProperty("errado", false);
-                // Adiciona explicacao abaixo do texto da opcao correta
                 adicionarExplicacao(botoesOpcao[i], perguntaAtual);
             } else {
                 botoesOpcao[i].putClientProperty("correto", false);
@@ -381,7 +395,8 @@ public class fmrQuestionario extends JDialog {
             botoesOpcao[i].repaint();
         }
 
-        // Troca botao para "Proxima Pergunta" (solido, habilitado)
+        atualizarResumoAcertosErros();
+
         btnAcao.setText("Proxima Pergunta");
         btnAcao.setEnabled(true);
         btnAcao.putClientProperty("translucido", false);
@@ -389,8 +404,8 @@ public class fmrQuestionario extends JDialog {
     }
 
     /**
-     * Adiciona um JLabel com a explicacao dentro do card da alternativa correta,
-     * abaixo do texto principal da opcao.
+     * Adiciona um JTextArea com a explicacao dentro do card da alternativa correta,
+     * abaixo do texto principal da opcao. A explicacao e alinhada ao gabarito original.
      */
     private void adicionarExplicacao(JButton botaoCorreto, int indicePergunta) {
         String explicacao = indicePergunta < EXPLICACOES.length
@@ -409,8 +424,6 @@ public class fmrQuestionario extends JDialog {
         lblExplicacao.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
         botaoCorreto.setLayout(new BorderLayout());
-        // Garante que o componente de texto existente continue no CENTER
-        // e adiciona a explicacao no SOUTH
         botaoCorreto.add(lblExplicacao, BorderLayout.SOUTH);
         botaoCorreto.revalidate();
         botaoCorreto.repaint();
@@ -423,6 +436,20 @@ public class fmrQuestionario extends JDialog {
         } else {
             exibirResultado();
         }
+    }
+
+    private void atualizarResumoAcertosErros() {
+        int certos  = 0;
+        int errados = 0;
+        int[] respostas = controle.getRespostasVisitante();
+        int[] gabaritos = controle.getGabaritos();
+        for (int i = 0; i < Math.min(respostas.length, gabaritos.length); i++) {
+            if (respostas[i] < 0) continue;
+            if (respostas[i] == gabaritos[i]) certos++;
+            else errados++;
+        }
+        lblCertos.setText("Certos: " + certos);
+        lblErrados.setText("Errados: " + errados);
     }
 
     private void exibirResultado() {
