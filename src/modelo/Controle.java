@@ -24,13 +24,13 @@ public class Controle extends absPropriedades {
         // absPropriedades chama Executar() automaticamente no construtor
     }
 
-    // ── Ponto de entrada ───────────────────────────────────────────────────
+    // ── Ponto de entrada ──────────────────────────────────────────────────
     @Override
     public void Executar() {
         SwingUtilities.invokeLater(this::exibirTelaInicial);
     }
 
-    // ── Navegação ──────────────────────────────────────────────────────────
+    // ── Navegação ──────────────────────────────────────────────────────
     public void exibirTelaInicial()   { new fmrInicio(framePai, this).setVisible(true); }
     public void exibirCadastro()      { new fmrCadastroVisitante(framePai, this).setVisible(true); }
     public void exibirQuestionario()  { new fmrQuestionario(framePai, this).setVisible(true); }
@@ -40,6 +40,21 @@ public class Controle extends absPropriedades {
     public void exibirObra(int indice) {
         obraAtual = indice;
         new fmrObra(framePai, this, indice).setVisible(true);
+    }
+
+    /**
+     * Abre uma obra específica — usado pelo botão Voltar (4.4).
+     * Idêntico a exibirObra(), mantido com nome descritivo para clareza.
+     */
+    public void abrirObra(int indice) {
+        exibirObra(indice);
+    }
+
+    /**
+     * Volta para a tela inicial/menu — usado pelo botão Voltar da primeira obra (4.4).
+     */
+    public void voltarParaInicio() {
+        exibirTelaInicial();
     }
 
     // ── Lógica de fluxo ───────────────────────────────────────────────────
@@ -79,7 +94,7 @@ public class Controle extends absPropriedades {
         for (int i = 0; i < respostasVisitante.length; i++) respostasVisitante[i] = -1;
     }
 
-    // ── Validação ──────────────────────────────────────────────────────────
+    // ── Validação ────────────────────────────────────────────────────────
     @Override
     public boolean validarVisitante(String nome, String idade) {
         return validacao.validarNome(nome)
@@ -173,7 +188,7 @@ public class Controle extends absPropriedades {
         return dadosVisitante;
     }
 
-    // ── Getters auxiliares para as telas ──────────────────────────────────
+    // ── Getters auxiliares para as telas ─────────────────────────────────
     public JFrame    getFramePai()              { return framePai; }
     public String    getTituloObra(int i)       { return titulosObras[i]; }
     public String    getDescricaoObra(int i)    { return descricoesObras[i]; }
