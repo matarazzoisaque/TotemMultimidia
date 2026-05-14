@@ -24,13 +24,68 @@ public class Controle extends absPropriedades {
         // absPropriedades chama Executar() automaticamente no construtor
     }
 
-    // ── Ponto de entrada ──────────────────────────────────────────────────
+    // ── Ponto de entrada ──────────────────────────────────────────────────────
     @Override
     public void Executar() {
         SwingUtilities.invokeLater(this::exibirTelaInicial);
     }
 
-    // ── Navegação ──────────────────────────────────────────────────────
+    // ── Implementação dos métodos abstratos de intMetodos ────────────────────────────
+
+    /**
+     * Registra a resposta do visitante para uma pergunta do questionário.
+     * @param pergunta Índice da pergunta (0 a 4)
+     * @param opcao    Índice da opção escolhida (0 a 3)
+     */
+    @Override
+    public void registrarResposta(int pergunta, int opcao) {
+        if (pergunta >= 0 && pergunta < respostasVisitante.length) {
+            respostasVisitante[pergunta] = opcao;
+        }
+    }
+
+    /**
+     * Registra a nota de satisfação do visitante.
+     * @param estrelas Nota de 1 a 5
+     */
+    @Override
+    public void registrarSatisfacao(int estrelas) {
+        this.notaSatisfacao = estrelas;
+    }
+
+    /**
+     * Calcula e retorna o número de acertos no questionário (0 a 5).
+     */
+    @Override
+    public int calcularPontuacao() {
+        int acertos = 0;
+        for (int i = 0; i < gabaritos.length; i++) {
+            if (i < respostasVisitante.length && respostasVisitante[i] == gabaritos[i]) {
+                acertos++;
+            }
+        }
+        return acertos;
+    }
+
+    /**
+     * Avança para a próxima etapa do fluxo (implementação genérica da interface).
+     * O fluxo detalhado é controlado pelos métodos específicos de navegação.
+     */
+    @Override
+    public void avancar() {
+        etapaAtual++;
+    }
+
+    /**
+     * Retorna para a etapa anterior do fluxo (implementação genérica da interface).
+     * O fluxo detalhado é controlado pelos métodos específicos de navegação.
+     */
+    @Override
+    public void voltar() {
+        if (etapaAtual > 0) etapaAtual--;
+    }
+
+    // ── Navegação ────────────────────────────────────────────────────────────
     public void exibirTelaInicial()   { new fmrInicio(framePai, this).setVisible(true); }
     public void exibirCadastro()      { new fmrCadastroVisitante(framePai, this).setVisible(true); }
     public void exibirQuestionario()  { new fmrQuestionario(framePai, this).setVisible(true); }
@@ -44,7 +99,6 @@ public class Controle extends absPropriedades {
 
     /**
      * Abre uma obra específica — usado pelo botão Voltar (4.4).
-     * Idêntico a exibirObra(), mantido com nome descritivo para clareza.
      */
     public void abrirObra(int indice) {
         exibirObra(indice);
@@ -57,7 +111,7 @@ public class Controle extends absPropriedades {
         exibirTelaInicial();
     }
 
-    // ── Lógica de fluxo ───────────────────────────────────────────────────
+    // ── Lógica de fluxo ────────────────────────────────────────────────────────────
 
     public void proximaEtapaAposObra(int obraIdx) {
         int prox = obraIdx + 1;
@@ -94,7 +148,7 @@ public class Controle extends absPropriedades {
         for (int i = 0; i < respostasVisitante.length; i++) respostasVisitante[i] = -1;
     }
 
-    // ── Validação ────────────────────────────────────────────────────────
+    // ── Validação ──────────────────────────────────────────────────────────────
     @Override
     public boolean validarVisitante(String nome, String idade) {
         return validacao.validarNome(nome)
@@ -134,6 +188,8 @@ public class Controle extends absPropriedades {
         return autenticado;
     }
 
+    // ── Estatísticas do histórico ───────────────────────────────────────────────────
+
     public int getTotalAvaliacoes() {
         return historicoSatisfacoes.size();
     }
@@ -168,6 +224,8 @@ public class Controle extends absPropriedades {
         return soma / (double) historicoPontuacoes.size();
     }
 
+    // ── Getters do visitante atual ──────────────────────────────────────────────────
+
     public String getNomeVisitanteAtual() {
         return nomeVisitante;
     }
@@ -188,7 +246,7 @@ public class Controle extends absPropriedades {
         return dadosVisitante;
     }
 
-    // ── Getters auxiliares para as telas ─────────────────────────────────
+    // ── Getters auxiliares para as telas ────────────────────────────────────────────
     public JFrame    getFramePai()              { return framePai; }
     public String    getTituloObra(int i)       { return titulosObras[i]; }
     public String    getDescricaoObra(int i)    { return descricoesObras[i]; }
@@ -200,4 +258,6 @@ public class Controle extends absPropriedades {
     public String[]  getOpcoesPergunta(int i)   { return opcoes[i]; }
     public int       getTotalObras()            { return titulosObras.length; }
     public int       getTotalPerguntas()        { return perguntas.length; }
+    public int       getGabarito(int i)         { return gabaritos[i]; }
+    public int       getRespostaVisitante(int i){ return respostasVisitante[i]; }
 }
