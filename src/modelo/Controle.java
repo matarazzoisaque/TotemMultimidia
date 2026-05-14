@@ -38,6 +38,7 @@ public class Controle extends absPropriedades {
     public void exibirAdministracao() { new fmrAdministracao(framePai, this).setVisible(true); }
 
     public void exibirObra(int indice) {
+        // Guarda a obra em foco para que as proximas telas saibam onde o visitante esta no percurso.
         obraAtual = indice;
         new fmrObra(framePai, this, indice).setVisible(true);
     }
@@ -51,11 +52,13 @@ public class Controle extends absPropriedades {
     }
 
     public void aposQuestionario() {
+        // Salva o desempenho da sessao antes de pedir a avaliacao final da experiencia.
         historicoPontuacoes.add(calcularPontuacao());
         exibirSatisfacao();
     }
 
     public void finalizarVisita(int notaFinal) {
+        // Consolida os dados da sessao em memoria e reinicia o fluxo para o proximo visitante.
         registrarSatisfacao(notaFinal);
         historicoNomes.add(getNomeCompletoVisitanteAtual());
         historicoSobrenomes.add(sobrenomeVisitante);
@@ -72,7 +75,6 @@ public class Controle extends absPropriedades {
         dadosVisitante[0]    = "";
         dadosVisitante[1]    = "";
         dadosVisitante[2]    = "";
-        idadeVisitante       = 0;
         obraAtual            = 0;
         etapaAtual           = 0;
         notaSatisfacao       = -1;
@@ -94,7 +96,6 @@ public class Controle extends absPropriedades {
 
     public String erroNome(String nome)            { return validacao.mensagemErroNome(nome); }
     public String erroSobrenome(String sobrenome)  { return validacao.mensagemErroSobrenome(sobrenome); }
-    public String erroIdade(String idade)          { return validacao.mensagemErroIdade(idade); }
     public String erroFaixaEtaria(String faixaEtaria) { return validacao.mensagemErroFaixaEtaria(faixaEtaria); }
 
     public boolean salvarDadosVisitante(String nome, String sobrenome, String faixaEtaria) {
@@ -153,28 +154,11 @@ public class Controle extends absPropriedades {
         return soma / (double) historicoPontuacoes.size();
     }
 
-    public String getNomeVisitanteAtual() {
-        return nomeVisitante;
-    }
-
-    public String getSobrenomeVisitanteAtual() {
-        return sobrenomeVisitante;
-    }
-
     public String getNomeCompletoVisitanteAtual() {
         return (nomeVisitante + " " + sobrenomeVisitante).trim();
     }
 
-    public String getFaixaEtariaVisitanteAtual() {
-        return faixaEtariaVisitante;
-    }
-
-    public String[] getDadosVisitanteAtual() {
-        return dadosVisitante;
-    }
-
     // ── Getters auxiliares para as telas ──────────────────────────────────
-    public JFrame    getFramePai()              { return framePai; }
     public String    getTituloObra(int i)       { return titulosObras[i]; }
     public String    getDescricaoObra(int i)    { return descricoesObras[i]; }
     public String    getImagemObra(int i)       { return imagensObras[i]; }

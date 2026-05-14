@@ -118,7 +118,8 @@ public class fmrObra extends JDialog {
         int infoTagH = Math.max(32, EstiloBase.escalar(34, tela));
 
         JLabel lblTema = EstiloBase.criarTag("Detalhes da obra");
-        lblTema.setBounds(infoPad, infoTagY, Math.max(150, EstiloBase.escalar(160, tela)), infoTagH);
+        int temaW = Math.max(Math.max(150, EstiloBase.escalar(160, tela)), lblTema.getPreferredSize().width);
+        lblTema.setBounds(infoPad, infoTagY, temaW, infoTagH);
         cardInfo.add(lblTema);
 
         JTextArea lblTitulo = EstiloBase.criarTextoQuebravel(
@@ -153,6 +154,7 @@ public class fmrObra extends JDialog {
         JLabel lblChipTipo = EstiloBase.criarTag(
                 controle.deveExibirModelo3D(indice) ? "COM EXPERIÊNCIA 3D" : "TEXTO CURATORIAL"
         );
+        chipTipoW = Math.max(chipTipoW, lblChipTipo.getPreferredSize().width);
         lblChipTipo.setBounds(infoPad + chipAnoW + Math.max(10, EstiloBase.escalar(10, tela)), chipY, chipTipoW, chipH);
         cardInfo.add(lblChipTipo);
 
@@ -424,6 +426,7 @@ public class fmrObra extends JDialog {
     }
 
     private void abrirModelo3D() {
+        // O botao ja participa do fluxo real, mas a experiencia 3D continua sendo apenas informativa.
         EstiloBase.mostrarDialogoInformativo(
                 this,
                 "3D",

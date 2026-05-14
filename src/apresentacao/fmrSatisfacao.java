@@ -45,8 +45,8 @@ public class fmrSatisfacao extends JDialog {
         lblTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
         int tagY = EstiloBase.escalar(52, tela);
         int tagH = EstiloBase.escalar(34, tela);
-        lblTag.setBounds(cx - EstiloBase.escalar(108, tela), tagY,
-                EstiloBase.escalar(216, tela), EstiloBase.escalar(34, tela));
+        int tagW = Math.max(EstiloBase.escalar(216, tela), lblTag.getPreferredSize().width);
+        lblTag.setBounds(cx - tagW / 2, tagY, tagW, EstiloBase.escalar(34, tela));
         fundo.add(lblTag);
 
         int tituloW = Math.min(EstiloBase.escalar(900, tela), tela.width - EstiloBase.escalar(80, tela));
@@ -72,8 +72,9 @@ public class fmrSatisfacao extends JDialog {
 
         JLabel lblCardTag = EstiloBase.criarTag("Avalie de 1 a 5");
         lblCardTag.setFont(EstiloBase.fonteResponsiva(13f, tela));
+        int cardTagW = Math.max(EstiloBase.escalar(132, tela), lblCardTag.getPreferredSize().width);
         lblCardTag.setBounds(EstiloBase.escalar(30, tela), EstiloBase.escalar(28, tela),
-                EstiloBase.escalar(132, tela), EstiloBase.escalar(32, tela));
+                cardTagW, EstiloBase.escalar(32, tela));
         card.add(lblCardTag);
 
         JPanel painelEstrelas = new JPanel(new FlowLayout(FlowLayout.CENTER, 18, 0));
@@ -187,6 +188,7 @@ public class fmrSatisfacao extends JDialog {
     }
 
     private void enviarAvaliacao() {
+        // Fecha a tela atual e devolve ao controlador o encerramento completo da visita.
         dispose();
         controle.finalizarVisita(notaSelecionada);
     }

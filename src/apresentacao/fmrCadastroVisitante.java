@@ -194,47 +194,8 @@ public class fmrCadastroVisitante extends JDialog {
         return radio;
     }
 
-    private JPanel criarBlocoInformacao(String titulo, String texto) {
-        JPanel bloco = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(255, 255, 255, 9));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 24, 24);
-                g2.setColor(new Color(255, 255, 255, 18));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 24, 24);
-                g2.dispose();
-            }
-        };
-        bloco.setOpaque(false);
-
-        JLabel lblTitulo = EstiloBase.criarLabel(titulo, EstiloBase.FONTE_LABEL.deriveFont(15f), EstiloBase.COR_TEXTO_PRIMARIO);
-        lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
-        lblTitulo.setBounds(20, 15, 260, 20);
-        bloco.add(lblTitulo);
-
-        JTextArea lblTexto = new JTextArea(texto);
-        lblTexto.setEditable(false);
-        lblTexto.setFocusable(false);
-        lblTexto.setOpaque(false);
-        lblTexto.setLineWrap(true);
-        lblTexto.setWrapStyleWord(true);
-        lblTexto.setFont(EstiloBase.FONTE_PEQUENA.deriveFont(14f));
-        lblTexto.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
-        lblTexto.setBounds(20, 40, 660, 34);
-        bloco.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
-                lblTexto.setBounds(20, 40, Math.max(1, bloco.getWidth() - 40), Math.max(28, bloco.getHeight() - 48));
-            }
-        });
-        bloco.add(lblTexto);
-
-        return bloco;
-    }
-
     private void validarEAvancar() {
+        // Valida cada campo separadamente para manter o feedback visual no proprio formulario.
         String nome = campoNome.getText().trim();
         String sobrenome = campoSobrenome.getText().trim();
         String faixaEtaria = obterFaixaEtariaSelecionada();
