@@ -30,12 +30,12 @@ public abstract class absPropriedades implements intMetodos {
 
     // ── Questionário ───────────────────────────────────────────────────────
     protected String[]   perguntas;
-    protected String[][] opcoes;         // opcoes[pergunta][opcao]
-    protected int[]      gabaritos;      // índice da resposta correta por pergunta
-    protected int[]      respostasVisitante; // -1 = não respondida
+    protected String[][] opcoes;
+    protected int[]      gabaritos;
+    protected int[]      respostasVisitante;
 
     // ── Satisfação ─────────────────────────────────────────────────────────
-    protected int notaSatisfacao;        // -1 = não avaliado
+    protected int notaSatisfacao;
 
     // ── Histórico in-memory (sem banco de dados) ───────────────────────────
     protected List<String>  historicoNomes;
@@ -45,13 +45,11 @@ public abstract class absPropriedades implements intMetodos {
     protected List<Integer> historicoPontuacoes;
     protected List<Integer> historicoSatisfacoes;
 
-    // ── Construtor — garante ordem: variáveis ANTES de Executar() ──────────
     public absPropriedades() {
-        inicializarVariaveis(); // passo 1
-        Executar();             // passo 2 — Template Method
+        inicializarVariaveis();
+        Executar();
     }
 
-    // ── Inicialização ──────────────────────────────────────────────────────
     private void inicializarVariaveis() {
         nomeVisitante         = "";
         sobrenomeVisitante    = "";
@@ -75,62 +73,218 @@ public abstract class absPropriedades implements intMetodos {
     }
 
     private void inicializarObras() {
+        // Títulos atualizados — Etapa 4.2
         titulosObras = new String[]{
-                "Obra 1 – PrOP-M (Mars 2, URSS, 1971)",
-                "Obra 2 – PrOP-M (Mars 3, URSS, 1971)",
-                "Obra 3 – Sojourner (Mars Pathfinder, NASA, 1997)",
-                "Obra 4 – Spirit (Mars Exploration Rover A, NASA, 2004)",
-                "Obra 5 – Opportunity (Mars Exploration Rover B, NASA, 2004–2018)",
-                "Obra 6 – Curiosity (Mars Science Laboratory, NASA, 2012–)",
-                "Obra 7 – Perseverance (Mars 2020, NASA, 2021–)",
-                "Obra 8 – Ingenuity (helicóptero de Marte, NASA, 2021)",
-                "Obra 9 – Zhurong (Tianwen-1, China, 2021)",
-                "Obra 10 – Rosalind Franklin (ExoMars, ESA/NASA, lançamento previsto 2028)"
+                "O Rob\u00f4 Fantasma da Mars 2",
+                "A Tempestade da Mars 3",
+                "Sojourner \u2014 O Primeiro Explorador",
+                "Spirit \u2014 Al\u00e9m do Esperado",
+                "Opportunity \u2014 Uma Longa Jornada",
+                "Curiosity \u2014 O Ge\u00f3logo Rob\u00f3tico",
+                "Perseverance \u2014 Mensagens em Garrafas",
+                "Ingenuity \u2014 O Primeiro Voo em Outro Mundo",
+                "Zhurong \u2014 O Passo da China em Marte",
+                "Rosalind Franklin \u2014 Em Busca do Invis\u00edvel"
         };
 
+        // Descrições atualizadas — Etapa 4.2
+        // Campos: Dados da missão + Histórico + Curiosidades + Explicação da obra
+        // (referências bibliográficas não incluídas)
         descricoesObras = new String[]{
-                "O PrOP-M foi um pequeno rob\u00f4 sovi\u00e9tico desenvolvido para ser o primeiro rover a operar na superf\u00edcie de Marte, embarcado na miss\u00e3o Mars 2 em 1971. A sonda Mars 2 conseguiu entrar em \u00f3rbita marciana, mas o m\u00f3dulo de pouso entrou na atmosfera em um \u00e2ngulo muito \u00edngreme, o sistema de descida falhou e o lander se chocou contra o solo, destruindo todo o equipamento, incluindo o rover PrOP-M, que nunca foi ativado na superf\u00edcie.\n\n" +
-                        "O PrOP-M tinha cerca de 15 kg, formato de caixa met\u00e1lica montada sobre dois esquis, em vez de rodas, e era preso ao lander por um cabo de aproximadamente 15 m, pensado para limitar a dist\u00e2ncia e facilitar as comunica\u00e7\u00f5es. Por causa do grande atraso de sinal entre Terra e Marte, o rover foi projetado para se movimentar de forma aut\u00f4noma, usando hastes frontais para detectar obst\u00e1culos e mudar de dire\u00e7\u00e3o sem comando direto humano. Ele carregava sensores como um densit\u00f4metro e um penetr\u00f4metro para medir densidade e resist\u00eancia mec\u00e2nica do solo, fornecendo dados importantes sobre a trafegabilidade marciana, ainda que, na pr\u00e1tica, nunca tenha operado devido ao fracasso do pouso.",
 
-                "Um segundo rover id\u00eantico PrOP-M viajou na miss\u00e3o Mars 3, lan\u00e7ada tamb\u00e9m em 1971, como parte do mesmo programa sovi\u00e9tico. Diferentemente da Mars 2, o lander Mars 3 conseguiu realizar o primeiro pouso suave bem-sucedido na hist\u00f3ria em Marte, em 2 de dezembro de 1971. No entanto, ap\u00f3s cerca de 14 a 20 segundos de transmiss\u00e3o de dados, o contato com o m\u00f3dulo de pouso foi perdido, provavelmente devido a uma tempestade de poeira global que envolvia o planeta naquele per\u00edodo.\n\n" +
-                        "O plano da miss\u00e3o previa que o PrOP-M descesse por rampas do lander e se movesse em pequenos saltos de aproximadamente 1,5 m, usando suas hastes met\u00e1licas para sentir o terreno \u00e0 frente e evitar obst\u00e1culos de forma aut\u00f4noma. Como a comunica\u00e7\u00e3o foi interrompida quase imediatamente ap\u00f3s o pouso, o rover provavelmente nunca chegou a deixar a plataforma, transformando-se em um exemplo de tecnologia pronta, mas silenciada pelas condi\u00e7\u00f5es extremas de Marte.",
+                // Obra 1 — O Robô Fantasma da Mars 2
+                "\ud83d\ude80 Miss\u00e3o: Mars 2 | Pa\u00eds: URSS | Ano: 1971\n\n"
+                + "A miss\u00e3o Mars 2 foi enviada pela Uni\u00e3o Sovi\u00e9tica em 1971 como parte de um grande esfor\u00e7o para explorar Marte "
+                + "com orbitador, m\u00f3dulo de pouso e um pequeno rover chamado PrOP\u2011M. O orbitador conseguiu entrar em \u00f3rbita do planeta, "
+                + "mas o m\u00f3dulo de pouso entrou na atmosfera em um \u00e2ngulo muito \u00edngreme, o sistema de descida n\u00e3o funcionou como planejado "
+                + "e a sonda acabou se chocando violentamente contra o solo marciano. Com o impacto, o m\u00f3dulo foi danificado de forma "
+                + "irrevers\u00edvel e o PrOP\u2011M, que viajava preso a ele, nunca chegou a ser ligado na superf\u00edcie.\n\n"
+                + "O PrOP\u2011M era um rob\u00f4 de cerca de 15 kg, em formato de caixa met\u00e1lica montada sobre dois esquis, preso ao m\u00f3dulo de "
+                + "pouso por um cabo de aproximadamente 15 metros. Ele havia sido projetado para se mover de maneira semi\u00aut\u00f4noma: usaria "
+                + "hastes mec\u00e2nicas para tatear o terreno, detectar pedras e buracos e decidir pequenos desvios de rota sozinho.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 A Mars 2 foi o primeiro artefato humano a atingir a superf\u00edcie de Marte, mesmo que por um impacto n\u00e3o controlado.\n"
+                + "\u2022 O PrOP\u2011M \u00e9 lembrado como um dos primeiros rovers semi\u00aut\u00f4nomos j\u00e1 constru\u00eddos.\n"
+                + "\u2022 Boa parte do que se sabe sobre o PrOP\u2011M vem de documenta\u00e7\u00e3o t\u00e9cnica e reconstruções hist\u00f3ricas.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "O PrOP\u2011M aparece junto aos destroços do m\u00f3dulo de pouso em um cen\u00e1rio de rochas e poeira avermelhada. "
+                + "O \"rob\u00f4 fantasma\" simboliza tentativas corajosas que n\u00e3o deram certo, mas abriram caminho para miss\u00f5es "
+                + "futuras aprenderem com os erros e aperfei\u00e7oarem t\u00e9cnicas de pouso.",
 
-                "O Sojourner foi o primeiro rover de fato a operar na superf\u00edcie de Marte, parte da miss\u00e3o Mars Pathfinder, lan\u00e7ada em dezembro de 1996 e pousada em 4 de julho de 1997 na regi\u00e3o de Ares Vallis, em Chryse Planitia. A miss\u00e3o teve grande impacto p\u00fablico e cient\u00edfico, demonstrando o conceito mais r\u00e1pido, melhor e mais barato da NASA, com um lander experimental e um pequeno ve\u00edculo m\u00f3vel realizando ci\u00eancia de qualidade em Marte.\n\n" +
-                        "Com cerca de 11,5 kg, o Sojourner usava pain\u00e9is solares para gerar aproximadamente 13 W de pot\u00eancia e foi projetado para uma miss\u00e3o prim\u00e1ria de 7 dias, com expectativa de at\u00e9 30 dias, mas acabou operando por cerca de 83 dias de deslocamento, totalizando 92 sols de atividade do conjunto lander + rover. Ele possu\u00eda c\u00e2meras e o espectr\u00f4metro Alpha Proton X-Ray, permitindo analisar a composi\u00e7\u00e3o qu\u00edmica de rochas e solos ao redor do lander.",
+                // Obra 2 — A Tempestade da Mars 3
+                "\ud83d\ude80 Miss\u00e3o: Mars 3 | Pa\u00eds: URSS | Ano: 1971\n\n"
+                + "A miss\u00e3o Mars 3 foi a g\u00eamea da Mars 2 e tamb\u00e9m levou um rover PrOP\u2011M preso ao seu m\u00f3dulo de pouso. Em 2 de "
+                + "dezembro de 1971, a Mars 3 entrou para a hist\u00f3ria ao realizar o primeiro pouso suave bem\u2011sucedido em Marte. "
+                + "Logo ap\u00f3s tocar o solo, o m\u00f3dulo come\u00e7ou a transmitir dados para a Terra, mas a comunica\u00e7\u00e3o durou apenas "
+                + "entre 14 e 20 segundos antes de ser interrompida definitivamente.\n\n"
+                + "Na \u00e9poca, Marte passava por uma grande tempestade global de poeira, e muitos pesquisadores acreditam que essa "
+                + "tempestade foi respons\u00e1vel pela perda s\u00fabita do sinal. O PrOP\u2011M tinha o mesmo conceito do seu irm\u00e3o da Mars 2: "
+                + "um pequeno rob\u00f4 em forma de caixa com esquis, preso por cabo, pensado para saltar curtas dist\u00e2ncias e medir "
+                + "propriedades f\u00edsicas do solo. Como a comunica\u00e7\u00e3o foi perdida quase imediatamente, entende\u2011se que o rover "
+                + "nunca chegou a descer pela rampa do m\u00f3dulo.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 Apesar de ser vista como fracasso, a Mars 3 realizou o primeiro pouso suave bem-sucedido em Marte.\n"
+                + "\u2022 A tempestade de poeira serve at\u00e9 hoje como exemplo dos riscos ambientais do planeta para naves.\n"
+                + "\u2022 O PrOP\u2011M da Mars 3 \u00e9 s\u00edmbolo de tecnologia pronta, impedida pelos extremos do clima marciano.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "A obra mostra o PrOP\u2011M ainda sobre a plataforma da Mars 3, enquanto o c\u00e9u ao redor escurece sob uma "
+                + "gigantesca tempestade de poeira. A imagem fala sobre a fragilidade humana diante de um planeta duro, "
+                + "mas tamb\u00e9m sobre a coragem de tentar inovar mesmo sabendo dos riscos.",
 
-                "A Spirit foi uma das duas sondas g\u00eameas do programa Mars Exploration Rover, tamb\u00e9m conhecida como MER-A, lan\u00e7ada em 2003 e pousada em janeiro de 2004 na cratera Gusev, local escolhido por ind\u00edcios de antigos processos ligados \u00e0 \u00e1gua. A miss\u00e3o prim\u00e1ria era de apenas 90 sols, mas a Spirit operou at\u00e9 2010, totalizando mais de 2200 sols e superando em mais de vinte vezes a vida \u00fatil planejada.\n\n" +
-                        "Ao longo de aproximadamente 7,7 km percorridos, a Spirit investigou rochas vulc\u00e2nicas, dep\u00f3sitos alterados por fluidos e materiais ricos em s\u00edlica que indicam intera\u00e7\u00e3o \u00e1gua-rocha, contribuindo para reconstruir a hist\u00f3ria geol\u00f3gica de Gusev. Em 2009, o rover ficou preso em uma \u00e1rea de solo muito fofo, apelidada de Troy, tornando o epis\u00f3dio de atolamento um s\u00edmbolo de explora\u00e7\u00e3o at\u00e9 o limite.",
+                // Obra 3 — Sojourner
+                "\ud83d\ude80 Miss\u00e3o: Mars Pathfinder | Pa\u00eds: EUA/NASA | Ano: 1997\n\n"
+                + "A miss\u00e3o Mars Pathfinder foi lan\u00e7ada pela NASA em dezembro de 1996 com o objetivo de testar uma nova forma "
+                + "de pousar em Marte usando airbags e demonstrar que um pequeno rob\u00f4 m\u00f3vel poderia fazer ci\u00eancia de qualidade "
+                + "com baixo custo. Em 4 de julho de 1997, o m\u00f3dulo pousou em Ares Vallis, uma regi\u00e3o moldada por enchentes antigas.\n\n"
+                + "O rover Sojourner, com cerca de 11 kg e seis rodas, foi o primeiro ve\u00edculo a deslocar\u2011se com sucesso pela "
+                + "superf\u00edcie de Marte. Ele levava c\u00e2meras e o espectr\u00f4metro Alpha Proton X\u2011Ray (APXS), que analisava a "
+                + "composi\u00e7\u00e3o qu\u00edmica de rochas e solos ao redor do lander. A miss\u00e3o foi planejada para poucos dias, mas o "
+                + "conjunto lander + rover funcionou por cerca de tr\u00eas meses, enviando milhares de fotos e medi\u00e7\u00f5es.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 O nome \"Sojourner\" homenageia Sojourner Truth, ativista contra a escravid\u00e3o e pelos direitos civis.\n"
+                + "\u2022 O uso de airbags para amortecer o pouso foi uma inova\u00e7\u00e3o marcante da miss\u00e3o.\n"
+                + "\u2022 As imagens do pequeno rob\u00f4 andando entre as rochas em Marte tiveram grande impacto na m\u00eddia.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "A obra mostra o Sojourner como um pequeno explorador diante de um grande campo de rochas. Essa composi\u00e7\u00e3o "
+                + "convida o visitante a pensar em como grandes avan\u00e7os cient\u00edficos podem come\u00e7ar com experimentos "
+                + "modestos, mas bem planejados.",
 
-                "A Opportunity, ou MER-B, pousou em Marte cerca de tr\u00eas semanas ap\u00f3s a Spirit, em janeiro de 2004, na regi\u00e3o de Meridiani Planum, uma plan\u00edcie rica em hematita, mineral geralmente associado \u00e0 presen\u00e7a de \u00e1gua. Assim como sua g\u00eamea, foi projetada para 90 sols, mas permaneceu ativa at\u00e9 junho de 2018, quando uma tempestade global de poeira encobriu o planeta, bloqueando a luz solar e levando \u00e0 perda definitiva de contato.\n\n" +
-                        "Durante quase 15 anos, a Opportunity percorreu mais de 45 km, um recorde para rovers em outro corpo celeste, explorando diversas crateras como Endurance, Victoria e Endeavour. Em Endeavour, encontrou veios de gesso e outras evid\u00eancias de ambientes de \u00e1gua com pH mais neutro, considerados mais amig\u00e1veis \u00e0 vida do que ambientes extremamente \u00e1cidos.",
+                // Obra 4 — Spirit
+                "\ud83d\ude80 Miss\u00e3o: MER-A | Pa\u00eds: EUA/NASA | Ano: 2004\n\n"
+                + "A Spirit foi um dos dois rovers da miss\u00e3o Mars Exploration Rover, lan\u00e7ados em 2003 para estudar diferentes "
+                + "regi\u00f5es de Marte. Em janeiro de 2004, a Spirit pousou na cratera Gusev, escolhida por mostrar sinais de "
+                + "poss\u00edvel antigo lago. A miss\u00e3o tinha plano inicial de 90 dias marcianos, mas a Spirit continuou operando "
+                + "por mais de seis anos, at\u00e9 2010.\n\n"
+                + "Durante esse tempo, a Spirit percorreu cerca de 7,7 km, examinando rochas vulc\u00e2nicas, solos e camadas de "
+                + "materiais modificados por \u00e1gua. Encontrou dep\u00f3sitos ricos em s\u00edlica, que sugerem a atua\u00e7\u00e3o de fontes "
+                + "termais ou \u00e1gua aquecida circulando pelo subsolo. Em 2009, a Spirit ficou presa em uma regi\u00e3o de solo "
+                + "muito fofo, batizada de Troy, onde suas rodas afundaram e o rover n\u00e3o conseguiu sair.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 A Spirit sobreviveu a tempestades de poeira e invernos marcianos durante anos.\n"
+                + "\u2022 O atolamento em Troy virou um caso cl\u00e1ssico de limite operacional de um rover em terreno desconhecido.\n"
+                + "\u2022 As Columbia Hills revelaram camadas de rochas formadas em diferentes ambientes ao longo da hist\u00f3ria de Marte.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "Na obra, a Spirit aparece inclinada e presa em uma \u00e1rea de areia clara. A cena resume a trajet\u00f3ria da "
+                + "miss\u00e3o: um rob\u00f4 que superou em muito o tempo previsto e, no fim, foi detido pelo pr\u00f3prio terreno "
+                + "que tentava estudar.",
 
-                "O Curiosity \u00e9 o rover da miss\u00e3o Mars Science Laboratory, lan\u00e7ado em 2011 e pousado com a complexa manobra de sky crane em agosto de 2012 na cratera Gale. Na \u00e9poca do pouso, era o maior e mais sofisticado rover j\u00e1 enviado a Marte, pesando cerca de 900 kg e equipado com dez instrumentos cient\u00edficos, incluindo a c\u00e2mera-laser ChemCam, uma perfuradora de rochas, laborat\u00f3rios qu\u00edmicos internos e uma esta\u00e7\u00e3o meteorol\u00f3gica.\n\n" +
-                        "O objetivo central da miss\u00e3o \u00e9 investigar se a regi\u00e3o de Gale j\u00e1 ofereceu condi\u00e7\u00f5es habit\u00e1veis para vida microbiana no passado, procurando sinais de \u00e1gua l\u00edquida est\u00e1vel, fontes de energia e elementos qu\u00edmicos essenciais. Estudos de rochas sedimentares no leito de antigos lagos e nas encostas do Monte Sharp mostraram camadas de lama solidificada, minerais de argila e sulfatos.",
+                // Obra 5 — Opportunity
+                "\ud83d\ude80 Miss\u00e3o: MER-B | Pa\u00eds: EUA/NASA | Ano: 2004\n\n"
+                + "A Opportunity foi a segunda sonda da miss\u00e3o Mars Exploration Rover, pousando em janeiro de 2004 na "
+                + "regi\u00e3o de Meridiani Planum, escolhida por apresentar min\u00e9rios de ferro como a hematita, frequentemente "
+                + "associados \u00e0 presen\u00e7a de \u00e1gua em ambientes antigos. Tamb\u00e9m planejada para 90 dias, a Opportunity "
+                + "continuou ativa at\u00e9 2018, operando por quase 15 anos.\n\n"
+                + "Ao longo desse tempo, o rover percorreu mais de 45 km, explorando v\u00e1rias crateras como Endurance, "
+                + "Victoria e Endeavour. Em 2018, uma grande tempestade global de poeira envolveu Marte, escurecendo o "
+                + "c\u00e9u e impedindo que os pain\u00e9is solares recebessem luz suficiente, encerrando definitivamente a miss\u00e3o.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 A Opportunity operou cerca de 57 vezes mais tempo do que o planejado originalmente.\n"
+                + "\u2022 A frase \"my battery is low and it's getting dark\" ficou famosa como metáfora do fim da miss\u00e3o.\n"
+                + "\u2022 A dist\u00e2ncia percorrida fez dela um dos ve\u00edculos com maior quilometragem em outro corpo celeste.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "Na obra, a Opportunity aparece na borda de uma grande cratera com o c\u00e9u escurecido por poeira. "
+                + "A pe\u00e7a transmite a ideia de persist\u00eancia e resist\u00eancia, lembrando que at\u00e9 as miss\u00f5es mais "
+                + "bem-sucedidas t\u00eam um ponto final.",
 
-                "O Perseverance \u00e9 o rover da miss\u00e3o Mars 2020, lan\u00e7ado em julho de 2020 e pousado na cratera Jezero em 18 de fevereiro de 2021. A cratera foi escolhida por abrigar um antigo delta de rio e um poss\u00edvel lago, considerados um dos locais mais promissores em Marte para a busca de sinais de vida passada.\n\n" +
-                        "Entre os objetivos principais do Perseverance est\u00e3o procurar evid\u00eancias de vida microbiana antiga, caracterizar a geologia e o clima de Marte e realizar a coleta e o armazenamento de amostras de rocha e solo em tubos met\u00e1licos selados, para serem trazidos \u00e0 Terra por futuras miss\u00f5es de retorno de amostras. O rover possui sete instrumentos cient\u00edficos principais, 19 c\u00e2meras e dois microfones, al\u00e9m do experimento MOXIE.",
+                // Obra 6 — Curiosity
+                "\ud83d\ude80 Miss\u00e3o: Mars Science Laboratory | Pa\u00eds: EUA/NASA | Ano: 2012\n\n"
+                + "O Curiosity \u00e9 o rover da miss\u00e3o Mars Science Laboratory, lan\u00e7ado em 2011 e pousado em agosto de 2012 "
+                + "na cratera Gale utilizando a t\u00e9cnica de pouso sky crane. A cratera Gale foi escolhida por abrigar o "
+                + "Monte Sharp, com muitas camadas sedimentares que registram diferentes fases da hist\u00f3ria de Marte.\n\n"
+                + "Com cerca de 900 kg, o Curiosity carrega 10 instrumentos cient\u00edficos, incluindo c\u00e2meras de alta "
+                + "resolu\u00e7\u00e3o, o laser ChemCam, uma broca para perfurar rochas e laborat\u00f3rios internos (SAM, CheMin) "
+                + "capazes de analisar gases, minerais e mol\u00e9culas org\u00e2nicas. Os resultados mostram que a cratera Gale "
+                + "j\u00e1 abrigou lagos calmos e est\u00e1veis com \u00e1gua e elementos essenciais para a vida.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 O pouso com sky crane foi t\u00e3o complexo que os engenheiros chamaram o momento de \"sete minutos de terror\".\n"
+                + "\u2022 O Curiosity ainda est\u00e1 ativo, subindo o Monte Sharp e estudando novas camadas de rocha.\n"
+                + "\u2022 Suas imagens s\u00e3o amplamente usadas em materiais educativos e document\u00e1rios sobre Marte.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "A obra mostra o Curiosity em meio a rochas perfuradas, com o Monte Sharp ao fundo exibindo suas "
+                + "camadas bem definidas. A imagem refor\u00e7a a ideia do rover como um ge\u00f3logo rob\u00f3tico que l\u00ea "
+                + "a hist\u00f3ria do planeta nas rochas, camada por camada.",
 
-                "O Ingenuity \u00e9 um pequeno helic\u00f3ptero de aproximadamente 1,8 kg levado preso sob o Perseverance como um demonstrador tecnol\u00f3gico para testar o primeiro voo motorizado controlado em outro planeta. Ap\u00f3s ser depositado na superf\u00edcie marciana, em Jezero, realizou seu primeiro voo em 19 de abril de 2021, subindo cerca de 3 metros, pairando e pousando, marcando um momento hist\u00f3rico na explora\u00e7\u00e3o espacial.\n\n" +
-                        "Inicialmente planejado para apenas cinco voos em cerca de 30 dias, o Ingenuity continuou operando por quase tr\u00eas anos, realizando 72 voos at\u00e9 janeiro de 2024, atuando como um batedor a\u00e9reo para o Perseverance. Seus voos demonstraram que aeronaves leves podem operar na atmosfera rarefeita de Marte.",
+                // Obra 7 — Perseverance
+                "\ud83d\ude80 Miss\u00e3o: Mars 2020 | Pa\u00eds: EUA/NASA | Ano: 2021\n\n"
+                + "O Perseverance \u00e9 o rover da miss\u00e3o Mars 2020, lan\u00e7ado em julho de 2020 e pousado na cratera Jezero "
+                + "em fevereiro de 2021. Jezero foi escolhida por abrigar um antigo delta de rio e dep\u00f3sitos que indicam "
+                + "a exist\u00eancia de um lago no passado, condi\u00e7\u00f5es muito promissoras para a preserva\u00e7\u00e3o de sinais de vida microbiana.\n\n"
+                + "O rover foi projetado com tr\u00eas objetivos principais: procurar sinais de vida antiga em rochas e sedimentos; "
+                + "estudar a geologia e o clima atuais de Marte; e coletar e armazenar amostras em tubos met\u00e1licos selados "
+                + "para serem buscados por futuras miss\u00f5es de retorno \u00e0 Terra. Conta com instrumentos avan\u00e7ados, incluindo "
+                + "c\u00e2meras, espectr\u00f4metros, sistema de perfura\u00e7\u00e3o e o experimento MOXIE, que produz oxig\u00eanio da atmosfera.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 O nome Perseverance foi sugerido por um estudante em um concurso.\n"
+                + "\u2022 O rover j\u00e1 coletou dezenas de amostras catalogadas que dever\u00e3o ser devolvidas \u00e0 Terra.\n"
+                + "\u2022 A miss\u00e3o Mars 2020 \u00e9 vista como passo essencial entre explora\u00e7\u00e3o rob\u00f3tica e futura explora\u00e7\u00e3o humana.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "A obra apresenta o Perseverance trabalhando no delta de Jezero, cercado por rochas estratificadas e "
+                + "tubos de amostra. O rover \u00e9 mostrado como um colecionador de pistas, enchendo cada tubo como uma "
+                + "garrafa com mensagem para o futuro.",
 
-                "O Zhurong \u00e9 o primeiro rover marciano da China e parte da miss\u00e3o Tianwen-1, que inclui orbitador, m\u00f3dulo de descida e rover. Lan\u00e7ada em julho de 2020, a miss\u00e3o entrou em \u00f3rbita em fevereiro de 2021, e o m\u00f3dulo de descida pousou com sucesso em Utopia Planitia em 14 de maio de 2021, tornando a China o segundo pa\u00eds a operar um rover em Marte.\n\n" +
-                        "Com cerca de 240 kg, seis rodas e alimenta\u00e7\u00e3o por pain\u00e9is solares, o Zhurong leva c\u00e2meras, radar de penetra\u00e7\u00e3o no solo, espectr\u00f4metros e instrumentos para estudar a estrutura do subsolo, a presen\u00e7a de gelo de \u00e1gua, a mineralogia e o ambiente local. O rover foi projetado para 90 sols, mas operou por mais de 347 sols e percorreu quase 2 km at\u00e9 entrar em hiberna\u00e7\u00e3o em maio de 2022.",
+                // Obra 8 — Ingenuity
+                "\ud83d\ude80 Miss\u00e3o: Mars 2020 | Pa\u00eds: EUA/NASA | Ano: 2021\n\n"
+                + "O Ingenuity \u00e9 um pequeno helic\u00f3ptero rob\u00f3tico que viajou preso \u00e0 parte inferior do rover Perseverance, "
+                + "com a miss\u00e3o de provar que \u00e9 poss\u00edvel voar na atmosfera rarefeita de Marte. Ele foi pensado inicialmente "
+                + "como experimento de curta dura\u00e7\u00e3o: apenas cinco voos curtos em cerca de 30 dias marcianos. O primeiro voo, "
+                + "em 19 de abril de 2021, marcou o primeiro voo motorizado e controlado da hist\u00f3ria em outro planeta.\n\n"
+                + "O helic\u00f3ptero pesa cerca de 1,8 kg e \u00e9 alimentado por um pequeno painel solar. Suas h\u00e9lices giram muito "
+                + "mais r\u00e1pido do que as de um helic\u00f3ptero na Terra, justamente porque o ar marciano \u00e9 muito mais fino. "
+                + "Gra\u00e7as ao bom desempenho, continuou operando muito al\u00e9m do planejado, realizando 72 voos em quase "
+                + "tr\u00eas anos e ajudando o Perseverance a reconhecer terrenos e planejar rotas.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 Ingenuity utilizou componentes de baixo custo, semelhantes aos de eletr\u00f4nicos comerciais.\n"
+                + "\u2022 Os voos deram origem a v\u00eddeos e imagens que se tornaram \u00edcones da explora\u00e7\u00e3o do Sistema Solar.\n"
+                + "\u2022 O sucesso incentiva o desenvolvimento de futuros drones cient\u00edficos dedicados para Marte.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "Na obra, Ingenuity aparece em voo, com sua sombra projetada no solo marciano e o Perseverance ao fundo. "
+                + "A pe\u00e7a transmite leveza e inova\u00e7\u00e3o, mostrando que a explora\u00e7\u00e3o de Marte passou a ter tamb\u00e9m "
+                + "uma dimens\u00e3o a\u00e9rea.",
 
-                "A d\u00e9cima obra corresponde ao rover Rosalind Franklin, da miss\u00e3o ExoMars, liderada pela Ag\u00eancia Espacial Europeia com suporte da NASA. Esse rover representa o pr\u00f3ximo grande passo da explora\u00e7\u00e3o marciana: a busca sistem\u00e1tica por sinais de vida no subsolo de Marte, combinando mobilidade com capacidade avan\u00e7ada de perfura\u00e7\u00e3o e an\u00e1lise de amostras.\n\n" +
-                        "O Rosalind Franklin tem lan\u00e7amento previsto para 2028 em um foguete Falcon Heavy, com pouso estimado para 2030 em Oxia Planum, uma regi\u00e3o que registra uma longa hist\u00f3ria de intera\u00e7\u00e3o com \u00e1gua e dep\u00f3sitos sedimentares antigos. Ele ser\u00e1 o primeiro rover em Marte capaz de perfurar at\u00e9 cerca de 2 m de profundidade, coletando amostras protegidas da radia\u00e7\u00e3o e da oxida\u00e7\u00e3o da superf\u00edcie."
+                // Obra 9 — Zhurong
+                "\ud83d\ude80 Miss\u00e3o: Tianwen-1 | Pa\u00eds: China/CNSA | Ano: 2021\n\n"
+                + "O Zhurong \u00e9 o primeiro rover marciano da China e faz parte da miss\u00e3o Tianwen\u20111, que inclui um orbitador, "
+                + "um m\u00f3dulo de pouso e o pr\u00f3prio rover. A miss\u00e3o foi lan\u00e7ada em julho de 2020, entrou em \u00f3rbita de Marte "
+                + "em fevereiro de 2021, e o m\u00f3dulo de pouso pousou em Utopia Planitia em 14 de maio de 2021, tornando a "
+                + "China o segundo pa\u00eds a operar um rover na superf\u00edcie de Marte.\n\n"
+                + "Com cerca de 240 kg e seis rodas movidos a energia solar, o Zhurong leva c\u00e2meras, radar de penetra\u00e7\u00e3o "
+                + "no solo, espectr\u00f4metros e sensores para estudar o campo magn\u00e9tico e a composi\u00e7\u00e3o das rochas. Planejado "
+                + "para 90 dias, operou por mais de 347 sols e percorreu quase 2 km antes de entrar em hiberna\u00e7\u00e3o "
+                + "em maio de 2022.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 O nome Zhurong vem de uma divindade do fogo na mitologia chinesa.\n"
+                + "\u2022 O radar do rover permite observar camadas abaixo do solo, algo que poucos rovers possuem.\n"
+                + "\u2022 A miss\u00e3o demonstra a capacidade da China de realizar miss\u00f5es interplanet\u00e1rias com m\u00faltiplos elementos.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "Na obra, o Zhurong segue em frente, afastando-se da plataforma de pouso que exibe a bandeira da China. "
+                + "A composi\u00e7\u00e3o simboliza o primeiro passo do pa\u00eds sobre o solo marciano, mostrando que a explora\u00e7\u00e3o "
+                + "de Marte se tornou um esfor\u00e7o verdadeiramente internacional.",
+
+                // Obra 10 — Rosalind Franklin
+                "\ud83d\ude80 Miss\u00e3o: ExoMars | Pa\u00eds: ESA/NASA | Lan\u00e7amento previsto: 2028\n\n"
+                + "O Rosalind Franklin \u00e9 o rover da miss\u00e3o ExoMars, um projeto europeu com participa\u00e7\u00e3o da NASA voltado "
+                + "especificamente para a busca de sinais de vida passada em Marte. O lan\u00e7amento est\u00e1 previsto para 2028, "
+                + "com pouso planejado em Oxia Planum, uma regi\u00e3o com grandes dep\u00f3sitos de argilas e sedimentos antigos "
+                + "formados em presen\u00e7a de \u00e1gua.\n\n"
+                + "Uma das grandes inova\u00e7\u00f5es do rover \u00e9 sua broca, capaz de perfurar at\u00e9 cerca de 2 metros abaixo da "
+                + "superf\u00edcie, muito mais fundo do que os rovers anteriores. Em profundidades maiores, as amostras ficam "
+                + "mais protegidas da radia\u00e7\u00e3o e da oxida\u00e7\u00e3o, o que aumenta a chance de preservar mol\u00e9culas org\u00e2nicas "
+                + "fr\u00e1geis. O rover analisar\u00e1 essas amostras em um laborat\u00f3rio interno usando o espectr\u00f4metro MOMA, "
+                + "RLS e Ma_MISS.\n\n"
+                + "\u2728 Curiosidades\n"
+                + "\u2022 Ser\u00e1 o primeiro rover em Marte com foco t\u00e3o direto na biologia, usando broca profunda para procurar vida.\n"
+                + "\u2022 Oxia Planum concentra rochas muito antigas, poss\u00edvelmente formadas quando Marte ainda tinha muita \u00e1gua.\n"
+                + "\u2022 A miss\u00e3o \u00e9 vista como complementar \u00e0s miss\u00f5es da NASA, criando rede de investiga\u00e7\u00f5es sobre o planeta.\n\n"
+                + "\ud83c\udfa8 Sobre esta obra\n"
+                + "Na obra, o Rover Rosalind Franklin aparece perfurando o solo de Oxia Planum. A pe\u00e7a transmite a imagem "
+                + "de um detetive do subsolo, que procura pistas quase invis\u00edveis escondidas em camadas profundas e antigas. "
+                + "Esta miss\u00e3o representa o pr\u00f3ximo cap\u00edtulo: depois de descobrir \u00e1gua passada, a humanidade investiga "
+                + "se algum dia houve vida de fato naquele planeta."
         };
 
         codigosObras = new String[]{
-                "PM-02",
-                "PM-03",
-                "SJ-97",
-                "SP-04",
-                "OP-18",
-                "CU-12",
-                "PV-21",
-                "IG-21",
-                "ZH-21",
-                "RF-28"
+                "PM-02", "PM-03", "SJ-97", "SP-04", "OP-18",
+                "CU-12", "PV-21", "IG-21", "ZH-21", "RF-28"
         };
 
         anosObras = new String[]{
@@ -138,6 +292,7 @@ public abstract class absPropriedades implements intMetodos {
                 "2012\u2013", "2021\u2013", "2021", "2021", "2028"
         };
 
+        // Imagens 7 e 8 invertidas conforme solicitado — Etapa 4
         imagensObras = new String[]{
                 "/assets/obras/obra1-prop-m-mars2.jpeg",
                 "/assets/obras/obra2-prop-m-mars3.jpeg",
@@ -145,12 +300,11 @@ public abstract class absPropriedades implements intMetodos {
                 "/assets/obras/obra4-spirit.jpeg",
                 "/assets/obras/obra5-opportunity.jpeg",
                 "/assets/obras/obra6-curiosity.jpeg",
-                "/assets/obras/obra7-perseverance.jpeg",
                 "/assets/obras/obra8-ingenuity.jpeg",
+                "/assets/obras/obra7-perseverance.jpeg",
                 "/assets/obras/obra9-zhurong.jpeg",
                 "/assets/obras/obra10-rosalind-franklin.jpeg"
         };
-        // exibirModelo3D removido — botão 3D eliminado na Etapa 1
     }
 
     private void inicializarQuestionario() {
@@ -172,8 +326,6 @@ public abstract class absPropriedades implements intMetodos {
 
         gabaritos = new int[]{1, 1, 0, 2, 2};
     }
-
-    // ── Implementações padrão de intMetodos ────────────────────────────────
 
     @Override
     public void registrarResposta(int pergunta, int opcao) {
@@ -197,13 +349,9 @@ public abstract class absPropriedades implements intMetodos {
         return acertos;
     }
 
-    @Override
-    public void avancar() { etapaAtual++; }
+    @Override public void avancar() { etapaAtual++; }
+    @Override public void voltar()  { if (etapaAtual > 0) etapaAtual--; }
 
-    @Override
-    public void voltar() { if (etapaAtual > 0) etapaAtual--; }
-
-    // ── Getters e Setters ──────────────────────────────────────────────────
     public String    getNomeVisitante()           { return nomeVisitante; }
     public String    getSobrenomeVisitante()      { return sobrenomeVisitante; }
     public String    getFaixaEtariaVisitante()    { return faixaEtariaVisitante; }
@@ -218,7 +366,6 @@ public abstract class absPropriedades implements intMetodos {
     public String[]  getCodigosObras()            { return codigosObras; }
     public String[]  getAnosObras()               { return anosObras; }
     public String[]  getImagensObras()            { return imagensObras; }
-    // getExibirModelo3D() removido — funcionalidade de modelo 3D eliminada na Etapa 1
     public String[]  getPerguntas()               { return perguntas; }
     public String[][] getOpcoes()                 { return opcoes; }
     public int[]     getGabaritos()               { return gabaritos; }
