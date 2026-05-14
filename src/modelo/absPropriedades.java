@@ -26,7 +26,6 @@ public abstract class absPropriedades implements intMetodos {
     protected String[]  codigosObras;
     protected String[]  anosObras;
     protected String[]  imagensObras;
-    // exibirModelo3D removido — funcionalidade de modelo 3D eliminada na Etapa 1
 
     // ── Questionário ─────────────────────────────────────────────────────
     protected String[]   perguntas;
@@ -317,27 +316,25 @@ public abstract class absPropriedades implements intMetodos {
                 "Qual foi o primeiro helic\u00f3ptero a voar em outro planeta?"
         };
 
-        // Gabaritos distribu\u00eddos em posi\u00e7\u00f5es variadas: 0, 2, 3, 1, 2
+        // Gabaritos: 0, 3, 0, 1, 2
         // (0=sup-esq, 1=sup-dir, 2=inf-esq, 3=inf-dir)
-        // Antes era: 0, 0, 1, 1, 0 — repetitivo.
-        // Agora: sup-esq, inf-esq, inf-dir, sup-dir, inf-esq
         opcoes = new String[][]{
-                // P1 — gabarito=0 (Mars 2 permanece na posi\u00e7\u00e3o 0, sup-esq)
+                // P1 — gabarito=0 → Mars 2 na posi\u00e7\u00e3o 0 (sup-esq)
                 {"Mars 2", "Viking 1", "Mars 3", "Pathfinder"},
 
-                // P2 — gabarito=2 (Sojourner movido para posi\u00e7\u00e3o 2, inf-esq)
-                {"Spirit", "Curiosity", "Sojourner", "Opportunity"},
+                // P2 — gabarito=3 → Sojourner na posi\u00e7\u00e3o 3 (inf-dir)
+                {"Spirit", "Curiosity", "Opportunity", "Sojourner"},
 
-                // P3 — gabarito=3 (Mars Pathfinder movido para posi\u00e7\u00e3o 3, inf-dir)
-                {"Mars 2", "MER", "Mars 2020", "Mars Pathfinder"},
+                // P3 — gabarito=0 → Mars Pathfinder na posi\u00e7\u00e3o 0 (sup-esq)
+                {"Mars Pathfinder", "MER", "Mars 2020", "Mars 2"},
 
-                // P4 — gabarito=1 (Opportunity movido para posi\u00e7\u00e3o 1, sup-dir)
+                // P4 — gabarito=1 → Opportunity na posi\u00e7\u00e3o 1 (sup-dir)
                 {"Spirit", "Opportunity", "Curiosity", "Perseverance"},
 
-                // P5 — gabarito=2 (Ingenuity movido para posi\u00e7\u00e3o 2, inf-esq)
+                // P5 — gabarito=2 → Ingenuity na posi\u00e7\u00e3o 2 (inf-esq)
                 {"Dragonfly", "Zhurong", "Ingenuity", "Rosalind Franklin"}
         };
 
-        gabaritos = new int[]{0, 2, 3, 1, 2};
+        gabaritos = new int[]{0, 3, 0, 1, 2};
     }
 }
