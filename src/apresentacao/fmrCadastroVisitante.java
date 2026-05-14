@@ -26,12 +26,6 @@ public class fmrCadastroVisitante extends JDialog {
         construirInterface();
     }
 
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (b) EstiloBase.fadeIn(this);
-    }
-
     private void construirInterface() {
         JPanel fundo = EstiloBase.criarPainelFundo(77L);
         Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
@@ -48,6 +42,7 @@ public class fmrCadastroVisitante extends JDialog {
         card.setBounds(cardX, cardY, cardW, cardH);
         fundo.add(card);
 
+        // Título
         JLabel lblTitulo = EstiloBase.criarLabel(
                 "Identificação da visita",
                 EstiloBase.fonteResponsiva(36f, tela),
@@ -71,6 +66,7 @@ public class fmrCadastroVisitante extends JDialog {
         int campoH = EstiloBase.escalar(58, tela);
         int erroH  = EstiloBase.escalar(22, tela);
 
+        // Campo Nome
         JLabel lblNome = criarLabelCampo("Nome");
         lblNome.setFont(EstiloBase.fonteResponsiva(16f, tela));
         lblNome.setBounds(p, yPrimeiraLinha, campoW, labelH);
@@ -89,6 +85,7 @@ public class fmrCadastroVisitante extends JDialog {
         lblErroNome.setBounds(p, yPrimeiraLinha + EstiloBase.escalar(92, tela), campoW, erroH);
         card.add(lblErroNome);
 
+        // Campo Sobrenome
         JLabel lblSobrenome = criarLabelCampo("Sobrenome");
         lblSobrenome.setFont(EstiloBase.fonteResponsiva(16f, tela));
         lblSobrenome.setBounds(p + campoW + gap, yPrimeiraLinha, campoW, labelH);
@@ -107,13 +104,16 @@ public class fmrCadastroVisitante extends JDialog {
         lblErroSobrenome.setBounds(p + campoW + gap, yPrimeiraLinha + EstiloBase.escalar(92, tela), campoW, erroH);
         card.add(lblErroSobrenome);
 
+        // --- Faixa etária ---
         int yIdade = yPrimeiraLinha + EstiloBase.escalar(138, tela);
 
+        // Fonte aumentada no label "Faixa etária"
         JLabel lblFaixaEtaria = criarLabelCampo("Faixa etária");
         lblFaixaEtaria.setFont(EstiloBase.fonteResponsiva(20f, tela));
         lblFaixaEtaria.setBounds(p, yIdade, cardW - (p * 2), EstiloBase.escalar(28, tela));
         card.add(lblFaixaEtaria);
 
+        // Painel ocupa toda a largura util do card (igual aos campos de texto)
         int painelFaixaW = cardW - (p * 2);
         int painelFaixaH = EstiloBase.escalar(160, tela);
         int painelFaixaX = p;
@@ -126,18 +126,21 @@ public class fmrCadastroVisitante extends JDialog {
         grupoFaixaEtaria = new ButtonGroup();
         radiosFaixaEtaria = new JRadioButton[modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length];
         for (int i = 0; i < modelo.Validacao.FAIXAS_ETARIAS_VALIDAS.length; i++) {
+            // Fonte dos radio buttons aumentada
             JRadioButton radio = criarRadioFaixaEtaria(modelo.Validacao.FAIXAS_ETARIAS_VALIDAS[i], tela);
             radiosFaixaEtaria[i] = radio;
             grupoFaixaEtaria.add(radio);
             painelFaixaEtaria.add(radio);
         }
 
+        // Erro faixa etária logo abaixo do painel
         lblErroIdade = criarLabelErro();
         lblErroIdade.setFont(EstiloBase.fonteResponsiva(13f, tela));
         lblErroIdade.setBounds(painelFaixaX, painelFaixaY + painelFaixaH + EstiloBase.escalar(4, tela),
                 painelFaixaW, erroH);
         card.add(lblErroIdade);
 
+        // --- Botões: centralizados, fonte mantida, tamanho aumentado ---
         int botoesY      = cardH - EstiloBase.escalar(108, tela);
         int btnVoltarW   = EstiloBase.escalar(230, tela);
         int btnContinuarW= EstiloBase.escalar(280, tela);
@@ -149,9 +152,7 @@ public class fmrCadastroVisitante extends JDialog {
         JButton btnVoltar = EstiloBase.criarBotaoSecundario("Voltar");
         btnVoltar.setFont(EstiloBase.fonteResponsiva(20f, tela));
         btnVoltar.setBounds(botoesX, botoesY, btnVoltarW, btnH);
-        btnVoltar.addActionListener(e ->
-            EstiloBase.fadeOutThen(this, () -> controle.exibirTelaInicial())
-        );
+        btnVoltar.addActionListener(e -> { dispose(); controle.exibirTelaInicial(); });
         card.add(btnVoltar);
 
         JButton btnContinuar = EstiloBase.criarBotaoPrimario("Continuar");
@@ -180,12 +181,49 @@ public class fmrCadastroVisitante extends JDialog {
         JRadioButton radio = new JRadioButton(texto);
         radio.setOpaque(false);
         radio.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
+        // Fonte aumentada nos radio buttons
         radio.setFont(EstiloBase.fonteResponsiva(20f, tela));
         radio.setFocusPainted(false);
         radio.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         radio.setIconTextGap(12);
         radio.addActionListener(e -> { lblErroIdade.setText(""); lblErroIdade.repaint(); });
         return radio;
+    }
+
+    private JPanel criarBlocoInformacao(String titulo, String texto) {
+        JPanel bloco = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(255, 255, 255, 9));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 24, 24);
+                g2.setColor(new Color(255, 255, 255, 18));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 24, 24);
+                g2.dispose();
+            }
+        };
+        bloco.setOpaque(false);
+        JLabel lblTitulo = EstiloBase.criarLabel(titulo, EstiloBase.FONTE_LABEL.deriveFont(15f), EstiloBase.COR_TEXTO_PRIMARIO);
+        lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTitulo.setBounds(20, 15, 260, 20);
+        bloco.add(lblTitulo);
+        JTextArea lblTexto = new JTextArea(texto);
+        lblTexto.setEditable(false);
+        lblTexto.setFocusable(false);
+        lblTexto.setOpaque(false);
+        lblTexto.setLineWrap(true);
+        lblTexto.setWrapStyleWord(true);
+        lblTexto.setFont(EstiloBase.FONTE_PEQUENA.deriveFont(14f));
+        lblTexto.setForeground(EstiloBase.COR_TEXTO_SECUNDARIO);
+        lblTexto.setBounds(20, 40, 660, 34);
+        bloco.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override public void componentResized(java.awt.event.ComponentEvent e) {
+                lblTexto.setBounds(20, 40, Math.max(1, bloco.getWidth() - 40), Math.max(28, bloco.getHeight() - 48));
+            }
+        });
+        bloco.add(lblTexto);
+        return bloco;
     }
 
     private void validarEAvancar() {
@@ -223,7 +261,8 @@ public class fmrCadastroVisitante extends JDialog {
         }
 
         if (ok && controle.salvarDadosVisitante(nome, sobrenome, faixaEtaria)) {
-            EstiloBase.fadeOutThen(this, () -> controle.exibirObra(0));
+            dispose();
+            controle.exibirObra(0);
         }
     }
 

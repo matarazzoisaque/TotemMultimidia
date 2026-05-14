@@ -15,6 +15,7 @@ import java.util.Arrays;
 public class fmrInicio extends JDialog {
 
     private final Controle controle;
+    private float alphaAnima = 0f;
     private Timer timerEntrada;
 
     public fmrInicio(JFrame pai, Controle controle) {
@@ -22,12 +23,7 @@ public class fmrInicio extends JDialog {
         this.controle = controle;
         EstiloBase.configurarDialogFullscreen(this);
         construirInterface();
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (b) EstiloBase.fadeIn(this);
+        iniciarAnimacaoEntrada();
     }
 
     private void construirInterface() {
@@ -41,16 +37,19 @@ public class fmrInicio extends JDialog {
         int cardDireitaW = tela.width - cardDireitaX - margem;
         int textoW = colunaEsquerda - margem - EstiloBase.escalar(140, tela);
 
+        // btnIniciar: deslocado para a direita em relacao ao titulo
         int btnIniciarX = margem + EstiloBase.escalar(48, tela);
         int btnIniciarY = (int) (tela.height * 0.62);
         int btnIniciarW = EstiloBase.escalar(420, tela);
         int btnIniciarH = EstiloBase.escalar(88, tela);
 
+        // btnAdmin: +3px para direita e +3px para baixo
         int btnAdminW = EstiloBase.escalar(82, tela);
         int btnAdminH = EstiloBase.escalar(72, tela);
         int btnAdminX = tela.width - margem - btnAdminW + 3;
         int btnAdminY = tela.height - EstiloBase.escalar(90, tela) + 3;
 
+        // ── Textos lado esquerdo ─────────────────────────────────────────────
         JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
         lblTitulo.setFont(EstiloBase.fontePoppins((tela.width >= 1700 ? 72f : 64f) * escala));
         lblTitulo.setForeground(EstiloBase.COR_TEXTO_PRIMARIO);
@@ -73,6 +72,7 @@ public class fmrInicio extends JDialog {
         lblText.setBounds(margem, EstiloBase.escalar(540, tela), textoW, EstiloBase.escalar(226, tela));
         painel.add(lblText);
 
+        // ── Card lateral direito ─────────────────────────────────────────────
         JPanel cardResumo = EstiloBase.criarCard();
         cardResumo.setLayout(null);
         int cardResumoY = EstiloBase.escalar(86, tela);
@@ -107,12 +107,16 @@ public class fmrInicio extends JDialog {
                 g2.fill(new Ellipse2D.Float((float) (getWidth() * 0.39), (float) (getHeight() * 0.08), getWidth() * 0.52f, getWidth() * 0.52f));
 
                 g2.setColor(new Color(255, 255, 255, 16));
-                for (int x = 24; x < getWidth(); x += 24) g2.drawLine(x, 0, x, getHeight());
-                for (int y = 24; y < getHeight(); y += 24) g2.drawLine(0, y, getWidth(), y);
+                for (int x = 24; x < getWidth(); x += 24) {
+                    g2.drawLine(x, 0, x, getHeight());
+                }
+                for (int y = 24; y < getHeight(); y += 24) {
+                    g2.drawLine(0, y, getWidth(), y);
+                }
 
                 g2.setColor(new Color(255, 255, 255, 24));
-                g2.drawOval((int)(getWidth()*0.16),(int)(getHeight()*0.16),(int)(getWidth()*0.72),(int)(getHeight()*0.28));
-                g2.drawOval((int)(getWidth()*0.26),(int)(getHeight()*0.42),(int)(getWidth()*0.48),(int)(getHeight()*0.18));
+                g2.drawOval((int) (getWidth() * 0.16), (int) (getHeight() * 0.16), (int) (getWidth() * 0.72), (int) (getHeight() * 0.28));
+                g2.drawOval((int) (getWidth() * 0.26), (int) (getHeight() * 0.42), (int) (getWidth() * 0.48), (int) (getHeight() * 0.18));
                 g2.dispose();
             }
         };
@@ -143,12 +147,14 @@ public class fmrInicio extends JDialog {
         lblResumoTexto.setBounds(EstiloBase.escalar(34, tela), resumoTextoY, resumoW, EstiloBase.escalar(78, tela));
         poster.add(lblResumoTexto);
 
+        // ── Botao Iniciar ────────────────────────────────────────────────────
         JButton btnIniciar = EstiloBase.criarBotaoPrimario("Iniciar experiencia");
         btnIniciar.setFont(EstiloBase.fonteResponsiva(26f, tela));
         btnIniciar.setBounds(btnIniciarX, btnIniciarY, btnIniciarW, btnIniciarH);
-        btnIniciar.addActionListener(e ->
-            EstiloBase.fadeOutThen(this, () -> controle.exibirCadastro())
-        );
+        btnIniciar.addActionListener(e -> {
+            dispose();
+            controle.exibirCadastro();
+        });
         painel.add(btnIniciar);
         painel.setComponentZOrder(btnIniciar, 0);
 
@@ -162,6 +168,7 @@ public class fmrInicio extends JDialog {
                 colunaEsquerda - margem, EstiloBase.escalar(24, tela));
         painel.add(lblLinha);
 
+        // ── Botao Admin ──────────────────────────────────────────────────────
         JButton btnAdmin = criarBotaoEngrenagemTranslucido(tela);
         btnAdmin.setToolTipText("Administra\u00e7\u00e3o");
         btnAdmin.setBounds(btnAdminX, btnAdminY, btnAdminW, btnAdminH);
@@ -242,7 +249,7 @@ public class fmrInicio extends JDialog {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
                 dialogo.dispose();
-                EstiloBase.fadeOutThen(this, () -> controle.exibirAdministracao());
+                new fmrAdministracao(this, controle).setVisible(true);
             } else {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
@@ -334,6 +341,17 @@ public class fmrInicio extends JDialog {
         g2.setColor(new Color(255, 255, 255, destaque ? 62 : 36));
         g2.setStroke(new BasicStroke(1.3f));
         g2.draw(engrenagem);
+    }
+
+    private void iniciarAnimacaoEntrada() {
+        setOpacity(0f);
+        timerEntrada = new Timer(20, null);
+        timerEntrada.addActionListener(e -> {
+            alphaAnima = Math.min(1f, alphaAnima + 0.04f);
+            setOpacity(alphaAnima);
+            if (alphaAnima >= 1f) timerEntrada.stop();
+        });
+        timerEntrada.start();
     }
 
     @Override
