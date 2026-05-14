@@ -371,7 +371,8 @@ public final class EstiloBase {
         fundo.add(card);
 
         JLabel lblMarcador = criarTag(marcador);
-        lblMarcador.setBounds(escalar(28, tela), escalar(24, tela), escalar(132, tela), escalar(32, tela));
+        // largura aumentada de 132 para 200 para que o texto do badge caiba inteiro
+        lblMarcador.setBounds(escalar(28, tela), escalar(24, tela), escalar(200, tela), escalar(32, tela));
         card.add(lblMarcador);
 
         JLabel lblTitulo = criarLabel(titulo, fonteResponsiva(30f, tela), COR_TEXTO_PRIMARIO);
