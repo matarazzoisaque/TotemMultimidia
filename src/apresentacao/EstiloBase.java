@@ -43,108 +43,8 @@ public final class EstiloBase {
     public static final Font FONTE_BOTAO = fontePoppins(19f);
     public static final Font FONTE_PEQUENA = fontePoppins(14f);
 
-    /** Duracao do fade em milissegundos. */
-    private static final int FADE_DURACAO_MS = 300;
-    /** Intervalo do Timer de fade (ms). */
-    private static final int FADE_TICK_MS = 16;
-
     private EstiloBase() {
     }
-
-    // ── Transicoes ────────────────────────────────────────────────────────────
-
-    /**
-     * Aplica fade-in usando um overlay da COR_FUNDO pintado sobre o contentPane do dialogo.
-     * O overlay vai de totalmente opaco ate transparente, revelando o conteudo
-     * sem expor o fundo branco do sistema operacional.
-     * Deve ser chamado logo apos setVisible(true).
-     */
-    public static void fadeIn(JDialog dialog) {
-        JLayeredPane layered = dialog.getRootPane().getLayeredPane();
-        int w = dialog.getWidth();
-        int h = dialog.getHeight();
-
-        // Overlay que começa opaco (COR_FUNDO) e some gradualmente
-        int[] alphaHolder = {255};
-        JPanel overlay = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setColor(new Color(
-                        COR_FUNDO.getRed(),
-                        COR_FUNDO.getGreen(),
-                        COR_FUNDO.getBlue(),
-                        alphaHolder[0]));
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.dispose();
-            }
-        };
-        overlay.setOpaque(false);
-        overlay.setBounds(0, 0, w, h);
-        layered.add(overlay, JLayeredPane.DRAG_LAYER);
-
-        float passoF = 255f / (FADE_DURACAO_MS / (float) FADE_TICK_MS);
-        float[] alphaF = {255f};
-        Timer t = new Timer(FADE_TICK_MS, null);
-        t.addActionListener(e -> {
-            alphaF[0] = Math.max(0f, alphaF[0] - passoF);
-            alphaHolder[0] = (int) alphaF[0];
-            overlay.repaint();
-            if (alphaF[0] <= 0f) {
-                t.stop();
-                layered.remove(overlay);
-                layered.repaint();
-            }
-        });
-        t.start();
-    }
-
-    /**
-     * Aplica fade-out usando um overlay da COR_FUNDO pintado sobre o contentPane do dialogo.
-     * O overlay vai de transparente ate totalmente opaco (cobrindo o conteudo com a cor
-     * de fundo das telas), eliminando o clarao branco. Ao terminar, executa o Runnable
-     * fornecido na EDT e descarta o dialogo.
-     */
-    public static void fadeOutThen(JDialog dialog, Runnable aoConcluir) {
-        JLayeredPane layered = dialog.getRootPane().getLayeredPane();
-        int w = dialog.getWidth();
-        int h = dialog.getHeight();
-
-        int[] alphaHolder = {0};
-        JPanel overlay = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setColor(new Color(
-                        COR_FUNDO.getRed(),
-                        COR_FUNDO.getGreen(),
-                        COR_FUNDO.getBlue(),
-                        alphaHolder[0]));
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.dispose();
-            }
-        };
-        overlay.setOpaque(false);
-        overlay.setBounds(0, 0, w, h);
-        layered.add(overlay, JLayeredPane.DRAG_LAYER);
-
-        float passoF = 255f / (FADE_DURACAO_MS / (float) FADE_TICK_MS);
-        float[] alphaF = {0f};
-        Timer t = new Timer(FADE_TICK_MS, null);
-        t.addActionListener(e -> {
-            alphaF[0] = Math.min(255f, alphaF[0] + passoF);
-            alphaHolder[0] = (int) alphaF[0];
-            overlay.repaint();
-            if (alphaF[0] >= 255f) {
-                t.stop();
-                dialog.dispose();
-                aoConcluir.run();
-            }
-        });
-        t.start();
-    }
-
-    // ── Configuracao ──────────────────────────────────────────────────────────
 
     public static void configurarDialogFullscreen(JDialog dialog) {
         dialog.setUndecorated(true);
@@ -471,6 +371,7 @@ public final class EstiloBase {
         fundo.add(card);
 
         JLabel lblMarcador = criarTag(marcador);
+        // largura aumentada de 132 para 200 para que o texto do badge caiba inteiro
         lblMarcador.setBounds(escalar(28, tela), escalar(24, tela), escalar(200, tela), escalar(32, tela));
         card.add(lblMarcador);
 
