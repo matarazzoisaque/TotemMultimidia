@@ -3,6 +3,7 @@ package modelo;
 import apresentacao.*;
 import javax.swing.*;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Controlador central — interliga frontend e backend,
@@ -21,7 +22,6 @@ public class Controle extends absPropriedades {
         framePai.toFront();
         framePai.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         validacao = new Validacao();
-        // absPropriedades chama Executar() automaticamente no construtor
     }
 
     // ── Ponto de entrada ──────────────────────────────────────────────────────
@@ -32,11 +32,6 @@ public class Controle extends absPropriedades {
 
     // ── Implementação dos métodos abstratos de intMetodos ────────────────────────────
 
-    /**
-     * Registra a resposta do visitante para uma pergunta do questionário.
-     * @param pergunta Índice da pergunta (0 a 4)
-     * @param opcao    Índice da opção escolhida (0 a 3)
-     */
     @Override
     public void registrarResposta(int pergunta, int opcao) {
         if (pergunta >= 0 && pergunta < respostasVisitante.length) {
@@ -44,18 +39,11 @@ public class Controle extends absPropriedades {
         }
     }
 
-    /**
-     * Registra a nota de satisfação do visitante.
-     * @param estrelas Nota de 1 a 5
-     */
     @Override
     public void registrarSatisfacao(int estrelas) {
         this.notaSatisfacao = estrelas;
     }
 
-    /**
-     * Calcula e retorna o número de acertos no questionário (0 a 5).
-     */
     @Override
     public int calcularPontuacao() {
         int acertos = 0;
@@ -67,19 +55,11 @@ public class Controle extends absPropriedades {
         return acertos;
     }
 
-    /**
-     * Avança para a próxima etapa do fluxo (implementação genérica da interface).
-     * O fluxo detalhado é controlado pelos métodos específicos de navegação.
-     */
     @Override
     public void avancar() {
         etapaAtual++;
     }
 
-    /**
-     * Retorna para a etapa anterior do fluxo (implementação genérica da interface).
-     * O fluxo detalhado é controlado pelos métodos específicos de navegação.
-     */
     @Override
     public void voltar() {
         if (etapaAtual > 0) etapaAtual--;
@@ -97,19 +77,9 @@ public class Controle extends absPropriedades {
         new fmrObra(framePai, this, indice).setVisible(true);
     }
 
-    /**
-     * Abre uma obra específica — usado pelo botão Voltar (4.4).
-     */
-    public void abrirObra(int indice) {
-        exibirObra(indice);
-    }
+    public void abrirObra(int indice) { exibirObra(indice); }
 
-    /**
-     * Volta para a tela inicial/menu — usado pelo botão Voltar da primeira obra (4.4).
-     */
-    public void voltarParaInicio() {
-        exibirTelaInicial();
-    }
+    public void voltarParaInicio() { exibirTelaInicial(); }
 
     // ── Lógica de fluxo ────────────────────────────────────────────────────────────
 
@@ -161,23 +131,19 @@ public class Controle extends absPropriedades {
                 && validacao.validarFaixaEtaria(faixaEtaria);
     }
 
-    public String erroNome(String nome)            { return validacao.mensagemErroNome(nome); }
-    public String erroSobrenome(String sobrenome)  { return validacao.mensagemErroSobrenome(sobrenome); }
-    public String erroIdade(String idade)          { return validacao.mensagemErroIdade(idade); }
+    public String erroNome(String nome)               { return validacao.mensagemErroNome(nome); }
+    public String erroSobrenome(String sobrenome)     { return validacao.mensagemErroSobrenome(sobrenome); }
+    public String erroIdade(String idade)             { return validacao.mensagemErroIdade(idade); }
     public String erroFaixaEtaria(String faixaEtaria) { return validacao.mensagemErroFaixaEtaria(faixaEtaria); }
 
     public boolean salvarDadosVisitante(String nome, String sobrenome, String faixaEtaria) {
-        if (!validarVisitante(nome, sobrenome, faixaEtaria)) {
-            return false;
-        }
-
-        this.nomeVisitante = validacao.sanitizarNome(nome);
-        this.sobrenomeVisitante = validacao.sanitizarNome(sobrenome);
+        if (!validarVisitante(nome, sobrenome, faixaEtaria)) return false;
+        this.nomeVisitante        = validacao.sanitizarNome(nome);
+        this.sobrenomeVisitante   = validacao.sanitizarNome(sobrenome);
         this.faixaEtariaVisitante = faixaEtaria;
-        this.dadosVisitante[0] = this.nomeVisitante;
-        this.dadosVisitante[1] = this.sobrenomeVisitante;
-        this.dadosVisitante[2] = this.faixaEtariaVisitante;
-
+        this.dadosVisitante[0]    = this.nomeVisitante;
+        this.dadosVisitante[1]    = this.sobrenomeVisitante;
+        this.dadosVisitante[2]    = this.faixaEtariaVisitante;
         return true;
     }
 
@@ -188,76 +154,47 @@ public class Controle extends absPropriedades {
         return autenticado;
     }
 
-    // ── Estatísticas do histórico ───────────────────────────────────────────────────
+    // ── Estatísticas do histórico ──────────────────────────────────────────────────
 
-    public int getTotalAvaliacoes() {
-        return historicoSatisfacoes.size();
-    }
+    public int    getTotalAvaliacoes()                         { return historicoSatisfacoes.size(); }
+    public double getMediaAvaliacoes()                         { if (historicoSatisfacoes.isEmpty()) return 0; int s=0; for(int v:historicoSatisfacoes) s+=v; return s/(double)historicoSatisfacoes.size(); }
+    public int    getTotalAvaliacoesPositivas()                { int t=0; for(int v:historicoSatisfacoes) if(v>=4) t++; return t; }
+    public double getMediaPontuacaoHistorica()                 { if (historicoPontuacoes.isEmpty()) return 0; int s=0; for(int v:historicoPontuacoes) s+=v; return s/(double)historicoPontuacoes.size(); }
+    public int    getQuantidadeAvaliacoesPorNota(int nota)     { int t=0; for(int v:historicoSatisfacoes) if(v==nota) t++; return t; }
 
-    public int getQuantidadeAvaliacoesPorNota(int nota) {
-        int total = 0;
-        for (int avaliacao : historicoSatisfacoes) {
-            if (avaliacao == nota) total++;
-        }
-        return total;
-    }
+    /** Retorna a lista completa de satisfações da sessão — usado por fmrAdministracao. */
+    public List<Integer> getHistoricoSatisfacoes()  { return historicoSatisfacoes; }
 
-    public double getMediaAvaliacoes() {
-        if (historicoSatisfacoes.isEmpty()) return 0;
-        int soma = 0;
-        for (int avaliacao : historicoSatisfacoes) soma += avaliacao;
-        return soma / (double) historicoSatisfacoes.size();
-    }
-
-    public int getTotalAvaliacoesPositivas() {
-        int total = 0;
-        for (int avaliacao : historicoSatisfacoes) {
-            if (avaliacao >= 4) total++;
-        }
-        return total;
-    }
-
-    public double getMediaPontuacaoHistorica() {
-        if (historicoPontuacoes.isEmpty()) return 0;
-        int soma = 0;
-        for (int pontuacao : historicoPontuacoes) soma += pontuacao;
-        return soma / (double) historicoPontuacoes.size();
-    }
+    /** Retorna a lista completa de pontuações do quiz — usado por fmrAdministracao. */
+    public List<Integer> getHistoricoPontuacoes()   { return historicoPontuacoes; }
 
     // ── Getters do visitante atual ──────────────────────────────────────────────────
 
-    public String getNomeVisitanteAtual() {
-        return nomeVisitante;
-    }
-
-    public String getSobrenomeVisitanteAtual() {
-        return sobrenomeVisitante;
-    }
-
-    public String getNomeCompletoVisitanteAtual() {
-        return (nomeVisitante + " " + sobrenomeVisitante).trim();
-    }
-
-    public String getFaixaEtariaVisitanteAtual() {
-        return faixaEtariaVisitante;
-    }
-
-    public String[] getDadosVisitanteAtual() {
-        return dadosVisitante;
-    }
+    public String   getNomeVisitanteAtual()        { return nomeVisitante; }
+    /** Alias sem sufixo — chamado por fmrSatisfacao. */
+    public String   getNomeVisitante()             { return nomeVisitante; }
+    public String   getSobrenomeVisitanteAtual()   { return sobrenomeVisitante; }
+    public String   getNomeCompletoVisitanteAtual(){ return (nomeVisitante + " " + sobrenomeVisitante).trim(); }
+    public String   getFaixaEtariaVisitanteAtual() { return faixaEtariaVisitante; }
+    public String[] getDadosVisitanteAtual()       { return dadosVisitante; }
 
     // ── Getters auxiliares para as telas ────────────────────────────────────────────
-    public JFrame    getFramePai()              { return framePai; }
-    public String    getTituloObra(int i)       { return titulosObras[i]; }
-    public String    getDescricaoObra(int i)    { return descricoesObras[i]; }
-    public String    getImagemObra(int i)       { return imagensObras[i]; }
-    public String    getCodigoObra(int i)       { return codigosObras[i]; }
-    public String    getAnoObra(int i)          { return anosObras[i]; }
-    // deveExibirModelo3D() removido — funcionalidade de modelo 3D eliminada na Etapa 1
-    public String    getPergunta(int i)         { return perguntas[i]; }
-    public String[]  getOpcoesPergunta(int i)   { return opcoes[i]; }
-    public int       getTotalObras()            { return titulosObras.length; }
-    public int       getTotalPerguntas()        { return perguntas.length; }
-    public int       getGabarito(int i)         { return gabaritos[i]; }
+    public JFrame    getFramePai()             { return framePai; }
+    public String    getTituloObra(int i)      { return titulosObras[i]; }
+    public String    getDescricaoObra(int i)   { return descricoesObras[i]; }
+    public String    getImagemObra(int i)      { return imagensObras[i]; }
+    public String    getCodigoObra(int i)      { return codigosObras[i]; }
+    public String    getAnoObra(int i)         { return anosObras[i]; }
+    public String    getPergunta(int i)        { return perguntas[i]; }
+    public String[]  getOpcoesPergunta(int i)  { return opcoes[i]; }
+    public int       getTotalObras()           { return titulosObras.length; }
+    public int       getTotalPerguntas()       { return perguntas.length; }
+    /** Retorna o índice por item — compatível com chamadas pontuais. */
+    public int       getGabarito(int i)        { return gabaritos[i]; }
+    /** Retorna o array completo de gabaritos — usado por fmrQuestionario. */
+    public int[]     getGabaritos()            { return gabaritos; }
+    /** Retorna o array completo de respostas do visitante — usado por fmrQuestionario. */
+    public int[]     getRespostasVisitante()   { return respostasVisitante; }
+    /** Retorna a resposta de uma pergunta específica — compatível com chamadas pontuais. */
     public int       getRespostaVisitante(int i){ return respostasVisitante[i]; }
 }
