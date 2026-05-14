@@ -48,7 +48,7 @@ public class fmrInicio extends JDialog {
 
         int btnAdminW = EstiloBase.escalar(82, tela);
         int btnAdminH = EstiloBase.escalar(72, tela);
-        int btnAdminX = tela.width - margem - btnAdminW + 3;
+        int btnAdminX = margem;
         int btnAdminY = tela.height - EstiloBase.escalar(90, tela) + 3;
 
         JLabel lblTitulo = new JLabel("Opera\u00e7\u00e3o Solo Vermelho");
@@ -241,8 +241,10 @@ public class fmrInicio extends JDialog {
             if (controle.autenticarAdministracao(senha)) {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
+                // Fecha o dialogo de senha e abre o admin SEM fadeOut do fmrInicio,
+                // para que ao fechar o admin o fmrInicio ainda esteja visivel.
                 dialogo.dispose();
-                EstiloBase.fadeOutThen(this, () -> controle.exibirAdministracao());
+                controle.exibirAdministracao();
             } else {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
