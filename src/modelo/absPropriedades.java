@@ -9,7 +9,7 @@ import java.util.List;
  */
 public abstract class absPropriedades implements intMetodos {
 
-    // ── Dados do Visitante ─────────────────────────────────────────────────────
+    // ── Dados do Visitante ──────────────────────────────────────────────────────
     protected String nomeVisitante;
     protected String sobrenomeVisitante;
     protected String faixaEtariaVisitante;
@@ -28,13 +28,13 @@ public abstract class absPropriedades implements intMetodos {
     protected String[]  imagensObras;
     // exibirModelo3D removido — funcionalidade de modelo 3D eliminada na Etapa 1
 
-    // ── Questionário ─────────────────────────────────────────────────────────
+    // ── Questionário ─────────────────────────────────────────────────────
     protected String[]   perguntas;
     protected String[][] opcoes;
     protected int[]      gabaritos;
     protected int[]      respostasVisitante;
 
-    // ── Satisfação ──────────────────────────────────────────────────────────────
+    // ── Satisfação ──────────────────────────────────────────────────────────
     protected int notaSatisfacao;
 
     // ── Histórico in-memory (sem banco de dados) ───────────────────────────────────────
@@ -317,14 +317,27 @@ public abstract class absPropriedades implements intMetodos {
                 "Qual foi o primeiro helic\u00f3ptero a voar em outro planeta?"
         };
 
+        // Gabaritos distribu\u00eddos em posi\u00e7\u00f5es variadas: 0, 2, 3, 1, 2
+        // (0=sup-esq, 1=sup-dir, 2=inf-esq, 3=inf-dir)
+        // Antes era: 0, 0, 1, 1, 0 — repetitivo.
+        // Agora: sup-esq, inf-esq, inf-dir, sup-dir, inf-esq
         opcoes = new String[][]{
-                {"Mars 2", "Mars 3", "Viking 1", "Pathfinder"},
-                {"Sojourner", "Spirit", "Opportunity", "Curiosity"},
-                {"Mars 2", "Mars Pathfinder", "MER", "Mars 2020"},
+                // P1 — gabarito=0 (Mars 2 permanece na posi\u00e7\u00e3o 0, sup-esq)
+                {"Mars 2", "Viking 1", "Mars 3", "Pathfinder"},
+
+                // P2 — gabarito=2 (Sojourner movido para posi\u00e7\u00e3o 2, inf-esq)
+                {"Spirit", "Curiosity", "Sojourner", "Opportunity"},
+
+                // P3 — gabarito=3 (Mars Pathfinder movido para posi\u00e7\u00e3o 3, inf-dir)
+                {"Mars 2", "MER", "Mars 2020", "Mars Pathfinder"},
+
+                // P4 — gabarito=1 (Opportunity movido para posi\u00e7\u00e3o 1, sup-dir)
                 {"Spirit", "Opportunity", "Curiosity", "Perseverance"},
-                {"Ingenuity", "Dragonfly", "Zhurong", "Rosalind Franklin"}
+
+                // P5 — gabarito=2 (Ingenuity movido para posi\u00e7\u00e3o 2, inf-esq)
+                {"Dragonfly", "Zhurong", "Ingenuity", "Rosalind Franklin"}
         };
 
-        gabaritos = new int[]{0, 0, 1, 1, 0};
+        gabaritos = new int[]{0, 2, 3, 1, 2};
     }
 }
