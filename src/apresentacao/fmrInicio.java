@@ -241,10 +241,8 @@ public class fmrInicio extends JDialog {
             if (controle.autenticarAdministracao(senha)) {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
-                // Fecha o dialogo de senha e abre o admin SEM fadeOut do fmrInicio,
-                // para que ao fechar o admin o fmrInicio ainda esteja visivel.
                 dialogo.dispose();
-                controle.exibirAdministracao();
+                EstiloBase.fadeOutThen(this, () -> controle.exibirAdministracao());
             } else {
                 Arrays.fill(senha, '\0');
                 campoSenha.setText("");
