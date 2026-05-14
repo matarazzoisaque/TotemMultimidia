@@ -13,6 +13,12 @@ import java.net.URL;
 /**
  * Tela de obra com composicao editorial:
  * imagem real da obra/missao na esquerda e descricao na direita.
+ *
+ * Etapa 7 — Transições suaves:
+ * Os botões Voltar e Próximo agora usam EstiloBase.fadeOutThen() antes de
+ * navegar, garantindo uma transição suave (fade-out de ~300 ms) em vez de
+ * troca abrupta de tela. O dispose() da tela atual é feito automaticamente
+ * pelo fadeOutThen após o fade completar, antes de abrir a próxima tela.
  */
 public class fmrObra extends JDialog {
 
@@ -28,6 +34,12 @@ public class fmrObra extends JDialog {
         this.indice = indice;
         EstiloBase.configurarDialogFullscreen(this);
         construirInterface();
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (b) EstiloBase.fadeIn(this);
     }
 
     private void construirInterface() {
@@ -61,7 +73,7 @@ public class fmrObra extends JDialog {
         barraProgress.setBounds(margem, topo + Math.max(40, EstiloBase.escalar(46, tela)), tela.width - (margem * 2), Math.max(14, EstiloBase.escalar(18, tela)));
         fundo.add(barraProgress);
 
-        // ── Card da imagem ─────────────────────────────────────────────────────
+        // ── Card da imagem ────────────────────────────────────────────────────
 
         JPanel cardArte = EstiloBase.criarCard();
         cardArte.setLayout(null);
@@ -72,13 +84,11 @@ public class fmrObra extends JDialog {
         int artePadding = Math.max(18, EstiloBase.escalar(20, tela));
         int seloX = Math.max(20, EstiloBase.escalar(24, tela));
 
-        // Alturas dos elementos inferiores ao painel de imagem
         int legendaH = Math.max(20, EstiloBase.escalar(22, tela));
         int seloH    = Math.max(32, EstiloBase.escalar(32, tela));
         int anoH     = Math.max(32, EstiloBase.escalar(34, tela));
         int espacoInternoInferior = artePadding + legendaH + anoH + seloH + ESPACO_CODIGO_ANO + Math.max(10, EstiloBase.escalar(10, tela));
 
-        // Altura da imagem ocupa todo o espaco disponivel acima dos elementos inferiores
         int imagemH = arteH - artePadding - espacoInternoInferior;
 
         JPanel painelImagem = criarPainelImagemObra(imageObra);
@@ -113,7 +123,6 @@ public class fmrObra extends JDialog {
         lblAno.setBounds(seloX, anoY, Math.max(180, EstiloBase.escalar(180, tela)), anoH);
         cardArte.add(lblAno);
 
-        // Legenda informativa sem emoji
         JLabel lblLegenda = EstiloBase.criarLabel(
                 "Clique na imagem para ampliar",
                 EstiloBase.FONTE_PEQUENA,
@@ -145,7 +154,6 @@ public class fmrObra extends JDialog {
         painelConteudo.setOpaque(false);
         painelConteudo.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
 
-        // Titulo dentro do scroll
         JTextArea lblTitulo = EstiloBase.criarTextoQuebravel(
                 controle.getTituloObra(indice),
                 EstiloBase.fonteResponsiva(34f, tela),
@@ -156,7 +164,6 @@ public class fmrObra extends JDialog {
         painelConteudo.add(lblTitulo);
         painelConteudo.add(Box.createVerticalStrut(Math.max(14, EstiloBase.escalar(16, tela))));
 
-        // Texto descritivo
         String corHex = String.format("#%02x%02x%02x",
                 EstiloBase.COR_TEXTO_SECUNDARIO.getRed(),
                 EstiloBase.COR_TEXTO_SECUNDARIO.getGreen(),
@@ -191,10 +198,9 @@ public class fmrObra extends JDialog {
         scroll.setBounds(infoPad, scrollY, painelW - (infoPad * 2), scrollH);
         cardInfo.add(scroll);
 
-        // Garante que o scroll inicie no topo apos o Swing renderizar o HTML
         SwingUtilities.invokeLater(() -> scroll.getVerticalScrollBar().setValue(0));
 
-        // ── Faixa de acao com botoes Voltar e Proximo ────────────────────────
+        // ── Faixa de acao com botoes Voltar e Proximo ─────────────────────────
 
         JPanel faixaAcao = criarFaixaAcao();
         faixaAcao.setBounds(infoPad, barraAcaoY, painelW - (infoPad * 2), faixaH);
@@ -211,20 +217,23 @@ public class fmrObra extends JDialog {
                 faixaAcao.getWidth() - (acaoPadding * 2) - larguraBotaoVoltar - espaco
         );
 
+        // Etapa 7: botão Voltar usa fadeOutThen para transição suave.
+        // O dispose() desta tela é executado automaticamente pelo fadeOutThen
+        // antes de abrir a tela de destino, evitando janelas órfãs na memória.
         JButton btnVoltar = criarBotaoAcaoObra("\u2190 Voltar", false);
         btnVoltar.setFont(EstiloBase.fonteResponsiva(17f, tela));
         btnVoltar.setBounds(acaoPadding, botaoY, larguraBotaoVoltar, botaoH);
         btnVoltar.addActionListener(e -> {
             btnVoltar.setEnabled(false);
-            dispose();
             if (indice == 0) {
-                controle.voltarParaInicio();
+                EstiloBase.fadeOutThen(this, () -> controle.voltarParaInicio());
             } else {
-                controle.abrirObra(indice - 1);
+                EstiloBase.fadeOutThen(this, () -> controle.abrirObra(indice - 1));
             }
         });
         faixaAcao.add(btnVoltar);
 
+        // Etapa 7: botão Próximo usa fadeOutThen para transição suave.
         JButton btnProximo = criarBotaoAcaoObra(
                 indice == controle.getTotalObras() - 1
                         ? "Ir para o question\u00e1rio"
@@ -235,8 +244,7 @@ public class fmrObra extends JDialog {
         btnProximo.setBounds(faixaAcao.getWidth() - acaoPadding - larguraProximo, botaoY, larguraProximo, botaoH);
         btnProximo.addActionListener(e -> {
             btnProximo.setEnabled(false);
-            controle.proximaEtapaAposObra(indice);
-            dispose();
+            EstiloBase.fadeOutThen(this, () -> controle.proximaEtapaAposObra(indice));
         });
         faixaAcao.add(btnProximo);
 
@@ -364,11 +372,6 @@ public class fmrObra extends JDialog {
         return null;
     }
 
-    /**
-     * Exibe a imagem com object-fit: cover — preenche todo o espaco do painel.
-     * A imagem e redimensionada para cobrir o painel inteiro, podendo ser cortada
-     * nas bordas, sem deixar espacos vazios ou barras pretas.
-     */
     private void desenharImagemCover(Graphics2D g2, Image imagem, int larguraPainel, int alturaPainel) {
         int larguraImagem = imagem.getWidth(null);
         int alturaImagem  = imagem.getHeight(null);
@@ -378,7 +381,6 @@ public class fmrObra extends JDialog {
             return;
         }
 
-        // Escala cover: a imagem cobre todo o painel, podendo ser cortada nas bordas
         double escala = Math.max(
                 (double) larguraPainel / larguraImagem,
                 (double) alturaPainel  / alturaImagem
@@ -387,14 +389,12 @@ public class fmrObra extends JDialog {
         int novaLargura = (int) Math.round(larguraImagem * escala);
         int novaAltura  = (int) Math.round(alturaImagem  * escala);
 
-        // Centraliza a imagem no painel (o excesso e cortado pelo clip)
         int x = (larguraPainel - novaLargura) / 2;
         int y = (alturaPainel  - novaAltura)  / 2;
 
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(imagem, x, y, novaLargura, novaAltura, null);
 
-        // Sombra suave nas bordas inferiores
         GradientPaint sombra = new GradientPaint(
                 0, alturaPainel * 0.7f, new Color(0, 0, 0, 0),
                 0, alturaPainel,        new Color(0, 0, 0, 100)

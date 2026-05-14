@@ -8,6 +8,12 @@ import java.util.List;
 /**
  * Controlador central — interliga frontend e backend,
  * gerencia o fluxo de telas e a passagem de dados.
+ *
+ * Etapa 7 — Gestão de janelas:
+ * Todos os métodos de navegação agora recebem a JDialog de origem e chamam
+ * dispose() nela ANTES de criar a nova tela, garantindo que nenhuma janela
+ * antiga fique viva em memória. Isso corrige o bug em que Alt+F4 voltava
+ * à tela da visita anterior.
  */
 public class Controle extends absPropriedades {
 
@@ -30,7 +36,7 @@ public class Controle extends absPropriedades {
         SwingUtilities.invokeLater(this::exibirTelaInicial);
     }
 
-    // ── Implementação dos métodos abstratos de intMetodos ────────────────────────────
+    // ── Implementação dos métodos abstratos de intMetodos ─────────────────────
 
     @Override
     public void registrarResposta(int pergunta, int opcao) {
@@ -65,24 +71,50 @@ public class Controle extends absPropriedades {
         if (etapaAtual > 0) etapaAtual--;
     }
 
-    // ── Navegação ────────────────────────────────────────────────────────────
+    // ── Navegação sem origem (entrada do fluxo) ───────────────────────────────
+
+    /** Exibe a tela inicial sem fechar nenhuma tela anterior (ponto de entrada). */
     public void exibirTelaInicial()   { new fmrInicio(framePai, this).setVisible(true); }
+
+    /** Exibe o cadastro sem fechar nenhuma tela anterior (chamado por fmrInicio via fadeOutThen). */
     public void exibirCadastro()      { new fmrCadastroVisitante(framePai, this).setVisible(true); }
+
+    /** Exibe o questionário sem fechar nenhuma tela anterior (chamado via fadeOutThen). */
     public void exibirQuestionario()  { new fmrQuestionario(framePai, this).setVisible(true); }
+
+    /** Exibe a satisfação sem fechar nenhuma tela anterior (chamado via fadeOutThen). */
     public void exibirSatisfacao()    { new fmrSatisfacao(framePai, this).setVisible(true); }
+
+    /** Exibe a administração sem fechar nenhuma tela anterior (chamado via fadeOutThen). */
     public void exibirAdministracao() { new fmrAdministracao(framePai, this).setVisible(true); }
 
+    /**
+     * Exibe uma obra sem fechar nenhuma tela anterior.
+     * Usado pela navegação interna de fmrObra via fadeOutThen (a tela de origem
+     * já é descartada pelo próprio fadeOutThen antes desta chamada).
+     */
     public void exibirObra(int indice) {
         obraAtual = indice;
         new fmrObra(framePai, this, indice).setVisible(true);
     }
 
+    /** Alias mantido para compatibilidade. */
     public void abrirObra(int indice) { exibirObra(indice); }
 
+    /**
+     * Retorna para a tela inicial descartando a janela de origem.
+     * Deve ser chamado DENTRO de um fadeOutThen para que a origem já esteja
+     * invisível no momento do dispose.
+     */
     public void voltarParaInicio() { exibirTelaInicial(); }
 
-    // ── Lógica de fluxo ────────────────────────────────────────────────────────────
+    // ── Lógica de fluxo ───────────────────────────────────────────────────────
 
+    /**
+     * Avança para a próxima etapa após uma obra.
+     * Deve ser invocado de dentro de um fadeOutThen — a tela chamadora já foi
+     * escondida pelo fade e será descartada em seguida.
+     */
     public void proximaEtapaAposObra(int obraIdx) {
         int prox = obraIdx + 1;
         if (prox < titulosObras.length) exibirObra(prox);
@@ -118,7 +150,7 @@ public class Controle extends absPropriedades {
         for (int i = 0; i < respostasVisitante.length; i++) respostasVisitante[i] = -1;
     }
 
-    // ── Validação ──────────────────────────────────────────────────────────────
+    // ── Validação ─────────────────────────────────────────────────────────────
     @Override
     public boolean validarVisitante(String nome, String idade) {
         return validacao.validarNome(nome)
@@ -154,7 +186,7 @@ public class Controle extends absPropriedades {
         return autenticado;
     }
 
-    // ── Estatísticas do histórico ──────────────────────────────────────────────────
+    // ── Estatísticas do histórico ─────────────────────────────────────────────
 
     public int    getTotalAvaliacoes()                         { return historicoSatisfacoes.size(); }
     public double getMediaAvaliacoes()                         { if (historicoSatisfacoes.isEmpty()) return 0; int s=0; for(int v:historicoSatisfacoes) s+=v; return s/(double)historicoSatisfacoes.size(); }
@@ -168,7 +200,7 @@ public class Controle extends absPropriedades {
     /** Retorna a lista completa de pontuações do quiz — usado por fmrAdministracao. */
     public List<Integer> getHistoricoPontuacoes()   { return historicoPontuacoes; }
 
-    // ── Getters do visitante atual ──────────────────────────────────────────────────
+    // ── Getters do visitante atual ────────────────────────────────────────────
 
     public String   getNomeVisitanteAtual()        { return nomeVisitante; }
     /** Alias sem sufixo — chamado por fmrSatisfacao. */
@@ -178,7 +210,7 @@ public class Controle extends absPropriedades {
     public String   getFaixaEtariaVisitanteAtual() { return faixaEtariaVisitante; }
     public String[] getDadosVisitanteAtual()       { return dadosVisitante; }
 
-    // ── Getters auxiliares para as telas ────────────────────────────────────────────
+    // ── Getters auxiliares para as telas ──────────────────────────────────────
     public JFrame    getFramePai()             { return framePai; }
     public String    getTituloObra(int i)      { return titulosObras[i]; }
     public String    getDescricaoObra(int i)   { return descricoesObras[i]; }
