@@ -61,7 +61,7 @@ public class fmrObra extends JDialog {
         barraProgress.setBounds(margem, topo + Math.max(40, EstiloBase.escalar(46, tela)), tela.width - (margem * 2), Math.max(14, EstiloBase.escalar(18, tela)));
         fundo.add(barraProgress);
 
-        // \u2500\u2500 Card da imagem \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        // ── Card da imagem ─────────────────────────────────────────────────────
 
         JPanel cardArte = EstiloBase.criarCard();
         cardArte.setLayout(null);
@@ -113,9 +113,9 @@ public class fmrObra extends JDialog {
         lblAno.setBounds(seloX, anoY, Math.max(180, EstiloBase.escalar(180, tela)), anoH);
         cardArte.add(lblAno);
 
-        // Legenda informativa substituindo "Imagem da obra / missao"
+        // Legenda informativa sem emoji
         JLabel lblLegenda = EstiloBase.criarLabel(
-                "\ud83d\udd0d Clique na imagem para ampliar",
+                "Clique na imagem para ampliar",
                 EstiloBase.FONTE_PEQUENA,
                 new Color(200, 160, 90)
         );
@@ -123,7 +123,7 @@ public class fmrObra extends JDialog {
         lblLegenda.setBounds(seloX, anoY + anoH, arteW - (seloX * 2), legendaH);
         cardArte.add(lblLegenda);
 
-        // \u2500\u2500 Card de informacoes \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        // ── Card de informacoes ───────────────────────────────────────────────
 
         JPanel cardInfo = EstiloBase.criarCard();
         cardInfo.setLayout(null);
@@ -138,7 +138,7 @@ public class fmrObra extends JDialog {
         lblTema.setBounds(infoPad, infoTagY, Math.max(150, EstiloBase.escalar(160, tela)), infoTagH);
         cardInfo.add(lblTema);
 
-        // \u2500\u2500 Conteudo scrollavel: TITULO + texto descritivo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        // ── Conteudo scrollavel: TITULO + texto descritivo ────────────────────
 
         JPanel painelConteudo = new JPanel();
         painelConteudo.setLayout(new BoxLayout(painelConteudo, BoxLayout.Y_AXIS));
@@ -194,7 +194,7 @@ public class fmrObra extends JDialog {
         // Garante que o scroll inicie no topo apos o Swing renderizar o HTML
         SwingUtilities.invokeLater(() -> scroll.getVerticalScrollBar().setValue(0));
 
-        // \u2500\u2500 Faixa de acao com botoes Voltar e Proximo \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        // ── Faixa de acao com botoes Voltar e Proximo ────────────────────────
 
         JPanel faixaAcao = criarFaixaAcao();
         faixaAcao.setBounds(infoPad, barraAcaoY, painelW - (infoPad * 2), faixaH);
@@ -243,7 +243,7 @@ public class fmrObra extends JDialog {
         setContentPane(fundo);
     }
 
-    // \u2500\u2500 Visualizador fullscreen (4.3) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    // ── Visualizador fullscreen (4.3) ─────────────────────────────────────────
 
     private void abrirVisualizadorFullscreen(String caminhoImagem) {
         Image imagem = carregarImagem(caminhoImagem);
@@ -300,7 +300,7 @@ public class fmrObra extends JDialog {
         viewer.setVisible(true);
     }
 
-    // \u2500\u2500 Painel de imagem \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    // ── Painel de imagem ──────────────────────────────────────────────────────
 
     private JPanel criarPainelImagemObra(String caminhoImagem) {
         return new JPanel(null) {
@@ -378,11 +378,9 @@ public class fmrObra extends JDialog {
             return;
         }
 
-        // Fundo escuro para as areas nao cobertas pela imagem
         g2.setColor(new Color(18, 14, 16));
         g2.fillRect(0, 0, larguraPainel, alturaPainel);
 
-        // Escala contain: a imagem cabe inteiramente sem cortes
         double escala = Math.min(
                 (double) larguraPainel / larguraImagem,
                 (double) alturaPainel  / alturaImagem
@@ -397,7 +395,6 @@ public class fmrObra extends JDialog {
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(imagem, x, y, novaLargura, novaAltura, null);
 
-        // Sombra suave nas bordas inferiores
         GradientPaint sombra = new GradientPaint(
                 0, alturaPainel * 0.7f, new Color(0, 0, 0, 0),
                 0, alturaPainel,        new Color(0, 0, 0, 100)
